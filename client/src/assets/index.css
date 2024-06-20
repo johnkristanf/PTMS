@@ -1,0 +1,13 @@
+
+body{
+  background-image: url('/img/TMS_AUTH_BG.jpg'); 
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  height: 100vh;
+}
+
+.checkbox-large {
+  transform: scale(1.4); /* Adjust the scale as needed */
+  margin-right: 10px; /* Additional spacing for the checkbox */
+}
