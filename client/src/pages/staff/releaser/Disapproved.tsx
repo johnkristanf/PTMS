@@ -1,8 +1,8 @@
 import { ChangeEvent, useState } from "react";
 import { SideBar } from "../../../components/SideBar";
-import { ApproveTable } from "../../../components/staff/ApprovedTable";
 import { DropdownDate } from "../../../components/DropdownDate";
 import { DisapprovedTable } from "../../../components/staff/DisapprovedTable";
+import { PTMSHeader } from "../../../components/PtmsHeader";
 
 function DisapprovedReleaserPage() {
   const [searchTerm, setSearchTerm] = useState("");
@@ -19,14 +19,16 @@ function DisapprovedReleaserPage() {
   };
 
   return (
-    <div className="flex justify-between items-center h-screen bg-white">
+    <div className="flex justify-between items-center h-[125vh] bg-white">
       <SideBar role={"releaser"} />
 
-      <div className="w-[78%] h-full flex justify-center items-center">
-        <div className="flex flex-col gap-2 w-full h-[80%]">
+      <div className="w-[80%] h-full flex justify-center items-center mr-1">
+        <PTMSHeader />
+
+        <div className="flex flex-col gap-2 w-full h-[80%] mt-32 px-3">
 
           <div className="flex justify-between mb-5">
-            <h1 className="text-orange-500 text-4xl font-bold">Disapproved Applications</h1>
+            <h1 className="text-orange-400 text-4xl font-bold">Disapproved Applications</h1>
 
             <div className="flex gap-3">
                   <DropdownDate

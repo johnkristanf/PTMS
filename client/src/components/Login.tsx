@@ -12,14 +12,18 @@ export function LoginForm({ setRole }: {
     const { register, handleSubmit, reset, formState: { errors } } = useForm<LoginCredentials>()
 
     const [showPassword, setShowPassword] = useState<boolean>(false);
+    const [invalidCredentials, setInvalidCredentials] = useState<boolean>(false);
+    
+    const togglePasswordVisibility = () => setShowPassword(!showPassword);
 
-    const togglePasswordVisibility = () => {
-        setShowPassword(!showPassword);
-    }
+    const onSubmit: SubmitHandler<LoginCredentials> = async (data) => {
+        const isLogin = await Login(data)
+        if(!isLogin){
+            setInvalidCredentials(true)
+        }
 
-    const onSubmit: SubmitHandler<LoginCredentials> = (data) => {
-        Login(data).catch(err => console.error(err))
         reset()
+
     }
 
     return (
@@ -38,6 +42,8 @@ export function LoginForm({ setRole }: {
                 <div className="flex gap-1">
                     {errors.email && <span className="text-red-800 font-bold">Email is required.</span>}
                     {errors.password && <span className="text-red-800 font-bold">Password is required.</span>}
+                    {invalidCredentials && <span className="text-red-800 font-bold">Invalid Login Credentials</span>}
+
                 </div>
 
                 <label className="font-semibold">Email</label>

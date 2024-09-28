@@ -1,8 +1,8 @@
 import axios, { AxiosResponse } from "axios";
-import { LoginCredentials, LoginRole, StaffAccount } from "../../types/auth";
+import { LoginCredentials, StaffAccount } from "../../types/auth";
 
 
-export const Login = async (loginCredentials: LoginCredentials): Promise<LoginRole | undefined> => {
+export const Login = async (loginCredentials: LoginCredentials): Promise<boolean> => {
 
     try {
         const response = await axios.post("http://localhost:4040/auth/login", loginCredentials, {
@@ -13,7 +13,6 @@ export const Login = async (loginCredentials: LoginCredentials): Promise<LoginRo
         
         if (statusOk) {
             const role = response.data;
-            console.log("response: ", response);
 
             switch (role) {
                 case "architectural":
@@ -41,17 +40,18 @@ export const Login = async (loginCredentials: LoginCredentials): Promise<LoginRo
                     break;
             }
         }
-        
-        return undefined;
-        
+
+        return true;
+                
     } catch (error) {
         console.error(error)
+        return false;
     }
 }
 
 
 
-export function CreateStaffAccount(data: StaffAccount): Promise<AxiosResponse<any, any>> {
+export function CreateStaffAccount(data: StaffAccount): Promise<AxiosResponse<unknown, unknown>> {
     return axios.post("http://localhost:4040/auth/create/staff", data, {
         withCredentials: true
     });

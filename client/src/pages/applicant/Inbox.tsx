@@ -2,11 +2,13 @@ import { SideBar } from '../../components/SideBar';
 import { classNames } from '../../helpers/classNames';
 import '../../assets/scrollStyle.css';
 import { FetchLoginApplicant } from '../../http/get/auth';
-import { useQuery } from '@tanstack/react-query';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useState } from 'react';
 import { FetchInboxes } from '../../http/get/inbox';
 
 import InboxModal from '../../components/modal/applicant/InboxModal';
+import { Inboxes } from '../../types/inbox';
+import { UpdateInboxStatus } from '../../http/put/inbox';
 
 type FilterType = 'all' | 'latest' | 'unread';
 
@@ -27,7 +29,7 @@ function InboxPage() {
     const [selectedFilter, setSelectedFilter] = useState<FilterType>(filterBtn[0].filterType as FilterType);
     const [openInbox, setOpenInbox] = useState<boolean>(false);
     const [inboxInfo, setInboxInfo] = useState<Inboxes>()
-
+    const queryClient = useQueryClient();
     
     const { data: res, isLoading: isLoadingApplicant } = useQuery({
         queryKey: ["login_applicant"],
@@ -46,9 +48,21 @@ function InboxPage() {
         enabled: !!user_id,
     });
 
+    const mutation = useMutation({
+        mutationFn: UpdateInboxStatus, 
+        onSuccess: () => {
+            queryClient.invalidateQueries({
+                queryKey: ["inboxes", user_id, selectedFilter]
+            });
+              
+        },
+    });
+
     const inboxes: Inboxes[] = resp?.data ?? [];
 
     const openInboxModal = (inboxInfo: Inboxes) => {
+        console.log("update dol")
+        mutation.mutate(inboxInfo.inbox_id)
         setInboxInfo(inboxInfo)
         setOpenInbox(true)
     }
@@ -56,6 +70,8 @@ function InboxPage() {
     if (isLoadingApplicant || isLoadingInboxes) {
         return <div className="text-white font-bold text-xl">Loading...</div>;
     }
+
+    console.log("inbox: ", inboxes)
 
     return (
         <div className='flex justify-between items-center h-screen w-full bg-white'>
@@ -79,7 +95,7 @@ function InboxPage() {
                                     onClick={() => setSelectedFilter(item.filterType as FilterType)}
                                     className={classNames(
                                         "rounded-md p-2 text-white font-bold w-[15%] hover:opacity-75",
-                                        selectedFilter === item.filterType ? "bg-gray-500" : "bg-orange-500"
+                                        selectedFilter === item.filterType ? "bg-gray-500" : "bg-orange-400"
                                     )}
                                     key={item.name}
                                 >
@@ -96,11 +112,21 @@ function InboxPage() {
                                 inboxes.map((item, index) => (
                                     
                                     <div onClick={() => openInboxModal(item)} key={index} className="bg-gray-300 rounded-md w-full flex items-center gap-5 p-4 space-x-4 hover:opacity-75 hover:cursor-pointer">
-                                        <h1 className="flex-1 overflow-hidden text-ellipsis whitespace-nowrap font-bold">
+                                        <h1 className={`flex-1 overflow-hidden text-ellipsis whitespace-nowrap ${item.status === 'read' ? 'font-sm' : 'font-bold'}`}>
                                             {item.message}
                                         </h1>
 
-                                        <h1 className="whitespace-nowrap font-bold">{item.time_created}</h1>
+                                        {
+                                            item.status == 'unread' && (
+                                                    <h1 
+                                                        className="bg-red-500 text-white w-3 h-3 rounded-full flex items-center justify-center"
+                                                        >
+                                                    </h1>
+
+                                            )
+                                        }
+
+                                        <h1 className={`whitespace-nowrap ${item.status === 'read' ? 'font-sm' : 'font-bold'}`}>{item.time_created}</h1>
 
                                        
                                         

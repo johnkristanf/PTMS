@@ -31,7 +31,7 @@ const CivilRequirements = ({ applicationID, setRequirementsModal }: {
                 if (result.isConfirmed || result.isDismissed) setRequirementsModal(false)
             })
         },
-        onError: (error: any) => {
+        onError: (error: unknown) => {
             console.error("Checking Requirements Error:", error);
         },
     });
@@ -69,37 +69,40 @@ const CivilRequirements = ({ applicationID, setRequirementsModal }: {
 
                     <form onSubmit={handleSubmit(onSubmit)} className="max-w-screen-sm w-full h-[100%] overflow-auto">
                         <div className="grid grid-cols-1 gap-3 p-5">
-                            <label className="flex items-center font-semibold text-lg">
+    
+                        <h1 className='text-lg font-bold'>Civil plans and technical specifications containing the following:</h1>
+
+                            <label className="flex items-center font-semibold text-md">
                                 <input type="checkbox" {...register("Site_Development_Plan")} defaultChecked={response?.data.Site_Development_Plan} className="mr-2 checkbox-large" />
                                 Site Development Plan
                             </label>
 
-                            <label className="flex items-center font-semibold text-lg">
+                            <label className="flex items-center font-semibold text-md">
                                 <input type="checkbox" {...register("Foundation_Plans")} defaultChecked={response?.data.Foundation_Plans} className="mr-2 checkbox-large" />
                                 Foundation Plans and Details at scale of not less than 1:100.
                             </label>
 
-                            <label className="flex items-center font-semibold text-lg">
+                            <label className="flex items-center font-semibold text-md">
                                 <input type="checkbox" {...register("Roof_Floor_Framing_Plans")} defaultChecked={response?.data.Roof_Floor_Framing_Plans} className="mr-2 checkbox-large" />
                                 Floor/Roof Framing Plans and Details at scale of not less than 1:100.
                             </label>
 
-                            <label className="flex items-center font-semibold text-lg">
+                            <label className="flex items-center font-semibold text-md">
                                 <input type="checkbox" {...register("Details_Schedule_Civil_WorkElements")} defaultChecked={response?.data.Details_Schedule_Civil_WorkElements} className="mr-2 checkbox-large" />
                                 Details and Schedules of structural and civil works elements including those for deep wells, water reservoir, pipe lines and sewer system.
                             </label>
 
-                            <label className="flex items-center font-semibold text-lg">
+                            <label className="flex items-center font-semibold text-md">
                                 <input type="checkbox" {...register("Structural_Analysis_Design")} defaultChecked={response?.data.Structural_Analysis_Design} className="mr-2 checkbox-large" />
                                 Structural Analysis and Design for all buildings/structures except for one storey and single detached building/structure with a total floor area of 20.00 sq. meters or less.
                             </label>
 
-                            <label className="flex items-center font-semibold text-lg">
+                            <label className="flex items-center font-semibold text-md">
                                 <input type="checkbox" {...register("Boring_Load_Test")} defaultChecked={response?.data.Boring_Load_Test} className="mr-2 checkbox-large" />
                                 Boring and Load Tests
                             </label>
 
-                            <label className="flex items-center font-semibold text-lg">
+                            <label className="flex items-center font-semibold text-md">
                                 <input type="checkbox" {...register("Seismic_Analysis")} defaultChecked={response?.data.Seismic_Analysis} className="mr-2 checkbox-large" />
                                 Seismic Analysis
                             </label>

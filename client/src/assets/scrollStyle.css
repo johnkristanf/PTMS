@@ -1,4 +1,4 @@
-/* index.css or custom-scrollbar.css */
+/* L */
 .custom-scrollbar::-webkit-scrollbar {
     width: 8px;
 }
@@ -18,7 +18,7 @@
 
 
 
-
+/* SM */
 .custom-scrollbar-small::-webkit-scrollbar {
     width: 2px;
 }
@@ -33,5 +33,25 @@
 }
 
 .custom-scrollbar-small::-webkit-scrollbar-thumb:hover {
+    background: #555; 
+}
+
+
+/* XSM */
+.custom-scrollbar-extrasmall::-webkit-scrollbar {
+    width: 1px;
+    height: 8px;
+}
+
+.custom-scrollbar-extrasmall::-webkit-scrollbar-track {
+    background: #f1f1f1; 
+}
+
+.custom-scrollbar-extrasmall::-webkit-scrollbar-thumb {
+    background: #888; 
+    border-radius: 3px;
+}
+
+.custom-scrollbar-extrasmall::-webkit-scrollbar-thumb:hover {
     background: #555; 
 }

@@ -21,6 +21,7 @@ func ApplicationRoutes(e *echo.Echo, h *handlers.ApplicationHandler) {
 
 
 	g.GET("/inboxes", h.FetchInboxesHandler, h.JWT_METHOD.AutheticationMiddleware)
+	g.PUT("/inboxes/:inbox_id", h.UpdateInboxStatusHandler, h.JWT_METHOD.AutheticationMiddleware)
 	g.DELETE("/delete/:inbox_id", h.DeleteInboxHandler, h.JWT_METHOD.AutheticationMiddleware)
 
 

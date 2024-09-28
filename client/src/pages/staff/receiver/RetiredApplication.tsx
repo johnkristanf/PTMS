@@ -1,9 +1,10 @@
 import { ChangeEvent, useState } from "react";
-import { PendingTable } from "../../../components/staff/PendingTable";
 import { SideBar } from "../../../components/SideBar";
 import { DropdownDate } from "../../../components/DropdownDate";
+import { RetiredTable } from "../../../components/staff/RetiredTable";
+import { PTMSHeader } from "../../../components/PtmsHeader";
 
-function ReceiverPage() {
+function RetiredApplicationPage() {
   const [searchTerm, setSearchTerm] = useState("");
 
   const months: string[] = [
@@ -18,16 +19,18 @@ function ReceiverPage() {
   };
 
   return (
-    <div className="flex justify-between items-center h-screen bg-white">
+    <div className="flex justify-between items-center h-[110vh] bg-white">
       <SideBar role={"receiver"} />
 
-      <div className="w-[79%] h-full flex justify-center items-center mr-2">
-        <div className="flex flex-col gap-2 w-full h-[80%]">
+      <div className="w-[80%] h-full flex justify-center items-center mr-1">
+        <PTMSHeader />
+
+        <div className="flex flex-col gap-2 w-full h-[80%] mt-32 px-3">
 
           <div className="flex justify-between mb-5">
-            <h1 className="text-orange-500 text-4xl font-bold">Pending Applications</h1>
+            <h1 className="text-orange-400 text-4xl font-bold">Retired Applications</h1>
 
-              <div className="flex gap-3">
+            <div className="flex gap-3">
                   <DropdownDate
                       options={months}
                       optionFormatter={(month) => month}
@@ -45,15 +48,16 @@ function ReceiverPage() {
                     value={searchTerm}
                     onChange={handleSearchChange}
                   />
-              </div>
+            </div>
 
           </div>
 
-          <PendingTable searchTerm={searchTerm} />
+          <RetiredTable />
+          
         </div>
       </div>
     </div>
   );
 }
 
-export default ReceiverPage;
+export default RetiredApplicationPage;

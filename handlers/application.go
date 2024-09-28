@@ -20,11 +20,9 @@ type ApplicationHandler struct {
 }
 
 func checkType(application *types.ApplicantInfo) {
-    // Get the type of ScopeType
     scopeType := reflect.TypeOf(application.ScopeType)
     fmt.Println("Type of ScopeType:", scopeType)
 
-    // Get the type of CharacterOfOccupancy
     occupancyType := reflect.TypeOf(application.CharacterOfOccupancy)
     fmt.Println("Type of CharacterOfOccupancy:", occupancyType)
 }
@@ -99,15 +97,24 @@ func (h *ApplicationHandler) FetchApplicationDataHandler(c echo.Context) error {
 
 	status := c.QueryParam("status")
 	searchTerm := c.QueryParam("searchTerm")
+	selectedMonth := c.QueryParam("selectedMonth")
+	selectedWeek := c.QueryParam("selectedWeek")
+
+	fmt.Println("selectedWeek: ", selectedWeek)
 
 	
-	applicantInfo, err := h.DB_METHOD.FetchApplication(status, searchTerm)
+	applicantInfo, err := h.DB_METHOD.FetchApplication(status, searchTerm, selectedMonth, selectedWeek)
 	if err != nil{
 		return err
 	}
 
 	return c.JSON(http.StatusOK, applicantInfo)
 }
+
+
+
+
+// ASSESSMENTS
 
 func (h *ApplicationHandler) FetchAssessmentsHandler(c echo.Context) error {
 
@@ -124,68 +131,6 @@ func (h *ApplicationHandler) FetchAssessmentsHandler(c echo.Context) error {
 
 	return c.JSON(http.StatusOK, assessments)
 }
-
-
-func (h *ApplicationHandler) FetchInboxesHandler(c echo.Context) error {
-
-	paramID := c.QueryParam("user_id")
-	userID, err := strconv.Atoi(paramID)
-	if err != nil{
-		return err
-	}
-
-	selectedFilter := c.QueryParam("selectedFilter")
-
-	if selectedFilter == "all"{
-
-		inboxes, err := h.DB_METHOD.FetchAllInboxes(int64(userID))
-		if err != nil{
-			return err
-		}
-
-		fmt.Println("inboxes all:", inboxes)
-
-		return c.JSON(http.StatusOK, inboxes)
-
-	}
-
-	if selectedFilter == "latest"{
-
-		inboxes, err := h.DB_METHOD.FetchInboxesToday(int64(userID))
-		if err != nil{
-			return err
-		}
-
-
-		return c.JSON(http.StatusOK, inboxes)
-
-	}
-
-	return nil
-}
-
-
-func (h *ApplicationHandler) FetchCheckedRequirementsHandler(c echo.Context) error {
-
-	param := c.Param("applicationID")
-	applicationID, err := strconv.Atoi(param)
-	if err != nil{
-		return err
-	}
-
-	fmt.Println("applicationID", applicationID)
-
-	requirements, err := h.DB_METHOD.FetchRequirements(int64(applicationID))
-	if err != nil{
-		return err
-	}
-
-	fmt.Println("requirements", requirements)
-
-	return c.JSON(http.StatusOK, requirements)
-}
-
-
 
 func (h *ApplicationHandler) UpdateAssessmentHandler(c echo.Context) error {
 	var assessment *types.AssessmentTypes
@@ -239,27 +184,28 @@ func (h *ApplicationHandler) UpdateApplicationCodeHandler(c echo.Context) error 
 	return c.JSON(http.StatusOK, "Application Code Updated Successfully")
 }
 
-// func (h *ApplicationHandler) UpdateApplicationStatusHandler(c echo.Context) error {
-	
-// 	param := c.Param("application_id")
-// 	application_id, err := strconv.Atoi(param)
-// 	if err != nil{
-// 		return err
-// 	}
 
-// 	var app *types.UpdateApplicationStatus
-// 	if err := c.Bind(&app); err != nil{
-// 		return err
-// 	}
+// REQUIREMENTS
 
+func (h *ApplicationHandler) FetchCheckedRequirementsHandler(c echo.Context) error {
 
-// 	if err := h.DB_METHOD.UpdateApplicationStatus(int64(application_id), app.Status); err != nil{
-// 		return err
-// 	}
+	param := c.Param("applicationID")
+	applicationID, err := strconv.Atoi(param)
+	if err != nil{
+		return err
+	}
 
-// 	return c.JSON(http.StatusOK, "Application Status Updated Successfully")
-// }
+	fmt.Println("applicationID", applicationID)
 
+	requirements, err := h.DB_METHOD.FetchRequirements(int64(applicationID))
+	if err != nil{
+		return err
+	}
+
+	fmt.Println("requirements", requirements)
+
+	return c.JSON(http.StatusOK, requirements)
+}
 
 func (h *ApplicationHandler) UpdateFirstStepRequirementsHandler(c echo.Context) error {
     fmt.Println("Handler called")
@@ -381,6 +327,76 @@ func (h *ApplicationHandler) FetchElectricalRequirementsHandler(c echo.Context) 
 
 
 
+// INBOXES
+
+func (h *ApplicationHandler) FetchInboxesHandler(c echo.Context) error {
+
+	paramID := c.QueryParam("user_id")
+	userID, err := strconv.Atoi(paramID)
+	if err != nil{
+		return err
+	}
+
+	selectedFilter := c.QueryParam("selectedFilter")
+
+	if selectedFilter == "all"{
+
+		inboxes, err := h.DB_METHOD.FetchAllInboxes(int64(userID))
+		if err != nil{
+			return err
+		}
+
+		fmt.Println("inboxes all:", inboxes)
+
+		return c.JSON(http.StatusOK, inboxes)
+
+	} 
+
+	if selectedFilter == "unread"{
+		inboxes, err := h.DB_METHOD.FetchUnreadInboxes(int64(userID))
+		if err != nil{
+			return err
+		}
+
+		fmt.Println("inboxes all:", inboxes)
+
+		return c.JSON(http.StatusOK, inboxes)
+	}
+
+	if selectedFilter == "latest"{
+
+		inboxes, err := h.DB_METHOD.FetchInboxesToday(int64(userID))
+		if err != nil{
+			return err
+		}
+
+
+		return c.JSON(http.StatusOK, inboxes)
+
+	}
+
+	return nil
+}
+
+
+
+
+func (h *ApplicationHandler) UpdateInboxStatusHandler(c echo.Context) error {
+
+	inboxIDParam := c.Param("inbox_id")
+	inboxID, err := strconv.ParseInt(inboxIDParam, 10, 64)
+	if err != nil {
+        return c.JSON(http.StatusBadRequest, map[string]string{
+            "error": "Invalid inbox_id",
+        })
+    }
+
+	if err := h.DB_METHOD.UpdateInboxStatus(inboxID); err != nil{
+		return err
+	}
+
+	return c.JSON(http.StatusOK, "Inbox Status Updated")
+}
 
 func (h *ApplicationHandler) DeleteInboxHandler(c echo.Context) error {
 	

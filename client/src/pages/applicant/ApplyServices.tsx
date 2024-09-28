@@ -2,6 +2,7 @@ import { classNames } from '../../helpers/classNames';
 import { ServiceModalForm } from '../../components/modal/ServiceModalForm';
 import { useState } from 'react';
 import { SideBar } from '../../components/SideBar';
+import { PTMSHeader } from '../../components/PtmsHeader';
 
 function ApplyServicesPage() {
     const [selectedService, setSelectedService] = useState<string>();
@@ -27,7 +28,8 @@ function ApplyServicesPage() {
             <SideBar role='applicant' />
 
             <div className="flex-col flex items-center w-[60%] h-[50%] rounded-md p-8 mr-36">
-
+                <PTMSHeader />
+                
                 <h1 className='font-bold text-2xl'>Apply Services</h1>
                 <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5 w-full mt-5">
 
@@ -42,6 +44,8 @@ function ApplyServicesPage() {
                     ))}
 
                 </div>
+
+                <h1 className='font-semibold text-lg mt-[12rem]'>2024 | PTMS</h1>
 
             </div>
             {(serviceModalOpen && selectedService) && <ServiceModalForm selectedService={selectedService} setServiceModalOpen={setServiceModalOpen} />}

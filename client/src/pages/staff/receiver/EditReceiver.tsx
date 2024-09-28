@@ -1,14 +1,17 @@
+import { PTMSHeader } from "../../../components/PtmsHeader"
 import { SideBar } from "../../../components/SideBar"
 import { EditAccountForm } from "../../../components/staff/form/EditAccount"
 
 function EditReceiverAccountPage(){
     return(
-        <div className="flex justify-between items-center h-screen bg-white">
+        <div className="flex justify-between items-center h-[110vh] bg-white">
             <SideBar role={"receiver"}/>
 
             <div className="w-[75%] h-full flex justify-center items-center">
 
-                <div className="flex flex-col gap-2 w-full h-[80%] mr-5">
+                <PTMSHeader />
+
+                <div className="flex flex-col gap-2 w-full h-[80%] mr-5 mt-32">
 
                     <div className="flex justify-between">
                         <h1 className="text-orange-500 text-4xl font-bold">Edit Account</h1>

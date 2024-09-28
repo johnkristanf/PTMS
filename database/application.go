@@ -177,13 +177,14 @@ type Assessment struct {
 type Inbox struct {
 	ID   			int64		`gorm:"primaryKey;autoIncrement:true;uniqueIndex:idx_inboxID"`
 	Message  		string    	`gorm:"type:text;not null"`
+	Status     		string    	`gorm:"type:text;not null;default:unread"`
 	UserID			int64		`gorm:"not null"`
 	CreatedAt 		time.Time 	`gorm:"not null;autoCreateTime"`
 }
 
 type APPLICATION_DB_METHOD interface {
 	AddApplication(applicantInfo *types.ApplicantInfo) error
-	FetchApplication(string, string) ([]*types.ApplicantInfoFetching, error)
+	FetchApplication(string, string, string, string) ([]*types.ApplicantInfoFetching, error)
 	FetchAppliedServices(int64) ([]*types.AppliedServicesFetching, error)
 	FetchRequirements(int64) (*types.FirstStepRequirementsFetching, error)
 
@@ -212,8 +213,10 @@ type APPLICATION_DB_METHOD interface {
 	ApplicationInbox(int64, string) error
 
 	FetchInboxesToday(int64) ([]*types.FormattedInbox, error)
+	FetchUnreadInboxes(int64) ([]*types.FormattedInbox, error)
 	FetchAllInboxes(int64) ([]*types.FormattedInbox, error)
 
+	UpdateInboxStatus(int64) error
 	DeleteInbox(string) error
 }
 
@@ -367,6 +370,7 @@ func (sql *SQL) FetchAllInboxes(userID int64) ([]*types.FormattedInbox, error) {
 		formattedInbox := &types.FormattedInbox{
 			ID:         inbox.ID,
 			Message:    inbox.Message,
+			Status: 	inbox.Status,	
 			UserID:     inbox.UserID,
 			TimeCreated:  inbox.CreatedAt.Local().Format("03:04 PM"), 
 		}
@@ -403,7 +407,32 @@ func (sql *SQL) FetchInboxesToday(userID int64) ([]*types.FormattedInbox, error)
 	return inboxes, nil
 }
 
-func (sql *SQL) FetchApplication(status string, searchName string) ([]*types.ApplicantInfoFetching, error) {
+
+func (sql *SQL) FetchUnreadInboxes(userID int64) ([]*types.FormattedInbox, error) {
+
+	var inboxes []*types.FormattedInbox
+
+	var dbInboxes []*Inbox
+
+	err := sql.DB.Table("inboxes").Where("status = 'unread' ").Find(&dbInboxes).Error
+	if err != nil {
+		return nil, err
+	}
+
+	for _, inbox := range dbInboxes {
+		formattedInbox := &types.FormattedInbox{
+			ID:         inbox.ID,
+			Message:    inbox.Message,
+			UserID:     inbox.UserID,
+			TimeCreated:  inbox.CreatedAt.Local().Format("03:04 PM"), 
+		}
+		inboxes = append(inboxes, formattedInbox)
+	}
+
+	return inboxes, nil
+}
+
+func (sql *SQL) FetchApplication(status string, searchName string, selectedMonth string, selectedWeek string) ([]*types.ApplicantInfoFetching, error) {
 
 	var results []*types.ApplicantInfoFetching
 	query := sql.DB.Table("applications").
@@ -414,7 +443,26 @@ func (sql *SQL) FetchApplication(status string, searchName string) ([]*types.App
 
 	if searchName != "" {
 		searchName = "%" + searchName + "%"
-		query = query.Where("CONCAT(applications.first_name || ' ' || applications.middle_initial || ' ' || applications.last_name) LIKE ?", searchName)
+		query = query.Where("CONCAT(applications.first_name, ' ', applications.middle_initial, ' ', applications.last_name) ILIKE ?", searchName)
+	}
+		
+
+	if selectedMonth != "" {
+		query = query.Where("TO_CHAR(applications.created_at, 'Month') = ?", selectedMonth)
+	}
+
+	if selectedWeek != "" {
+		weeksAgo, err := parseWeeksAgo(selectedWeek)
+		if err == nil {
+			endDate := time.Now().AddDate(0, 0, -7*weeksAgo)
+
+			endDate = time.Date(endDate.Year(), endDate.Month(), endDate.Day(), 23, 59, 59, 999999999, endDate.Location())
+
+			startDate := endDate.AddDate(0, 0, -6) // Cover the full 7 days
+			startDate = time.Date(startDate.Year(), startDate.Month(), startDate.Day(), 0, 0, 0, 0, startDate.Location())
+
+			query = query.Where("applications.created_at BETWEEN ? AND ?", startDate, endDate)
+		}
 	}
 
 	if err := query.Find(&results).Error; err != nil {
@@ -422,6 +470,12 @@ func (sql *SQL) FetchApplication(status string, searchName string) ([]*types.App
 	}
 
 	return results, nil
+}
+
+func parseWeeksAgo(selectedWeek string) (int, error) {
+	var weeksAgo int
+	_, err := fmt.Sscanf(selectedWeek, "%d week", &weeksAgo) // Extract the week number
+	return weeksAgo, err
 }
 
 
@@ -855,6 +909,21 @@ func (sql *SQL) UpdateApplicationStatus(applicationID int64, status string) erro
 
 	result := sql.DB.Model(&Application{}).Where("id = ?", applicationID).Updates(&Application{
 		Status: status,
+	})
+
+	if result.Error != nil{
+		return result.Error
+	}
+
+	return nil
+}
+
+func (sql *SQL) UpdateInboxStatus(inboxID int64) error {
+
+	fmt.Println("inbox id in db: ", inboxID)
+
+	result := sql.DB.Model(&Inbox{}).Where("id = ?", inboxID).Updates(&Inbox{
+		Status: "read",
 	})
 
 	if result.Error != nil{

@@ -6,11 +6,11 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/joho/godotenv"
 	"github.com/johnkristanf/TMS-IPAS/database"
 	"github.com/johnkristanf/TMS-IPAS/handlers"
 	"github.com/johnkristanf/TMS-IPAS/middlewares"
 	"github.com/johnkristanf/TMS-IPAS/routes"
+	"github.com/joho/godotenv"
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
 )
@@ -24,6 +24,12 @@ var (
 
 
 func main(){
+
+	err := godotenv.Load(".env")
+    if err != nil {
+        log.Fatalf("Error loading .env file")
+    }
+
 	e := echo.New()
 
 	e.Use(middleware.Recover())
@@ -34,11 +40,6 @@ func main(){
 		AllowHeaders: []string{echo.HeaderOrigin, echo.HeaderContentType, echo.HeaderAccept},
 		AllowCredentials: true,
 	}))
-
-	err := godotenv.Load(".env")
-    if err != nil {
-        log.Fatalf("Error loading .env file")
-    }
 
 
 	db, err := database.DB_CONFIG()

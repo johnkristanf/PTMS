@@ -142,6 +142,7 @@ type UpdateApplicationStatus struct {
 type FormattedInbox struct {
 	ID         		int64 	`json:"inbox_id"`
 	Message    		string	`json:"message"`
+	Status    		string	`json:"status"`
 	UserID     		int64	`json:"user_id"`
 	TimeCreated  	string 	`json:"time_created"`
 }

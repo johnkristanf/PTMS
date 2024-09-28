@@ -24,8 +24,8 @@ export function ApproveTable({ staffRole, ScannerReport }: ApproveTableProps) {
             {openReleaseModal && <ReleaseDateModal setOpenReleaseModal={setOpenReleaseModal} />}
             {openFile && <ApplicationFileModal setOpenFile={setOpenFile} />}
             <div className="flex flex-col bg-orange-100 w-full h-[70%] rounded-md">
-                <div className="sm:-mx-6 lg:-mx-8">
-                    <div className="inline-block min-w-full py-2 sm:px-6 lg:px-8">
+                <div>
+                    <div className="inline-block min-w-full py-2 ">
                         <div className="overflow-hidden">
                             <table className="min-w-full text-left text-sm font-light">
                                 <thead className="border-b font-medium dark:border-neutral-500">

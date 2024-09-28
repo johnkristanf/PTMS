@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import '../../../assets/scrollStyle.css';
-import { FirstStepRequirements, FirstStepRequirementsFetching } from '../../../types/application';
+import { FirstStepRequirements } from '../../../types/application';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import Swal from 'sweetalert2';
 import { UpdateFirstStepRequirements } from '../../../http/put/application';
@@ -14,6 +14,7 @@ function RequirementsModalStaff({ applicationID, setShowRequirements }: {
 }) {
 
     const queryClient = useQueryClient();
+    const [incompleteReq, setIncompleteReq] = useState<boolean>();
 
     const fullyAccomplished = [
         "Fully Accomplished Application Form",
@@ -118,7 +119,7 @@ function RequirementsModalStaff({ applicationID, setShowRequirements }: {
                 timer: 1500,
             });
         },
-        onError: (error: any) => {
+        onError: (error: unknown) => {
             console.error("Signup error:", error);
         },
     });
@@ -126,18 +127,21 @@ function RequirementsModalStaff({ applicationID, setShowRequirements }: {
     const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
 
-        const allChecked = Object.values(checkRequirements).every(value => value);
+        // const allChecked = Object.values(checkRequirements).every(value => value);
 
-        if (!allChecked) {
-            Swal.fire({
-                icon: "warning",
-                title: "Incomplete Requirements",
-                text: "Please make sure all requirements are checked before submitting.",
-                confirmButtonColor: "#ff981a",
-            });
-            return;
-        }
+        // if (!allChecked) {
+        //     setIncompleteReq(true);
 
+        //     Swal.fire({
+        //         icon: "warning",
+        //         title: "Incomplete Requirements",
+        //         text: "Please make sure all requirements are checked before submitting.",
+        //         confirmButtonColor: "#ff981a",
+        //     });
+        //     return;
+        // }
+
+        // setIncompleteReq(false);
         const requirements: FirstStepRequirements = {
             application_id: applicationID,
             ...checkRequirements
@@ -183,27 +187,53 @@ function RequirementsModalStaff({ applicationID, setShowRequirements }: {
         }
     }, [response]);
 
+    useEffect(() => {
+        // Check if all the required fields are true
+        const requirementsMet = Object.values(checkRequirements).every(value => value);
+        setIncompleteReq(requirementsMet);
+    }, [checkRequirements]);
+
+    const onCheckRequirements = (item: string) => {
+        const checkboxElement = document.getElementById(item) as HTMLInputElement;
+        if (checkboxElement) {
+        checkboxElement.click(); 
+        }
+    }
+    
+
     const renderCheckboxes = (items: string[], title: string) => (
         <div className="mb-4">
-            <h2 className="font-semibold">{title}</h2>
-            {items.map(item => (
-                <div key={item} className="flex items-center mb-2">
-                    <input
-                        type="checkbox"
-                        name={item}
-                        checked={checkRequirements[itemKeyMapping[item]] || false}
-                        onChange={handleCheckboxChange}
-                        className="mr-2"
-                    />
-                    <label className="text-black">{item}</label>
-                </div>
-            ))}
+          <h2 className="font-semibold mb-1">{title}</h2>
+      
+          {items.map((item) => (
+            <div
+                key={item}
+                className="flex items-center mb-2 hover:bg-gray-200 w-full p-2 rounded-md cursor-pointer"
+                onClick={() => onCheckRequirements(item)}
+            >
+                <input
+                    type="checkbox"
+                    id={item}
+                    name={item}
+                    checked={checkRequirements[itemKeyMapping[item]] || false}
+                    onChange={handleCheckboxChange}
+                    className="mr-2"
+                    onClick={(e) => e.stopPropagation()} // Prevent double toggle when clicking the checkbox
+                />
+        
+                <label 
+                    className="text-black cursor-pointer" htmlFor={item}
+                    onClick={() => onCheckRequirements(item)}
+                >
+                    {item}
+                </label>
+
+            </div>
+          ))}
         </div>
     );
-
-    // Check if all requirements are met
-    const allChecked = response?.data ? Object.values(response.data).every(value => value) : false;
-
+      
+      
     return (
         <>
             <div className="fixed top-0 left-0 w-full h-full bg-gray-800 opacity-75"></div>
@@ -220,14 +250,13 @@ function RequirementsModalStaff({ applicationID, setShowRequirements }: {
                         {renderCheckboxes(dulySignedSealed, 'Duly Signed/Sealed')}
                         {renderCheckboxes(otherDocuments, 'Other Documents')}
 
-                        {!allChecked && (
-                            <button
-                                type="submit"
-                                className="bg-orange-500 text-white font-bold rounded-md p-2 hover:opacity-75 mt-4 w-full"
-                            >
-                                Submit
-                            </button>
-                        )}
+                        <button
+                            type="submit"
+                            className={`${incompleteReq ? 'bg-orange-500' : 'bg-gray-500 cursor-not-allowed'} text-white font-bold rounded-md p-2 mt-4 w-full`}
+                            disabled={!incompleteReq}
+                        >
+                            Submit
+                        </button>
                     </form>
 
                     <button

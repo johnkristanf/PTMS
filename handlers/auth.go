@@ -1,11 +1,11 @@
 package handlers
 
 import (
-	"os"
 	"context"
 	"encoding/json"
 	"fmt"
 	"net/http"
+	"os"
 	"strings"
 	"time"
 
@@ -20,22 +20,23 @@ import (
 )
 
 var (
-	clientID = os.Getenv("GOOGLE_CLIENT_ID")
-	clientSecret = os.Getenv("GOOGLE_CLIENT_SECRET")
 	oauthStateString = helpers.GenerateStateOauthCookie()
 )
 
 
-var googleOauthConfig = &oauth2.Config{
-	RedirectURL:  "http://localhost:4040/auth/google/callback",
-	ClientID:  clientID,
-	ClientSecret: clientSecret,
-	Scopes: []string{
-        "https://www.googleapis.com/auth/userinfo.profile",
-        "https://www.googleapis.com/auth/userinfo.email",
-    },
-	Endpoint: google.Endpoint,
+func getGoogleOauthConfig() *oauth2.Config {
+    return &oauth2.Config{
+        RedirectURL:  os.Getenv("REDIRECT_URL"),
+        ClientID:     os.Getenv("GOOGLE_CLIENT_ID"),
+        ClientSecret: os.Getenv("GOOGLE_CLIENT_SECRET"),
+        Scopes: []string{
+            "https://www.googleapis.com/auth/userinfo.profile",
+            "https://www.googleapis.com/auth/userinfo.email",
+        },
+        Endpoint: google.Endpoint,
+    }
 }
+
 
 type AuthHandler struct {
 	DB_METHOD 	database.AUTH_DB_METHOD
@@ -87,12 +88,13 @@ func (h *AuthHandler) LoginHandler(c echo.Context) error {
 			return c.JSON(http.StatusUnauthorized, "Invalid Username or Password")
 		}
 
-		access_token, err := h.JWT_METHOD.GenerateAccessToken(userInfo.ID, userInfo.Name, userInfo.Email, userInfo.Role)
+		loginAccountNoPicture := ""
+		access_token, err := h.JWT_METHOD.GenerateAccessToken(userInfo.ID, userInfo.Name, userInfo.Email, userInfo.Role, loginAccountNoPicture)
 		if err != nil {
 			return err
 		}
 
-		refresh_token, err := h.JWT_METHOD.GenerateRefreshToken(userInfo.ID, userInfo.Name, userInfo.Email, userInfo.Role)
+		refresh_token, err := h.JWT_METHOD.GenerateRefreshToken(userInfo.ID, userInfo.Name, userInfo.Email, userInfo.Role, loginAccountNoPicture)
 		if err != nil {
 			return err
 		}
@@ -104,6 +106,8 @@ func (h *AuthHandler) LoginHandler(c echo.Context) error {
 			SameSite: http.SameSiteLaxMode,
 			Expires:  time.Now().Add(5 * time.Hour),
 			HttpOnly: true,
+			Secure:   false,
+
 		}
 	
 		refreshTokenCookie := &http.Cookie{
@@ -113,6 +117,8 @@ func (h *AuthHandler) LoginHandler(c echo.Context) error {
 			SameSite: http.SameSiteLaxMode,
 			Expires:  time.Now().Add(3 * 24 * time.Hour),
 			HttpOnly: true,
+			Secure:   false,
+
 		}
 	
 		c.SetCookie(accessTokenCookie)
@@ -146,6 +152,7 @@ func (h *AuthHandler) LoginHandler(c echo.Context) error {
 // ---------------------GOOGLE LOGIN ---------------------------------
 
 func (h *AuthHandler) OauthGoogleLogin(c echo.Context) error {
+	googleOauthConfig := getGoogleOauthConfig()
 	URL := googleOauthConfig.AuthCodeURL(oauthStateString, oauth2.AccessTypeOffline, oauth2.ApprovalForce)
 	return c.Redirect(http.StatusTemporaryRedirect, URL)
 }
@@ -191,12 +198,13 @@ func (h *AuthHandler) OauthGoogleCallback(c echo.Context) error {
 		return err
 	}
 
-	access_token, err := h.JWT_METHOD.GenerateAccessToken(userInfo.ID, userInfo.Name, userInfo.Email, userInfo.Role)
+
+	access_token, err := h.JWT_METHOD.GenerateAccessToken(userInfo.ID, userInfo.Name, userInfo.Email, userInfo.Role, userInfo.Picture)
 	if err != nil {
 		return err
 	}
 
-	refresh_token, err := h.JWT_METHOD.GenerateRefreshToken(userInfo.ID, userInfo.Name, userInfo.Email, userInfo.Role)
+	refresh_token, err := h.JWT_METHOD.GenerateRefreshToken(userInfo.ID, userInfo.Name, userInfo.Email, userInfo.Role, userInfo.Picture)
 	if err != nil {
 		return err
 	}
@@ -208,6 +216,8 @@ func (h *AuthHandler) OauthGoogleCallback(c echo.Context) error {
 		SameSite: http.SameSiteLaxMode,
 		Expires:  time.Now().Add(5 * time.Hour),
 		HttpOnly: true,
+		Secure:   false,
+
 	}
 
 	refreshTokenCookie := &http.Cookie{
@@ -217,22 +227,24 @@ func (h *AuthHandler) OauthGoogleCallback(c echo.Context) error {
 		SameSite: http.SameSiteLaxMode,
 		Expires:  time.Now().Add(3 * 24 * time.Hour),
 		HttpOnly: true,
+		Secure:   false,
+
 	}
 
 	c.SetCookie(accessTokenCookie)
 	c.SetCookie(refreshTokenCookie)
 
 	if isExistingUser {
-		return c.Redirect(http.StatusTemporaryRedirect, "http://localhost:9090/services/option")
+		return c.Redirect(http.StatusTemporaryRedirect, os.Getenv("EXISTING_USER_REDIRECT_URL"))
 	}
 
-	return c.Redirect(http.StatusTemporaryRedirect, "http://localhost:9090/apply")
+	return c.Redirect(http.StatusTemporaryRedirect, os.Getenv("NEW_USER_REDIRECT_URL"))
 }
 
 
 
 func getUserFromGoogle(code string) (*types.GoogleUserInfo, error){
-	
+	googleOauthConfig := getGoogleOauthConfig()
 	token, err := googleOauthConfig.Exchange(context.Background(), code)
 	if err != nil {
 		return nil, err
@@ -252,7 +264,6 @@ func getUserFromGoogle(code string) (*types.GoogleUserInfo, error){
 	if err := json.NewDecoder(response.Body).Decode(&googleUserInfo); err != nil{
 		return nil, err
 	}
-
 	
 	return googleUserInfo, nil
 }
@@ -320,10 +331,17 @@ func (h *AuthHandler) EditStaffAccountHandler(c echo.Context) error {
 	editStaffData := &types.EditStaffAccountDTO{
 		Name: staffBind.Name,
 		Email: staffBind.Email,
-		Password: staffBind.Password,
+		OldPassword: staffBind.OldPassword,
+		NewPassword: staffBind.NewPassword,
 	}
 
 	if err := h.DB_METHOD.EditStaffAccount(editStaffData, staff_id); err != nil{
+		fmt.Println("error in edit: ", err)
+
+		if err.Error() == "old_password_not_match"{
+			return c.JSON(http.StatusNotFound, "Old Password you entered does not match our records")
+		}
+
 		return err
 	}
 
@@ -384,6 +402,7 @@ func (h *AuthHandler) FetchLoginAccountHandler(c echo.Context) error {
 		ID: userPayload.UserID,
 		Name: userPayload.Name,
 		Role: userPayload.Role,
+		Picture: userPayload.Picture,
 	}
 
 	return c.JSON(http.StatusOK, loginAccountStaff)

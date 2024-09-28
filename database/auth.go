@@ -1,12 +1,12 @@
 package database
 
 import (
+	"fmt"
 	"time"
 
 	"github.com/johnkristanf/TMS-IPAS/helpers"
 	"github.com/johnkristanf/TMS-IPAS/types"
 	"golang.org/x/crypto/bcrypt"
-	"gorm.io/gorm"
 )
 
 type User struct {
@@ -15,9 +15,10 @@ type User struct {
 	Name  		string		`gorm:"not null"`
 	Email     	string 		`gorm:"not null;index"`
 	Role      	string 		`gorm:"not null"`
+	Picture     string 		`gorm:"not null"`
 	HasLogined  bool 		`gorm:"not null"`
 	CreatedAt 	time.Time 	`gorm:"not null;autoCreateTime"`
-	UpdatedAt 	time.Time		`gorm:"not null;autoUpdateTime"`
+	UpdatedAt 	time.Time	`gorm:"not null;autoUpdateTime"`
 }
 
 type OfficeAccounts struct {
@@ -115,7 +116,22 @@ func (sql *SQL) FetchStaffAccountById(staff_id int64) (staffAccount *types.Fetch
 
 func (sql *SQL) EditStaffAccount(editStaffData *types.EditStaffAccountDTO, staff_id string) error {
 
-	hashedPassword, err := helpers.GenerateHashedPassword(editStaffData.Password)
+	type OldPassword struct{
+		Password string
+	}
+	var oldPassword OldPassword
+
+	query := sql.DB.Select("password").Table("office_accounts").Where("email = ?", editStaffData.Email).First(&oldPassword)
+	if query.Error != nil {
+		return query.Error
+	}
+
+	if err := bcrypt.CompareHashAndPassword([]byte(oldPassword.Password), []byte(editStaffData.OldPassword)); err != nil {
+		return fmt.Errorf("old_password_not_match")
+	}
+
+
+	hashedPassword, err := helpers.GenerateHashedPassword(editStaffData.NewPassword)
 	if err != nil{
 		return err
 	}
@@ -161,30 +177,31 @@ func (sql *SQL) FetchAdmin(id int64) (admin *types.FetchAdminAccount, err error)
 	return admin, nil
 }
 
+
 // --------------------- GOOGLE USER ----------------------------
+
 func (sql *SQL) SignupGoogleUser(googleUserInfo *types.GoogleUserInfo) (*types.LastSignedInUser, bool, error) {
 	var existingUser User
 
 	if err := sql.DB.Where("email = ?", googleUserInfo.Email).First(&existingUser).Error; err == nil {
-		// User already exists
 		return &types.LastSignedInUser{
 			ID:        existingUser.ID,
 			Name:      existingUser.Name,
 			Email:     existingUser.Email,
 			Role:      existingUser.Role,
+			Picture:   existingUser.Picture,	
 			HasLogined: existingUser.HasLogined,
 		}, true, nil 
 		
-	} else if err != nil && err != gorm.ErrRecordNotFound {
-		return nil, false, err
 	}
 
-	// User does not exist, create a new user
+
 	googleUser := &User{
 		GoogleID:   googleUserInfo.ID,
 		Name:       googleUserInfo.Name,
 		Email:      googleUserInfo.Email,
 		Role:       "applicant",
+		Picture: 	googleUserInfo.Picture,
 		HasLogined: true,
 	}
 
@@ -197,8 +214,9 @@ func (sql *SQL) SignupGoogleUser(googleUserInfo *types.GoogleUserInfo) (*types.L
 		Name:      googleUser.Name,
 		Email:     googleUser.Email,
 		Role:      googleUser.Role,
+		Picture:   googleUser.Picture,
 		HasLogined: googleUser.HasLogined,
-	}, false, nil // false indicates the user was created new
+	}, false, nil 
 }
 
 

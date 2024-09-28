@@ -74,7 +74,7 @@ const StaffAccountsTable: React.FC<StaffAccountCardProps> = ({ setStaffData }) =
                                             <td className="flex gap-3 whitespace-nowrap pl-6 py-4">
                                                 <button
                                                     onClick={() => setStaffData(data)}
-                                                    className="w-1/4 bg-orange-500 rounded-md p-2 text-white hover:opacity-75"
+                                                    className="w-1/4 bg-orange-400 rounded-md p-2 text-white hover:opacity-75"
                                                 >
                                                     Edit
                                                 </button>

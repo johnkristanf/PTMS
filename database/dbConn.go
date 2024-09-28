@@ -67,9 +67,9 @@ func DB_CONFIG() (*SQL, error) {
 func SeedOfficeAccounts(db *gorm.DB) error {
 
 	adminData := []*types.OfficeAccounts{
-		{Name: "Joshua B. Doe", Email: "architect@gmail.com", Password: "admin123", Role: "admin", AdminType: "architectural"},
-		{Name: "Ronaldo T. Tate", Email: "electrical@gmail.com", Password: "admin123", Role: "admin", AdminType: "electrical"},
-		{Name: "Jason Y. Cruz", Email: "civil@gmail.com", Password: "admin123", Role: "admin", AdminType: "civil"},
+		{Name: "Arch. Denis Balatero", Email: "architect@gmail.com", Password: "admin123", Role: "admin", AdminType: "architectural"},
+		{Name: "Engr. Jan Riel Enriquz", Email: "electrical@gmail.com", Password: "admin123", Role: "admin", AdminType: "electrical"},
+		{Name: "Engr. Goffer Balano", Email: "civil@gmail.com", Password: "admin123", Role: "admin", AdminType: "civil"},
 	}
 
 	for _, data := range adminData {

@@ -23,3 +23,19 @@ export type StaffAccountFetch = {
     email: string,
     role: string
 }
+
+export type LoginAccount = {
+    id: number,
+    name: string,
+    role: string,
+    adminType?: string,
+    picture: string
+}
+
+export type EditStaffAccountType = { 
+    staff_id: number
+    name: string, 
+    email: string, 
+    old_password: string, 
+    new_password: string 
+}

@@ -1,5 +1,5 @@
 
-export function DisapprovedTable(){
+export function RetiredTable(){
     
     return(
 

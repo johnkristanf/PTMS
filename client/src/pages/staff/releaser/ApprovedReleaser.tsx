@@ -2,8 +2,9 @@ import { ChangeEvent, useState } from "react";
 import { SideBar } from "../../../components/SideBar";
 import { ApproveTable } from "../../../components/staff/ApprovedTable";
 import { DropdownDate } from "../../../components/DropdownDate";
+import { PTMSHeader } from "../../../components/PtmsHeader";
 
-function ScannerPage() {
+function ReleaserPage() {
   const [searchTerm, setSearchTerm] = useState("");
 
   const months: string[] = [
@@ -18,13 +19,17 @@ function ScannerPage() {
   };
 
   return (
-    <div className="flex justify-between items-center h-screen bg-white">
-      <SideBar role={"scanner"} />
+    <div className="flex justify-between items-center h-[125vh] bg-white">
+      <SideBar role={"releaser"} />
 
-      <div className="w-[78%] h-full flex justify-center items-center">
-        <div className="flex flex-col gap-2 w-full h-[80%]">
+      <div className="w-[80%] h-full flex justify-center items-center mr-1">
+
+        <PTMSHeader />
+
+        <div className="flex flex-col gap-2 w-full h-[80%] mt-32 px-3">
+
           <div className="flex justify-between mb-5">
-            <h1 className="text-orange-500 text-4xl font-bold">Approved Applications</h1>
+            <h1 className="text-orange-400 text-4xl font-bold">Approved Applications</h1>
 
             <div className="flex gap-3">
                   <DropdownDate
@@ -45,14 +50,15 @@ function ScannerPage() {
                     onChange={handleSearchChange}
                   />
             </div>
-            
+
           </div>
 
-          <ApproveTable staffRole={"scanner"} />
+          <ApproveTable staffRole={"releaser"} />
+          
         </div>
       </div>
     </div>
   );
 }
 
-export default ScannerPage;
+export default ReleaserPage;

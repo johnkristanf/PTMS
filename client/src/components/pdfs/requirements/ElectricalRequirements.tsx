@@ -3,7 +3,7 @@ import React, { useEffect, useState } from 'react';
 import { useForm, SubmitHandler } from 'react-hook-form';
 import Swal from 'sweetalert2';
 import { CheckedElectricalRequirements } from '../../../http/put/application';
-import { FetchCivilRequirements, FetchElectricalRequirements } from '../../../http/get/application';
+import { FetchElectricalRequirements } from '../../../http/get/application';
 import { ElectricalRequirementFormData } from '../../../types/application';
 
 
@@ -31,7 +31,7 @@ const ElectricalRequirements = ({ applicationID, setRequirementsModal }: {
                 if (result.isConfirmed || result.isDismissed) setRequirementsModal(false)
             })
         },
-        onError: (error: any) => {
+        onError: (error: unknown) => {
             console.error("Checking Requirements Error:", error);
         },
     });
@@ -67,39 +67,41 @@ const ElectricalRequirements = ({ applicationID, setRequirementsModal }: {
                 <div className="flex flex-col items-center h-[95%] py-4 w-[55%] bg-white rounded-md">
                     <h1 className='font-bold text-3xl mb-5'>Electrical Requirements</h1>
 
-                    <form onSubmit={handleSubmit(onSubmit)} className="max-w-screen-sm w-full h-[100%] overflow-auto">
-                        <div className="grid grid-cols-1 gap-3 p-5">
-                            <label className="flex items-center font-semibold text-lg">
+                    <form onSubmit={handleSubmit(onSubmit)} className="max-w-screen-sm w-full h-full overflow-auto">
+                        <div className="grid grid-cols-1 gap-3 p-2">
+                            <h1 className='text-lg font-bold mt-5'>Electrical plans and technical specifications containing the following:</h1>
+
+                            <label className="flex items-center font-semibold text-md">
                                 <input type="checkbox" {...register("Location_Site_Plan")} defaultChecked={response?.data.Location_Site_Plan} className="mr-2 checkbox-large" />
                                 Location and Site Plans
                             </label>
 
-                            <label className="flex items-center font-semibold text-lg">
+                            <label className="flex items-center font-semibold text-md">
                                 <input type="checkbox" {...register("Legend_Symbols")} defaultChecked={response?.data.Legend_Symbols} className="mr-2 checkbox-large" />
                                 Legend or Symbols
                             </label>
 
-                            <label className="flex items-center font-semibold text-lg">
+                            <label className="flex items-center font-semibold text-md">
                                 <input type="checkbox" {...register("General_Notes")} defaultChecked={response?.data.General_Notes} className="mr-2 checkbox-large" />
                                 General Notes and/or Specifications
                             </label>
 
-                            <label className="flex items-center font-semibold text-lg">
+                            <label className="flex items-center font-semibold text-md">
                                 <input type="checkbox" {...register("Electrical_Layout")} defaultChecked={response?.data.Electrical_Layout} className="mr-2 checkbox-large" />
                                 Electrical Layout
                             </label>
 
-                            <label className="flex items-center font-semibold text-lg">
+                            <label className="flex items-center font-semibold text-md">
                                 <input type="checkbox" {...register("Schedule_Loads")} defaultChecked={response?.data.Schedule_Loads} className="mr-2 checkbox-large" />
                                 Schedule of Loads, Transformers, Generating/UPS Units (Total kVA for each of the preceding items shall be indicated in the schedule) 
                             </label>
 
-                            <label className="flex items-center font-semibold text-lg">
+                            <label className="flex items-center font-semibold text-md">
                                 <input type="checkbox" {...register("Design_Analysis")} defaultChecked={response?.data.Design_Analysis} className="mr-2 checkbox-large" />
                                 Design Analysis
                             </label>
 
-                            <label className="flex items-center font-semibold text-lg">
+                            <label className="flex items-center font-semibold text-md">
                                 <input type="checkbox" {...register("One_Line_Diagram")} defaultChecked={response?.data.One_Line_Diagram} className="mr-2 checkbox-large" />
                                 One Line Diagram
                             </label>

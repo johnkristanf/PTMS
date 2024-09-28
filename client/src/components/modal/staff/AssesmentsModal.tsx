@@ -65,20 +65,20 @@ export const AssessmentsModal: React.FC<AssessmentModalProps> = ({ applicantAsse
         );
     
         assessmentList.push(
-            { registerName: "building_construction", label: "Building Construction Fee", value: assessments.building_construction },
-            { registerName: "electrical_installation", label: "Electrical Installation Fee", value: assessments.electrical_installation },
+            { registerName: "building_construction", label: "Building Construction Fee (₱)", value: assessments.building_construction },
+            { registerName: "electrical_installation", label: "Electrical Installation Fee (₱)", value: assessments.electrical_installation },
 
-            { registerName: "mechanical_installation", label: "Mechanical Installation Fee", value: assessments.mechanical_installation },
-            { registerName: "plumbing_installation", label: "Plumbing Installation Fee", value: assessments.plumbing_installation },
+            { registerName: "mechanical_installation", label: "Mechanical Installation Fee (₱)", value: assessments.mechanical_installation },
+            { registerName: "plumbing_installation", label: "Plumbing Installation Fee (₱)", value: assessments.plumbing_installation },
 
-            { registerName: "electronics_installation", label: "Electronic Installation Fee", value: assessments.electronics_installation },
-            { registerName: "building_accessories", label: "Building Accessories Fee", value: assessments.building_accessories },
+            { registerName: "electronics_installation", label: "Electronic Installation Fee (₱)", value: assessments.electronics_installation },
+            { registerName: "building_accessories", label: "Building Accessories Fee (₱)", value: assessments.building_accessories },
 
-            { registerName: "other_accessories", label: "Other Accessories Fee", value: assessments.other_accessories },
-            { registerName: "building_occupancy", label: "Building Occupancy Fee", value: assessments.building_occupancy },
+            { registerName: "other_accessories", label: "Other Accessories Fee (₱)", value: assessments.other_accessories },
+            { registerName: "building_occupancy", label: "Building Occupancy Fee (₱)", value: assessments.building_occupancy },
 
-            { registerName: "building_inspection", label: "Building Inspection Fee", value: assessments.building_inspection },
-            { registerName: "fines_surcharges_penalties", label: "Fines/Surcharges/Penalties", value: assessments.fines_surcharges_penalties }
+            { registerName: "building_inspection", label: "Building Inspection Fee (₱)", value: assessments.building_inspection },
+            { registerName: "fines_surcharges_penalties", label: "Fines/Surcharges/Penalties (₱)", value: assessments.fines_surcharges_penalties }
         );
 
         assessments.applicantName = applicantAssessmentInfo.applicant_name
@@ -104,7 +104,7 @@ export const AssessmentsModal: React.FC<AssessmentModalProps> = ({ applicantAsse
             reset();
 
         },
-        onError: (error: any) => {
+        onError: (error) => {
             console.error("Set Assessment:", error);
         },
     });
@@ -168,7 +168,9 @@ export const AssessmentsModal: React.FC<AssessmentModalProps> = ({ applicantAsse
                                             defaultValue={data.value}
                                             disabled={data.disabled}
                                             {...register(data.registerName as keyof AssessmentTypes)}
-                                            className="p-3 bg-gray-400 font-bold rounded-md placeholder-gray-600 focus:outline-orange-500 hover:opacity-75"
+                                            className={
+                                                `${data.disabled ? 'bg-gray-500 text-white': 'bg-gray-300 hover:opacity-75'} p-3 font-bold rounded-md placeholder-gray-600 focus:outline-orange-500`
+                                            }
                                         />
                                         
                                     </div>
@@ -186,7 +188,7 @@ export const AssessmentsModal: React.FC<AssessmentModalProps> = ({ applicantAsse
                                             type="number" 
                                             defaultValue={data.value}
                                             {...register(data.registerName as keyof AssessmentTypes)}
-                                            className="p-3 bg-gray-400 font-bold rounded-md placeholder-gray-600 focus:outline-none hover:opacity-75"
+                                            className="p-3 bg-gray-300 font-bold rounded-md placeholder-gray-600 focus:outline-none hover:opacity-75"
                                         />
 
                                     </div>

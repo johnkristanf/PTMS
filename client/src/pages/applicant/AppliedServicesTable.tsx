@@ -12,6 +12,7 @@ import '../../assets/scrollStyle.css'
 import CompletionPDF from '../../components/pdfs/Completion';
 import PlumbingPDF from '../../components/pdfs/Plumbing';
 import FencePDF from '../../components/pdfs/Fence';
+import { PTMSHeader } from '../../components/PtmsHeader';
 
 function ServicesPage(){
 
@@ -26,7 +27,9 @@ function ServicesPage(){
         queryFn: FetchAppliedServices,
     });
 
-    const appliedServices: AppliedServices[] = response?.data
+    const appliedServices: AppliedServices[] = response?.data;
+
+    console.log("appliedServices: ", appliedServices)
 
     const openApplicationModal = (data: AppliedServices) => {
         setApplicantInfo(data)
@@ -67,7 +70,8 @@ function ServicesPage(){
 
             {openCompletion && <CompletionPDF setOpenCompletion={setOpenCompletion} /> }
 
-            <div className="flex justify-center items-start h-screen w-[76%] pt-20">
+            <div className="flex justify-center items-start h-screen w-[79%] pt-32">
+                <PTMSHeader />
 
                 <div className="flex flex-col gap-5 w-full pb-5">
                     <h1 className="text-4xl font-bold text-orange-500">Applied Services</h1>
@@ -107,7 +111,7 @@ function ServicesPage(){
                                                             <div className="flex gap-5">
                                                                 <button 
                                                                     onClick={() => openApplicationModal(data)}
-                                                                    className="bg-orange-500 rounded-md p-2 text-white font-bold hover:opacity-75"
+                                                                    className="bg-orange-400 rounded-md p-2 text-white font-bold hover:opacity-75"
                                                                     >
                                                                     View Information
                                                                 </button>
@@ -129,7 +133,8 @@ function ServicesPage(){
 
                                                                 <button 
                                                                     onClick={() => setOpenCompletion(true)}
-                                                                    className="bg-green-700 text-white font-bold p-2 rounded-md hover:opacity-75"
+                                                                    className={` ${data.status != 'completed' ? 'hover:cursor-not-allowed bg-gray-400': 'bg-green-700 '} text-white font-bold p-2 rounded-md hover:opacity-75`}
+                                                                    disabled={data.status != 'completed'}
                                                                     >
                                                                     Completion
                                                                 </button>

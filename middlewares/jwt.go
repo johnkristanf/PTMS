@@ -1,7 +1,6 @@
 package middlewares
 
 import (
-	"fmt"
 	"net/http"
 	"time"
 
@@ -19,8 +18,8 @@ type JWT struct{
 }			
 
 type JWT_METHOD interface{
-	GenerateAccessToken(int64, string, string, string) (string, error)
-	GenerateRefreshToken(int64, string, string, string) (string, error)
+	GenerateAccessToken(int64, string, string, string, string) (string, error)
+	GenerateRefreshToken(int64, string, string, string, string) (string, error)
 
 	AdminAutheticationMiddleware(echo.HandlerFunc) echo.HandlerFunc
 	StaffAdminAutheticationMiddleware(echo.HandlerFunc) echo.HandlerFunc
@@ -39,13 +38,14 @@ func JWT_CONFIG(accessTokenDuration time.Duration, refreshTokenDuration  time.Du
 
 
 
-func (j JWT) GenerateAccessToken(user_id int64, name string, email string, role string) (string, error) {
+func (j JWT) GenerateAccessToken(user_id int64, name string, email string, role string, picture string) (string, error) {
 
 	jwt_token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
 		"user_id": user_id,
 		"name":    name,
 		"email":   email,
 		"role":	   role,
+		"picture": picture,
 		"expires": time.Now().Add(j.AccessTokenDuration).Unix(),  
 	})
 
@@ -55,13 +55,14 @@ func (j JWT) GenerateAccessToken(user_id int64, name string, email string, role 
 
 
 
-func (j JWT) GenerateRefreshToken(user_id int64, name string, email string, role string) (string, error) {
+func (j JWT) GenerateRefreshToken(user_id int64, name string, email string, role string, picture string) (string, error) {
 
 	jwt_token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
 		"user_id": user_id,
 		"name":    name,
 		"email":   email,
 		"role":	   role,
+		"picture": picture,
 		"expires": time.Now().Add(j.RefreshTokenDuration).Unix(),  
 	})
 
@@ -116,6 +117,7 @@ func (j JWT) AdminAutheticationMiddleware(next echo.HandlerFunc) echo.HandlerFun
 			Name: claims.Name,
 			Email: claims.Email,
 			Role: claims.Role,
+			Picture: claims.Picture,
 		}
 
 		c.Set("userPayload", payloadData)
@@ -128,7 +130,6 @@ func (j JWT) AdminAutheticationMiddleware(next echo.HandlerFunc) echo.HandlerFun
 func (j JWT) StaffAdminAutheticationMiddleware(next echo.HandlerFunc) echo.HandlerFunc {
 	
 	const unauthorizedMessage = "You are Unauthorized to Access this Page";
-	fmt.Println("StaffAdminAutheticationMiddleware hit") // Debug log
 
 	return func(c echo.Context) error {
 
@@ -214,6 +215,7 @@ func (j JWT) AutheticationMiddleware(next echo.HandlerFunc) echo.HandlerFunc {
 			Name: claims.Name,
 			Email: claims.Email,
 			Role: claims.Role,
+			Picture: claims.Picture,
 		}
 
 		c.Set("userPayload", payloadData)
@@ -221,3 +223,4 @@ func (j JWT) AutheticationMiddleware(next echo.HandlerFunc) echo.HandlerFunc {
 	}
 
 }
+

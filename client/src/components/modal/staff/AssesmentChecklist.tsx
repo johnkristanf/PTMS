@@ -71,7 +71,7 @@ export const AssessmentCheckListModal = ({ applicationID, setAssessmentChecklist
 
             setAssessmentChecklist(false)
         },
-        onError: (error: any) => {
+        onError: (error: unknown) => {
             console.error("Signup error:", error);
         },
     });

@@ -1,4 +1,5 @@
 import { DropdownDate } from "../../../components/DropdownDate";
+import { PTMSHeader } from "../../../components/PtmsHeader";
 import { SideBar } from "../../../components/SideBar";
 import { DisapprovedTable } from "../../../components/staff/DisapprovedTable";
 
@@ -12,16 +13,17 @@ function DisapprovedCivilPage(){
     const weeks: number[] = Array.from({ length: 4 }, (_, i) => i + 1); 
 
     return(
-        <div className="flex justify-between items-center h-screen w-full bg-white">
+        <div className="flex justify-between items-center h-[125vh] w-full bg-white">
 
             <SideBar role={"civil"} />
 
             <div className="w-[75%] h-full flex justify-center items-center mr-5">
+                <PTMSHeader />
 
-                <div className="flex flex-col justify-start gap-2 w-full h-[80%]">
+                <div className="flex flex-col justify-start gap-2 w-full h-[80%] mt-32">
 
                     <div className="flex justify-between">
-                        <h1 className="text-orange-500 text-4xl font-bold">Disapproved Applications</h1>
+                        <h1 className="text-orange-400 text-4xl font-bold">Disapproved Applications</h1>
                         <div className="flex gap-3">
                             <DropdownDate
                                 options={months}

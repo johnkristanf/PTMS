@@ -20,9 +20,10 @@ import AdminApprovedApplicationPage from "../pages/admin/architectural/ApprovedA
 import InboxPage from "../pages/applicant/Inbox"
 import ApplyButtonPage from "../pages/applicant/Apply"
 import StaffTypesPage from "../pages/staff/StaffTypes"
-import ScannerPage from "../pages/staff/scanner/Scanner"
-import ReleaserPage from "../pages/staff/releaser/Releaser"
-import ReceiverPage from "../pages/staff/receiver/Receiver"
+import ScannerPage from "../pages/staff/scanner/ApprovedScanner"
+import ReleaserPage from "../pages/staff/releaser/ApprovedReleaser"
+import ReceiverPage from "../pages/staff/receiver/PendingReceiver"
+
 import EditReleaserAccountPage from "../pages/staff/releaser/EditReleaser"
 import EditReceiverAccountPage from "../pages/staff/receiver/EditReceiver"
 import EditScannerAccountPage from "../pages/staff/scanner/EditScanner"
@@ -41,6 +42,7 @@ import DisapprovedElectricalPage from "../pages/admin/electrical/DisapprovedElec
 import StaffAccountsElectricalPage from "../pages/admin/electrical/StaffAccountElectrical"
 import DisapprovedReleaserPage from "../pages/staff/releaser/Disapproved"
 import ApplicationReleaserPage from "../pages/staff/releaser/Application"
+import RetiredApplicationPage from "../pages/staff/receiver/RetiredApplication"
 
 
 
@@ -272,33 +274,8 @@ export const staffApprovedApplicationPath = {
 }
 
 
-export const editReceiverAccountPath = {
-    path: "/edit/receiver",
-    element:(
-        <QueryProviderWrapper>
-            <EditReceiverAccountPage />
-        </QueryProviderWrapper>
-    ),
-}
 
-export const editScannerAccountPath = {
-    path: "/edit/scanner",
-    element:(
-        <QueryProviderWrapper>
-            <EditScannerAccountPage />
-        </QueryProviderWrapper>
-    ),
-}
-
-export const editReleaserAccountPath = {
-    path: "/edit/releaser",
-    element:(
-        <QueryProviderWrapper>
-            <EditReleaserAccountPage />
-        </QueryProviderWrapper>
-    ),
-}
-
+// --------------- RECEIVER----------------------
 
 
 export const pendingApplicationPath = {
@@ -310,6 +287,29 @@ export const pendingApplicationPath = {
     ),
 }
 
+export const retiredApplicationPath = {
+    path: "/receiver/retired/applications",
+    element:(
+        <QueryProviderWrapper>
+            <RetiredApplicationPage />
+        </QueryProviderWrapper>
+    ),
+}
+
+
+
+export const editReceiverAccountPath = {
+    path: "/edit/receiver",
+    element:(
+        <QueryProviderWrapper>
+            <EditReceiverAccountPage />
+        </QueryProviderWrapper>
+    ),
+}
+
+
+
+// --------------- SCANNER----------------------
 
 export const scannerApprovedPath = {
     path: "/scanner/approved",
@@ -328,6 +328,18 @@ export const scannerReportPath = {
         </QueryProviderWrapper>
     ),
 }
+
+export const editScannerAccountPath = {
+    path: "/edit/scanner",
+    element:(
+        <QueryProviderWrapper>
+            <EditScannerAccountPage />
+        </QueryProviderWrapper>
+    ),
+}
+
+
+// --------------- RELEASER----------------------
 
 export const releasePath = {
     path: "/releaser/approved",
@@ -357,6 +369,15 @@ export const applicationReleaserPath = {
     ),
 }
 
+
+export const editReleaserAccountPath = {
+    path: "/edit/releaser",
+    element:(
+        <QueryProviderWrapper>
+            <EditReleaserAccountPage />
+        </QueryProviderWrapper>
+    ),
+}
 
 // --------------- UNAUTHORIZED----------------------
 export const unauthorizedPath = {

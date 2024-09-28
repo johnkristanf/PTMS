@@ -53,7 +53,7 @@ export const StaffAccountModalForm: React.FC<StaffAccountModalFormProps> = ({ se
         <>
             <div className="fixed top-0 w-full h-full bg-gray-800 opacity-75"></div>
 
-            <div className="flex fixed top-5 justify-center items-center w-full p-2">
+            <div className="flex fixed top-24 justify-center items-center w-full p-2">
                 <div className="w-1/2 bg-white rounded-md p-8">
                     <div className="flex justify-between items-center mb-5">
                         <div className="flex-col flex">

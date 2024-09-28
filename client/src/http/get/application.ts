@@ -1,9 +1,9 @@
 import axios from "axios";
 
 
-export const FetchPendingApplicantInfo = async (searchTerm: string) => {
+export const FetchPendingApplicantInfo = async (searchTerm: string, selectedMonth: string, selectedWeek: string) => {
     const status = "Pending";
-    const params = new URLSearchParams({ status, searchTerm });
+    const params = new URLSearchParams({ status, searchTerm, selectedMonth, selectedWeek });
 
     return axios.get(`http://localhost:4040/application/get?${params.toString()}`, {
         withCredentials: true

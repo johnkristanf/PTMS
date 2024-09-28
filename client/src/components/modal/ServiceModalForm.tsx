@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { SubmitHandler, useForm } from "react-hook-form";
 import { classNames } from "../../helpers/classNames";
 import { ApplicantInfo, Application } from "../../types/application";
@@ -15,15 +15,33 @@ export const ServiceModalForm = ({ selectedService, setServiceModalOpen }: {
     setServiceModalOpen: React.Dispatch<React.SetStateAction<boolean>>
 }) => {
 
-    const { register, handleSubmit, reset } = useForm<ApplicantInfo>({
+    const { register, handleSubmit, reset, watch } = useForm<ApplicantInfo>({
         defaultValues: {
             municipality: "Panabo City Davao Del Norte",
             zipCode: "8105"
         }
     });
-    const [serviceType, setServiceType] = useState<string>("");
+
+    // const [value, setValue] = useState('');
+
+    const [serviceType, setServiceType] = useState<string>("NEW");
     const [scopeTypes, setScopeTypes] = useState<string[]>([]);
     const [occupancyTypes, setOccupancyTypes] = useState<string[]>([]);
+    const [isFormValid, setIsFormValid] = useState<boolean>(false); // Track form validity
+
+
+    const watchFields = watch()
+    useEffect(() => {
+        const requiredFieldsFilled = Object.values(watchFields).every(field => field !== "");
+        const scopesSelected = scopeTypes.length > 0;
+        const occupancySelected = occupancyTypes.length > 0;
+
+        if (requiredFieldsFilled && scopesSelected && occupancySelected) {
+            setIsFormValid(true);
+        } else {
+            setIsFormValid(false);
+        }
+    }, [watchFields, scopeTypes, occupancyTypes]);
 
     const { data: response } = useQuery({
         queryKey: ["login_applicant"],
@@ -110,6 +128,15 @@ export const ServiceModalForm = ({ selectedService, setServiceModalOpen }: {
         );
     };
 
+
+
+    const applicantNumber = [
+        { registerName: "taxAccountNo", placeHolder: "Tax Account No.", inputType: "number",},
+        { registerName: "telNo", placeHolder: "Cell/Tel No.", inputType: "tel", maxLength: 11}, 
+        { registerName: "tctNo", placeHolder: "TCT No.", inputType: "number",},
+    ];
+    
+
     return (
         <>
             <div className="fixed top-0 w-full h-full bg-gray-800 opacity-75"></div>
@@ -163,132 +190,156 @@ export const ServiceModalForm = ({ selectedService, setServiceModalOpen }: {
 
                     <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-3 w-full">
 
-                        <label className="font-semibold">Enter Name</label>
-                        <div className="flex gap-2">
-                            {
-                                applicantName.map((data) => (
-                                    <input 
-                                        key={data.registerName}
-                                        type={data.inputType} 
-                                        placeholder={data.placeHolder} 
-                                        required
-                                        className={classNames("bg-gray-400 placeholder-black font-semibold rounded-md p-2 focus:outline-slate-800 w-full")}
-                                        {...register(data.registerName as keyof ApplicantInfo)}
-                                    />
-                                ))
-                            }
-                        </div>
-
-                        <label className="font-semibold">Enter Ownership</label>
-                        <div className="flex gap-5">
-                            <select 
-                                className="bg-gray-400 placeholder-black font-semibold rounded-md p-2 focus:outline-slate-800"
-                                {...register("formOwnership")}
-                            >
-                                <option value="" disabled selected>Form of Ownership</option>
-                                <option value="Joint Tenancy">Joint Tenancy</option>
-                                <option value="Tenancy in Common">Tenancy in Common</option>
-                                <option value="Tenants by Entirety">Tenants by Entirety</option>
-                                <option value="Sole Ownership">Sole Ownership</option>
-                                <option value="Community Property">Community Property</option>
-                            </select>
-                            {
-                                applicantOwnership.map((data) => (
-                                    <input 
-                                        key={data.registerName}
-                                        type={data.inputType} 
-                                        placeholder={data.placeHolder} 
-                                        required
-                                        className={classNames("bg-gray-400 placeholder-black font-semibold rounded-md p-2 focus:outline-slate-800 w-full")}
-                                        {...register(data.registerName as keyof ApplicantInfo)}
-                                    />
-                                ))
-                            }
-                        </div>
-
-                        <label className="font-semibold">Enter Address</label>
-                        <div className="flex gap-2 flex-wrap">
-                            {
-                                applicantAddress.map((data) => (
-                                    <input 
-                                        key={data.registerName}
-                                        type={data.inputType} 
-                                        placeholder={data.placeHolder} 
-                                        defaultValue={data.value}
-                                        disabled={data.disabled}
-                                        required
-                                        className={classNames("bg-gray-400 placeholder-black font-semibold rounded-md p-2 focus:outline-slate-800 w-[40%]")}
-                                        {...register(data.registerName as keyof ApplicantInfo)}
-                                    />
-                                ))
-                            }
-                            <select 
-                                className="bg-gray-400 placeholder-black font-semibold rounded-md p-2 focus:outline-slate-800 w-[40%]"
-                                {...register("barangay")}
-                                required
-                            >
-                                <option value="" disabled selected>Select Barangay</option>
-                                {barangayOptions.map((barangay) => (
-                                    <option key={barangay} value={barangay}>{barangay}</option>
-                                ))}
-                            </select>
-                        </div>
-
-                        <label className="font-semibold">Enter Numbers</label>
-                        <div className="flex gap-2">
-                            {
-                                applicantNumber.map((data) => (
-                                    <input 
-                                        key={data.registerName}
-                                        type={data.inputType} 
-                                        placeholder={data.placeHolder}
-                                        required
-                                        className={classNames("bg-gray-400 placeholder-black font-semibold rounded-md p-2 focus:outline-slate-800 w-full")}
-                                        {...register(data.registerName as keyof ApplicantInfo)}
-                                    />
-                                ))
-                            }
-                        </div>
-
-                        <label className="font-semibold">Scope of Work</label>
-                        <div className="flex flex-col gap-2 mb-5">
-                            {
-                                scopeOptions.map((scope) => (
-                                    <div className="flex gap-1 items-center" key={scope}>
+                        <div className="w-full border border-gray-300 p-3 rounded-md">
+                            <label className="font-semibold">Enter Name</label>
+                            <div className="flex gap-2">
+                                {
+                                    applicantName.map((data) => (
                                         <input 
-                                            type="checkbox" 
-                                            name="scopeType" 
-                                            value={scope} 
-                                            checked={scopeTypes.includes(scope)} 
-                                            onChange={handleScopeChange}
+                                            key={data.registerName}
+                                            type={data.inputType} 
+                                            placeholder={data.placeHolder} 
+                                            required
+                                            className={classNames("bg-gray-200 placeholder-black font-semibold rounded-md p-2 focus:outline-slate-800 w-full")}
+                                            {...register(data.registerName as keyof ApplicantInfo)}
                                         />
-                                        <label>{scope}</label>
-                                    </div>
-                                ))
-                            }
+                                    ))
+                                }
+                            </div>
                         </div>
 
-                        <label className="font-semibold">Character of Occupancy</label>
-                        <div className="flex flex-col gap-2 mb-5 ">
-                            {
-                                occupancyOptions.map((occupancy) => (
-                                    <div className="flex gap-1 items-center" key={occupancy}>
+                        
+                        <div className="w-full border border-gray-300 p-3 rounded-md">
+
+                            <label className="font-semibold">Enter Ownership</label>
+                            <div className="flex gap-5">
+                                <select 
+                                    className="bg-gray-200 placeholder-black font-semibold rounded-md p-2 focus:outline-slate-800"
+                                    {...register("formOwnership")}
+                                >
+                                    <option value="" disabled selected>Form of Ownership</option>
+                                    <option value="Joint Tenancy">Joint Tenancy</option>
+                                    <option value="Tenancy in Common">Tenancy in Common</option>
+                                    <option value="Tenants by Entirety">Tenants by Entirety</option>
+                                    <option value="Sole Ownership">Sole Ownership</option>
+                                    <option value="Community Property">Community Property</option>
+                                </select>
+                                {
+                                    applicantOwnership.map((data) => (
                                         <input 
-                                            type="checkbox" 
-                                            name="occupancyType" 
-                                            value={occupancy} 
-                                            checked={occupancyTypes.includes(occupancy)} 
-                                            onChange={handleOccupancyChange}
+                                            key={data.registerName}
+                                            type={data.inputType} 
+                                            placeholder={data.placeHolder} 
+                                            required
+                                            className={classNames("bg-gray-200 placeholder-black font-semibold rounded-md p-2 focus:outline-slate-800 w-full")}
+                                            {...register(data.registerName as keyof ApplicantInfo)}
                                         />
-                                        <label>{occupancy}</label>
-                                    </div>
-                                ))
-                            }
+                                    ))
+                                }
+                            </div>
                         </div>
 
-                        <button 
-                            type="submit" 
-                            className="bg-orange-500 rounded-md p-2 mt-3 text-white w-full font-semibold hover:opacity-75"
+
+                        <div className="w-full border border-gray-300 p-3 rounded-md">
+
+                            <label className="font-semibold">Enter Address</label>
+                            <div className="flex gap-2 flex-wrap">
+                                {
+                                    applicantAddress.map((data) => (
+                                        <input 
+                                            key={data.registerName}
+                                            type={data.inputType} 
+                                            placeholder={data.placeHolder} 
+                                            defaultValue={data.value}
+                                            disabled={data.disabled}
+                                            required
+                                            className={classNames(`${data.value ? "bg-gray-400 text-white": "bg-gray-200"} placeholder-black font-semibold rounded-md p-2 focus:outline-slate-800 w-[40%]`)}
+                                            {...register(data.registerName as keyof ApplicantInfo)}
+                                        />
+                                    ))
+                                }
+                                <select 
+                                    className="bg-gray-200 placeholder-black font-semibold rounded-md p-2 focus:outline-slate-800 w-[40%]"
+                                    {...register("barangay")}
+                                    required
+                                >
+                                    <option value="" disabled selected>Select Barangay</option>
+                                    {barangayOptions.map((barangay) => (
+                                        <option key={barangay} value={barangay}>{barangay}</option>
+                                    ))}
+                                </select>
+                            </div>
+                        </div>
+
+                        <div className="w-full border border-gray-300 p-3 rounded-md">
+                            <label className="font-semibold">Enter Numbers</label>
+                            <div className="flex gap-2">
+                                {
+                                    applicantNumber.map((data) => (
+                                        <input 
+                                            key={data.registerName}
+                                            type={data.inputType} 
+                                            placeholder={data.placeHolder}
+                                            maxLength={data.maxLength}
+                                            required
+                                            className={classNames("bg-gray-200 placeholder-black font-semibold rounded-md p-2 focus:outline-slate-800 w-full")}
+                                            {...register(data.registerName as keyof ApplicantInfo)}
+                                        />
+                                    ))
+                                }
+                            </div>
+                        </div>
+
+                        <div className="w-full border border-gray-300 p-3 rounded-md">
+                        
+                            <label className="font-semibold">Scope of Work</label>
+                            <div className="flex flex-col gap-2 mb-5">
+                                {
+                                    scopeOptions.map((scope) => (
+                                        <div className="flex gap-1 items-center" key={scope}>
+                                            <input 
+                                                type="checkbox" 
+                                                name="scopeType" 
+                                                value={scope} 
+                                                checked={scopeTypes.includes(scope)} 
+                                                onChange={handleScopeChange}
+                                            />
+                                            <label>{scope}</label>
+                                        </div>
+                                    ))
+                                }
+                            </div>
+
+                        </div>
+
+                        <div className="w-full border border-gray-300 p-3 rounded-md">
+                        
+                            <label className="font-semibold">Character of Occupancy</label>
+                            <div className="flex flex-col gap-2 mb-5 ">
+                                {
+                                    occupancyOptions.map((occupancy) => (
+                                        <div className="flex gap-1 items-center" key={occupancy}>
+                                            <input 
+                                                type="checkbox" 
+                                                name="occupancyType" 
+                                                value={occupancy} 
+                                                checked={occupancyTypes.includes(occupancy)} 
+                                                onChange={handleOccupancyChange}
+                                            />
+                                            <label>{occupancy}</label>
+                                        </div>
+                                    ))
+                                }
+                            </div>
+                        </div>
+
+                        <button
+                            type="submit"
+                            className={classNames(
+                                "rounded-md p-2 mt-3 text-white w-full font-semibold",
+                                isFormValid ? "bg-orange-500 hover:opacity-75" : "bg-gray-500 cursor-not-allowed"
+                            )}
+                            disabled={!isFormValid}
                         >
                             SUBMIT
                         </button>
@@ -300,6 +351,9 @@ export const ServiceModalForm = ({ selectedService, setServiceModalOpen }: {
             </div>
         </>
     )
+
+
+    
 }
 
 const applicantName = [
@@ -319,11 +373,8 @@ const applicantAddress = [
     { registerName: "locationForConstruct_Install", placeHolder: "Location of Construction/Installation", inputType: "text" },
 ];
 
-const applicantNumber = [
-    { registerName: "taxAccountNo", placeHolder: "Tax Account No.", inputType: "number" },
-    { registerName: "telNo", placeHolder: "Cell/Tel No.", inputType: "number" },
-    { registerName: "tctNo", placeHolder: "TCT No.", inputType: "number" },
-];
+
+
 
 const scopeOptions = [
     "NEW CONSTRUCTION", "ERECTION", "ADDITION", "ALTERATION", "RENOVATION", 
@@ -396,13 +447,6 @@ const barangayOptions = [
     "Upper Licanan",
 
     "Waterfall",
-
-
-
-
-
-
-
 ];
 
 export default ServiceModalForm;

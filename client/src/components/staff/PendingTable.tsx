@@ -1,16 +1,16 @@
 import { useState } from "react";
+import '../../assets/scrollStyle.css'
+
 import { ApplicantInformationModalStaff } from "../modal/staff/ApplicantInformationModalStaff";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 import { FetchPendingApplicantInfo } from "../../http/get/application";
 import { Application, AssessmentApplicationData } from "../../types/application";
-import { UpdateApplicationStatus } from "../../http/put/application";
-import Swal from "sweetalert2";
 import { AssessmentsModal } from "../modal/staff/AssesmentsModal";
 import { AssessmentCheckListModal } from "../modal/staff/AssesmentChecklist";
-import RequirementsModal from "../modal/applicant/RequirementsModal";
 import RequirementsModalStaff from "../modal/staff/RequirementsModalStaff";
+import { dropDownSelectType } from "../../types/dropdown";
 
-export function PendingTable({ searchTerm }: { searchTerm: string }) {
+export function PendingTable({ searchTerm, selectedMonth, selectedWeek }: dropDownSelectType) {
 
     const [applicantAssessmentInfo, setApplicantAssessmentInfo] = useState<AssessmentApplicationData>({
         application_id: 0,
@@ -45,9 +45,9 @@ export function PendingTable({ searchTerm }: { searchTerm: string }) {
     };
 
     const { data: response, isLoading } = useQuery({
-        queryKey: ["pending_applications", searchTerm],
+        queryKey: ["pending_applications", searchTerm, selectedMonth, selectedWeek],
         queryFn: async () => {
-            const data = await FetchPendingApplicantInfo(searchTerm);
+            const data = await FetchPendingApplicantInfo(searchTerm, selectedMonth, selectedWeek);
             return data;
         },
     });
@@ -149,10 +149,10 @@ export function PendingTable({ searchTerm }: { searchTerm: string }) {
 
             )}
 
-            <div className="flex flex-col bg-orange-100 w-full h-[70%] rounded-md">
-                <div className="overflow-y-auto overflow-x-hidden sm:-mx-6 lg:-mx-8">
-                    <div className="inline-block min-w-full py-2 sm:px-6 lg:px-8">
-                        <div className="overflow-hidden p-2">
+            <div className="flex flex-col bg-orange-100 w-[99%] h-[70%] rounded-md">
+                <div className=" p-3">
+                    <div className="inline-block min-w-full py-2">
+                        <div className="overflow-hidden">
 
 
                             <table className="min-w-full text-left text-sm font-light">
@@ -177,13 +177,13 @@ export function PendingTable({ searchTerm }: { searchTerm: string }) {
                                         pendingApplications.map((data) => (
                                             <tr
                                                 key={data.application_id}
-                                                className="font-bold border-b transition duration-300 ease-in-out hover:bg-neutral-100 dark:border-neutral-500 dark:hover:bg-neutral-600"
+                                                className="font-bold border-b"
                                             >
                                                 <td className="whitespace-nowrap px-2 py-3">
                                                     {data.firstname} {data.middleInitial} {data.lastName}
                                                 </td>
 
-                                                <td className="whitespace-nowrap px-2 py-3">
+                                                <td className="whitespace-normal break-words px-2 py-3"> {/* Updated Address Column */}
                                                     {data.addressNo} {data.barangay} {data.street}{" "}
                                                     {data.municipality} {data.zipCode}
                                                 </td>

@@ -51,14 +51,16 @@ type FetchAdminAccount struct{
 type EditStaffAccountBind struct {
 	Name 	 string		`json:"name"`
 	Email    string 	`json:"email"`
-	Password    string 	`json:"password"`
+	OldPassword    string 	`json:"old_password"`
+	NewPassword    string 	`json:"new_password"`
 
 }
 
 type EditStaffAccountDTO struct {
-	Name 		string
-	Email    	string
-	Password	string
+	Name 	 	   string		
+	Email    	   string 	
+	OldPassword    string 	
+	NewPassword    string 	
 }
 
 
@@ -75,6 +77,8 @@ type GoogleUserInfo struct {
 	ID       string 	`json:"id"`
 	Email    string 	`json:"email"`
 	Name     string 	`json:"name"`
+	Picture  string 	`json:"picture"`
+
 }
 
 type LastSignedInUser struct {
@@ -82,6 +86,7 @@ type LastSignedInUser struct {
 	Name 	 	   string		`json:"name"`
 	Email    	   string 		`json:"email"`
 	Role     	   string		`json:"role"`
+	Picture  	   string 		`json:"picture"`
 	HasLogined     bool		
 }
 
@@ -102,6 +107,7 @@ type JWTPayloadClaims struct {
 	Name	string		`json:"name"`
 	Email   string 		`json:"email"`
 	Role    string 		`json:"role"`
+	Picture string 		`json:"picture"`
 	Expires int64  		`json:"expires"`
 	jwt.RegisteredClaims
 }
@@ -111,6 +117,7 @@ type UserPayload struct {
 	Name 	string
 	Email   string
 	Role 	string
+	Picture string
 }
 
 type LoginAccount struct{
@@ -118,6 +125,7 @@ type LoginAccount struct{
 	Name    	 string 	`json:"name"`
 	Role    	 string 	`json:"role"`
 	AdminType    string 	`json:"adminType"`
+	Picture    	 string 	`json:"picture"`
 }
 
 type LoginApplicant struct{
