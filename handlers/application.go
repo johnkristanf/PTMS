@@ -2,6 +2,7 @@ package handlers
 
 import (
 	"fmt"
+	"sync"
 	"net/http"
 	"reflect"
 	"strconv"
@@ -99,9 +100,6 @@ func (h *ApplicationHandler) FetchApplicationDataHandler(c echo.Context) error {
 	searchTerm := c.QueryParam("searchTerm")
 	selectedMonth := c.QueryParam("selectedMonth")
 	selectedWeek := c.QueryParam("selectedWeek")
-
-	fmt.Println("selectedWeek: ", selectedWeek)
-
 	
 	applicantInfo, err := h.DB_METHOD.FetchApplication(status, searchTerm, selectedMonth, selectedWeek)
 	if err != nil{
@@ -110,6 +108,86 @@ func (h *ApplicationHandler) FetchApplicationDataHandler(c echo.Context) error {
 
 	return c.JSON(http.StatusOK, applicantInfo)
 }
+
+
+func (h *ApplicationHandler) UpdateApplicationApprovalHandler(c echo.Context) error {
+	
+	param := c.Param("application_id")
+	application_id, err := strconv.Atoi(param)
+	if err != nil{
+		return err
+	}
+	var update types.UpdateApplicationApproval
+
+	if err := c.Bind(&update); err != nil{
+		return err
+	}
+
+	if err := h.DB_METHOD.UpdateApplicationApproval(int64(application_id), update.AdminApproved); err != nil{
+		return err
+	}
+
+	return c.JSON(http.StatusOK, "Application Code Updated Successfully")
+}
+
+
+func (h *ApplicationHandler) UpdateApplicationDisApprovalHandler(c echo.Context) error {
+	errorChan := make(chan error, 2) // Create a buffered channel to hold potential errors
+	var application *types.UpdateApplicationDisApproval
+
+	// Bind the request body to the application struct
+	if err := c.Bind(&application); err != nil {
+		return err
+	}
+
+	fmt.Println("Email: ", application.Email)
+	fmt.Println("Application ID: ", application.ApplicationID)
+	fmt.Println("User ID: ", application.UserID)
+	fmt.Println("Disapproval Message: ", application.DisapprovalMessage)
+
+	if err := h.DB_METHOD.UpdateApplicationDisApproval(application.ApplicationID, application.DisapprovalMessage); err != nil {
+		return err
+	}
+
+	var wg sync.WaitGroup 
+
+	wg.Add(2)
+
+	go func() {
+		defer wg.Done() 
+		if err := helpers.SendDisapprovalEmail(application.Email, application.DisapprovalMessage); err != nil {
+			errorChan <- err 
+		}
+	}()
+
+	go func() {
+		defer wg.Done()
+		if err := h.DB_METHOD.DisapprovalInbox(application.UserID, application.DisapprovalMessage); err != nil {
+			errorChan <- err 
+		}
+	}()
+
+	go func() {
+		wg.Wait()
+		close(errorChan) 
+	}()
+
+	
+	var chanErr error
+	for e := range errorChan { 
+		if e != nil {
+			chanErr = e
+		}
+	}
+
+	if chanErr != nil {
+		return chanErr
+	}
+
+	return c.JSON(http.StatusOK, "Application Disapproved Successfully")
+}
+
+
 
 
 

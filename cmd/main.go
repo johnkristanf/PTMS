@@ -41,6 +41,21 @@ func main(){
 		AllowCredentials: true,
 	}))
 
+	e.Use(middleware.RequestLoggerWithConfig(middleware.RequestLoggerConfig{
+		LogStatus: true,
+		LogURI:    true,
+		BeforeNextFunc: func(c echo.Context) {
+			// You can put anything right here for debugging purposes, it could be user payload 
+			// request id etc...
+			c.Set("customValueFromContext", 42)
+		},
+		LogValuesFunc: func(c echo.Context, v middleware.RequestLoggerValues) error {
+			value, _ := c.Get("customValueFromContext").(int)
+			fmt.Printf("REQUEST: uri: %v, status: %v, custom-value: %v\n", v.URI, v.Status, value)
+			return nil
+		},
+	}))
+
 
 	db, err := database.DB_CONFIG()
 	if err != nil{
@@ -65,11 +80,22 @@ func main(){
 		JWT_METHOD: jwt,
 	}
 
+	documentHandler := &handlers.DocumentHandler{
+		DB_METHOD: db,
+		JWT_METHOD: jwt,
+	}
+
+	s3Err := documentHandler.InitS3Client()
+	if s3Err != nil {
+        log.Fatalf("Unable to load SDK config, %v", s3Err)
+    }
 
 	routes.AuthRoutes(e, authHandler)
 	routes.ApplicationRoutes(e, applicationHandler)
+	routes.DocumentRoutes(e, documentHandler)
 
   
+	log.Println("Go http server is listening on port 4040")
 	if err := e.Start(":4040"); err != http.ErrServerClosed {
 		log.Fatal(err)
 	}

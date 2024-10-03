@@ -2,6 +2,7 @@ package database
 
 import (
 	"fmt"
+	"strings"
 	"time"
 
 	"github.com/johnkristanf/TMS-IPAS/types"
@@ -39,6 +40,8 @@ type Application struct {
 	ScopeType                   string 		`gorm:"type:text"`
 	CharacterOfOccupancy        string 		`gorm:"type:text"`
 
+	AdminApproved				string		`gorm:"not null"`
+
 	CreatedAt 					time.Time 	`gorm:"not null;autoCreateTime"`
 }
 
@@ -73,6 +76,8 @@ type First_Step_Requirements struct {
 }
 
 
+// Don't change the spelling of the swtches controls cause it is based on the db schema name
+// if you wish to change it you need to migrate again the db schema
 type Architectural_Requirements struct {
 	ID                                     int64     `gorm:"primaryKey;autoIncrement:true;uniqueIndex:idx_userID"`
 	Ramps                                  bool    `gorm:"not null;default:false"`
@@ -182,6 +187,7 @@ type Inbox struct {
 	CreatedAt 		time.Time 	`gorm:"not null;autoCreateTime"`
 }
 
+
 type APPLICATION_DB_METHOD interface {
 	AddApplication(applicantInfo *types.ApplicantInfo) error
 	FetchApplication(string, string, string, string) ([]*types.ApplicantInfoFetching, error)
@@ -194,6 +200,9 @@ type APPLICATION_DB_METHOD interface {
 
 	UpdateAssessment(*types.AssessmentTypes) error
 	UpdateApplicationCode(int64, string) error
+	UpdateApplicationApproval(int64, string) error
+	UpdateApplicationDisApproval(int64, string) error
+
 	UpdateFirstStepRequirements(*types.FirstStepRequirements) error
 
 	CheckArchitecturalRequirements(*types.ArchitecturalRequirements) error
@@ -207,10 +216,12 @@ type APPLICATION_DB_METHOD interface {
 
 	
 	UpdateApplicationStatus(int64, string) error
+	AllAdminsApplicationApproval([]*types.ApplicantInfoFetching) error
 
 	SetPaidAsssesment(types.AssessmentsPaidFormData) error
 	FetchAssessments(int64) (*types.AssessmentRender, error)
 	ApplicationInbox(int64, string) error
+	DisapprovalInbox(int64, string) error
 
 	FetchInboxesToday(int64) ([]*types.FormattedInbox, error)
 	FetchUnreadInboxes(int64) ([]*types.FormattedInbox, error)
@@ -221,72 +232,7 @@ type APPLICATION_DB_METHOD interface {
 }
 
 
-func (sql *SQL) AddApplication(applicantInfo *types.ApplicantInfo) error {
-
-	errorChan := make(chan error, 2)
-
-	application := Application{
-		ApplicationCode: 			"",
-		ServiceType:				applicantInfo.ServiceType,
-		FirstName: 					applicantInfo.FirstName,
-		MiddleInitial: 				applicantInfo.MiddleInitial,
-		LastName: 					applicantInfo.LastName,
-
-		Barangay: 					applicantInfo.Barangay,
-		Street: 					applicantInfo.Street,
-		Municipality: 				applicantInfo.Municipality,
-		ZipCode: 					applicantInfo.ZipCode,
-		LocationForConsAndInstall: 	applicantInfo.LocationForConsAndInstall,
-
-		FormOfOwnerShip: 			applicantInfo.FormOfOwnerShip,
-		ConstructionOwnbyEnterprise: applicantInfo.ConstructionOwnbyEnterprise,
-
-		TaxAccountNumber: 			applicantInfo.TaxAccountNumber,
-		TelNumber: 					applicantInfo.TelNumber,
-		TctNumber: 					applicantInfo.TctNumber,
-
-		PermitType: 				applicantInfo.PermitType,
-		Status: 					"Pending",
-		Email:  					applicantInfo.Email,
-		UserID: 					applicantInfo.UserID,
-
-		ScopeType:           		applicantInfo.ScopeType,
-		CharacterOfOccupancy: 		applicantInfo.CharacterOfOccupancy,
-	}
-
-	if result := sql.DB.Create(&application); result.Error != nil {
-		return result.Error
-	}
-
-
-	go func() {
-        if err := sql.CreateAssessments(application.ID); err != nil {
-            errorChan <- err
-        }
-    }()
-
-	go func() {
-        if err := sql.CreateFirstStepRequirements(application.ID); err != nil {
-            errorChan <- err
-        }
-    }()
-
-	var err error
-	for i := 0; i < 3; i++ {
-		if e := <-errorChan; e != nil {
-			err = e
-		}
-	}
-	close(errorChan)
-
-	if err != nil {
-		return err
-	}
-
-	return nil
-}
-
-	
+// ----------------------ASSESSMENTS----------------------
 func (sql *SQL) CreateAssessments(applicationID int64) error {
 
 	assessments := &Assessment{
@@ -312,187 +258,6 @@ func (sql *SQL) CreateAssessments(applicationID int64) error {
 
 	return nil
 
-}
-
-func (sql *SQL) CreateFirstStepRequirements(applicationID int64) error {
-	requirements := &First_Step_Requirements{
-		ApplicationID: applicationID,
-	}
-
-	if result := sql.DB.Create(&requirements); result.Error != nil {
-		return result.Error
-	}
-
-	return nil
-}
-
-
-func (sql *SQL) ApplicationInbox(user_id int64, applicantName string) error {
-
-	message := fmt.Sprintf(`Dear %s,
-We are writing to inform you that we received your login information for applying for a permit in the PTMS portal of Panabo City's Engineering Office. Your successful login indicates that you are now ready to proceed with the application process.
-We appreciate your interest in applying for permits through PTMS. You may now continue the application process by following these steps:
-
-1. Fill out the applicant information.
-2. Print the application form.
-3. Check the requirements based on what services you want to apply for and submit them to Panabo City's Engineering Office.
-4. Wait for the add-on requirements from the administration.
-
-Thank you for your attention to this matter.
-
-Sincerely,
-Panabo City Engineering's Issuance of Permit Section`, applicantName)
-
-	inbox := &Inbox{
-		Message: message,
-		UserID: user_id,
-	}
-
-	if result := sql.DB.Create(&inbox); result.Error != nil {
-		return result.Error
-	}
-
-	return nil
-}
-
-
-
-func (sql *SQL) FetchAllInboxes(userID int64) ([]*types.FormattedInbox, error) {
-	var inboxes []*types.FormattedInbox
-
-	var dbInboxes []*Inbox
-	err := sql.DB.Table("inboxes").Where("user_id = ?", userID).Find(&dbInboxes).Error
-	if err != nil {
-		return nil, err
-	}
-
-	for _, inbox := range dbInboxes {
-		formattedInbox := &types.FormattedInbox{
-			ID:         inbox.ID,
-			Message:    inbox.Message,
-			Status: 	inbox.Status,	
-			UserID:     inbox.UserID,
-			TimeCreated:  inbox.CreatedAt.Local().Format("03:04 PM"), 
-		}
-		inboxes = append(inboxes, formattedInbox)
-	}
-
-	return inboxes, nil
-
-}
-
-func (sql *SQL) FetchInboxesToday(userID int64) ([]*types.FormattedInbox, error) {
-
-	var inboxes []*types.FormattedInbox
-
-	var dbInboxes []*Inbox
-	todayStart := time.Now().Truncate(24 * time.Hour)
-	todayEnd := todayStart.Add(24 * time.Hour).Add(-time.Second)
-
-	err := sql.DB.Table("inboxes").Where("user_id = ? AND created_at >= ? AND created_at <= ?", userID, todayStart, todayEnd).Find(&dbInboxes).Error
-	if err != nil {
-		return nil, err
-	}
-
-	for _, inbox := range dbInboxes {
-		formattedInbox := &types.FormattedInbox{
-			ID:         inbox.ID,
-			Message:    inbox.Message,
-			UserID:     inbox.UserID,
-			TimeCreated:  inbox.CreatedAt.Local().Format("03:04 PM"), 
-		}
-		inboxes = append(inboxes, formattedInbox)
-	}
-
-	return inboxes, nil
-}
-
-
-func (sql *SQL) FetchUnreadInboxes(userID int64) ([]*types.FormattedInbox, error) {
-
-	var inboxes []*types.FormattedInbox
-
-	var dbInboxes []*Inbox
-
-	err := sql.DB.Table("inboxes").Where("status = 'unread' ").Find(&dbInboxes).Error
-	if err != nil {
-		return nil, err
-	}
-
-	for _, inbox := range dbInboxes {
-		formattedInbox := &types.FormattedInbox{
-			ID:         inbox.ID,
-			Message:    inbox.Message,
-			UserID:     inbox.UserID,
-			TimeCreated:  inbox.CreatedAt.Local().Format("03:04 PM"), 
-		}
-		inboxes = append(inboxes, formattedInbox)
-	}
-
-	return inboxes, nil
-}
-
-func (sql *SQL) FetchApplication(status string, searchName string, selectedMonth string, selectedWeek string) ([]*types.ApplicantInfoFetching, error) {
-
-	var results []*types.ApplicantInfoFetching
-	query := sql.DB.Table("applications").
-		Select(`applications.id, applications.service_type, applications.application_code, applications.first_name, applications.middle_initial, applications.last_name,  applications.barangay, applications.street, applications.municipality, applications.zip_code, applications.location_for_cons_and_install, applications.form_of_owner_ship, applications.construction_ownby_enterprise, applications.tax_account_number, applications.tel_number, applications.tct_number, applications.permit_type, applications.email, applications.user_id, 
-		assessments.id, assessments.status`).
-		Joins("INNER JOIN assessments ON applications.id = assessments.application_id").
-		Where("applications.status = ?", status)
-
-	if searchName != "" {
-		searchName = "%" + searchName + "%"
-		query = query.Where("CONCAT(applications.first_name, ' ', applications.middle_initial, ' ', applications.last_name) ILIKE ?", searchName)
-	}
-		
-
-	if selectedMonth != "" {
-		query = query.Where("TO_CHAR(applications.created_at, 'Month') = ?", selectedMonth)
-	}
-
-	if selectedWeek != "" {
-		weeksAgo, err := parseWeeksAgo(selectedWeek)
-		if err == nil {
-			endDate := time.Now().AddDate(0, 0, -7*weeksAgo)
-
-			endDate = time.Date(endDate.Year(), endDate.Month(), endDate.Day(), 23, 59, 59, 999999999, endDate.Location())
-
-			startDate := endDate.AddDate(0, 0, -6) // Cover the full 7 days
-			startDate = time.Date(startDate.Year(), startDate.Month(), startDate.Day(), 0, 0, 0, 0, startDate.Location())
-
-			query = query.Where("applications.created_at BETWEEN ? AND ?", startDate, endDate)
-		}
-	}
-
-	if err := query.Find(&results).Error; err != nil {
-		return nil, err
-	}
-
-	return results, nil
-}
-
-func parseWeeksAgo(selectedWeek string) (int, error) {
-	var weeksAgo int
-	_, err := fmt.Sscanf(selectedWeek, "%d week", &weeksAgo) // Extract the week number
-	return weeksAgo, err
-}
-
-
-
-func (sql *SQL) FetchAppliedServices(user_id int64) ([]*types.AppliedServicesFetching, error) {
-
-	var appliedServices []*types.AppliedServicesFetching
-
-	if err := sql.DB.Table("applications").
-		Select("applications.id, applications.service_type, applications.application_code, applications.first_name, applications.middle_initial, applications.last_name,  applications.barangay, applications.street, applications.municipality, applications.zip_code, applications.location_for_cons_and_install, applications.form_of_owner_ship, applications.construction_ownby_enterprise, applications.tax_account_number, applications.tel_number, applications.tct_number, applications.permit_type, applications.status, applications.scope_type, applications.character_of_occupancy").
-		Joins("INNER JOIN users ON applications.user_id = users.id").
-		Where("applications.user_id = ?", user_id).
-		Find(&appliedServices).Error; err != nil {
-		return nil, err
-	}
-
-	return appliedServices, nil
 }
 
 
@@ -589,6 +354,21 @@ func (sql *SQL) FetchAssessments(applicationID int64) (assessments *types.Assess
 
 }
 
+
+// ----------------------REQUIREMENTS----------------------
+
+func (sql *SQL) CreateFirstStepRequirements(applicationID int64) error {
+	requirements := &First_Step_Requirements{
+		ApplicationID: applicationID,
+	}
+
+	if result := sql.DB.Create(&requirements); result.Error != nil {
+		return result.Error
+	}
+
+	return nil
+}
+
 func (sql *SQL) FetchRequirements(applicationID int64) (*types.FirstStepRequirementsFetching, error) {
 
 	var requirements types.FirstStepRequirementsFetching
@@ -644,7 +424,7 @@ func (sql *SQL) FetchElectricalRequirements(applicationID int64) (*types.Electri
 	var requirements *types.ElectricalRequirements
 
 	result := sql.DB.Table("electrical_requirements").
-        Select("application_id, location_site_plan, legend_symbols, general_notes, details_schedule_civil_work_elements, structural_analysis_design, boring_load_test, seismic_analysis, electrical_layout, schedule_loads, design_analysis, one_line_diagram").
+        Select("application_id, location_site_plan, legend_symbols, general_notes, electrical_layout, schedule_loads, design_analysis, one_line_diagram").
         Where("application_id = ?", applicationID).
         First(&requirements)
 
@@ -691,23 +471,6 @@ func (sql *SQL) BuildAdminsRequirements(applicationID int64) error {
 	return nil
 }
 
-func (sql *SQL) UpdateApplicationCode(applicationID int64, applicationCode string) error {
-
-	if err := sql.BuildAdminsRequirements(applicationID); err != nil{
-		return err
-	}
-
-	result := sql.DB.Model(&Application{}).Where("id = ?", applicationID).Updates(&Application{
-		ApplicationCode: applicationCode,
-		Status: "Paid",
-	})
-
-	if result.Error != nil{
-		return result.Error
-	}
-
-	return nil
-}
 
 func (sql *SQL) UpdateFirstStepRequirements(requirements *types.FirstStepRequirements) error {
 
@@ -754,7 +517,7 @@ func (sql *SQL) CheckArchitecturalRequirements(requirements *types.Architectural
 		WalkWays:                               requirements.WalkWays,
 		Comfort_Rooms:                          requirements.ComfortRooms,
 		Drinking_Fountains:                     requirements.DrinkingFountains,
-		Swtches_Controls:                       requirements.SwitchesControls,
+		Swtches_Controls:                       requirements.Swtches_Controls,
 		Telephone_Booth:                        requirements.TelephoneBooth,
 		Automatic_AlarmSystem:                  requirements.AutomaticAlarmSystem,
 		Directional_Signs:                      requirements.DirectionalSigns,
@@ -873,6 +636,420 @@ func (sql *SQL) CreateElectricalRequirements(applicationID int64) error {
 
 
 
+// ----------------------INBOXES----------------------
+
+func (sql *SQL) ApplicationInbox(user_id int64, applicantName string) error {
+
+	message := fmt.Sprintf(`Dear %s,
+We are writing to inform you that we received your login information for applying for a permit in the PTMS portal of Panabo City's Engineering Office. Your successful login indicates that you are now ready to proceed with the application process.
+We appreciate your interest in applying for permits through PTMS. You may now continue the application process by following these steps:
+
+1. Fill out the applicant information.
+2. Print the application form.
+3. Check the requirements based on what services you want to apply for and submit them to Panabo City's Engineering Office.
+4. Wait for the add-on requirements from the administration.
+
+Thank you for your attention to this matter.
+
+Sincerely,
+Panabo City Engineering's Issuance of Permit Section`, applicantName)
+
+	inbox := &Inbox{
+		Message: message,
+		UserID: user_id,
+	}
+
+	if result := sql.DB.Create(&inbox); result.Error != nil {
+		return result.Error
+	}
+
+	return nil
+}
+
+
+func (sql *SQL) DisapprovalInbox(user_id int64, disApprovalMessage string) error {
+
+	message := disApprovalMessage
+
+	inbox := &Inbox{
+		Message: message,
+		UserID: user_id,
+	}
+
+	if result := sql.DB.Create(&inbox); result.Error != nil {
+		return result.Error
+	}
+
+	return nil
+}
+
+
+
+
+func (sql *SQL) FetchAllInboxes(userID int64) ([]*types.FormattedInbox, error) {
+	var inboxes []*types.FormattedInbox
+
+	var dbInboxes []*Inbox
+	err := sql.DB.Table("inboxes").Where("user_id = ?", userID).Order("created_at DESC").Find(&dbInboxes).Error
+	if err != nil {
+		return nil, err
+	}
+
+	for _, inbox := range dbInboxes {
+		formattedInbox := &types.FormattedInbox{
+			ID:         inbox.ID,
+			Message:    inbox.Message,
+			Status: 	inbox.Status,	
+			UserID:     inbox.UserID,
+			TimeCreated:  inbox.CreatedAt.Local().Format("03:04 PM"), 
+		}
+		inboxes = append(inboxes, formattedInbox)
+	}
+
+	return inboxes, nil
+
+}
+
+func (sql *SQL) FetchInboxesToday(userID int64) ([]*types.FormattedInbox, error) {
+
+	var inboxes []*types.FormattedInbox
+
+	var dbInboxes []*Inbox
+	todayStart := time.Now().Truncate(24 * time.Hour)
+	todayEnd := todayStart.Add(24 * time.Hour).Add(-time.Second)
+
+	err := sql.DB.Table("inboxes").Where("user_id = ? AND created_at >= ? AND created_at <= ?", userID, todayStart, todayEnd).Order("created_at DESC").Find(&dbInboxes).Error
+	if err != nil {
+		return nil, err
+	}
+
+	for _, inbox := range dbInboxes {
+		formattedInbox := &types.FormattedInbox{
+			ID:         inbox.ID,
+			Message:    inbox.Message,
+			UserID:     inbox.UserID,
+			TimeCreated:  inbox.CreatedAt.Local().Format("03:04 PM"), 
+		}
+		inboxes = append(inboxes, formattedInbox)
+	}
+
+	return inboxes, nil
+}
+
+
+func (sql *SQL) FetchUnreadInboxes(userID int64) ([]*types.FormattedInbox, error) {
+
+	var inboxes []*types.FormattedInbox
+
+	var dbInboxes []*Inbox
+
+	err := sql.DB.Table("inboxes").Where("status = 'unread' ").Order("created_at DESC").Find(&dbInboxes).Error
+	if err != nil {
+		return nil, err
+	}
+
+	for _, inbox := range dbInboxes {
+		formattedInbox := &types.FormattedInbox{
+			ID:         inbox.ID,
+			Message:    inbox.Message,
+			UserID:     inbox.UserID,
+			TimeCreated:  inbox.CreatedAt.Local().Format("03:04 PM"), 
+		}
+		inboxes = append(inboxes, formattedInbox)
+	}
+
+	return inboxes, nil
+}
+
+
+func (sql *SQL) UpdateInboxStatus(inboxID int64) error {
+
+	fmt.Println("inbox id in db: ", inboxID)
+
+	result := sql.DB.Model(&Inbox{}).Where("id = ?", inboxID).Updates(&Inbox{
+		Status: "read",
+	})
+
+	if result.Error != nil{
+		return result.Error
+	}
+
+	return nil
+}
+
+func (sql *SQL) DeleteInbox(inbox_id string) error {
+
+	if result := sql.DB.Delete(&Inbox{}, inbox_id); result.Error != nil {
+		return result.Error
+	}
+
+	return nil
+}
+
+
+
+// ----------------------APPLICATIONS----------------------
+
+func (sql *SQL) AddApplication(applicantInfo *types.ApplicantInfo) error {
+
+	errorChan := make(chan error, 2)
+
+	application := Application{
+		ApplicationCode: 			"",
+		ServiceType:				applicantInfo.ServiceType,
+		FirstName: 					applicantInfo.FirstName,
+		MiddleInitial: 				applicantInfo.MiddleInitial,
+		LastName: 					applicantInfo.LastName,
+
+		Barangay: 					applicantInfo.Barangay,
+		Street: 					applicantInfo.Street,
+		Municipality: 				applicantInfo.Municipality,
+		ZipCode: 					applicantInfo.ZipCode,
+		LocationForConsAndInstall: 	applicantInfo.LocationForConsAndInstall,
+
+		FormOfOwnerShip: 			applicantInfo.FormOfOwnerShip,
+		ConstructionOwnbyEnterprise: applicantInfo.ConstructionOwnbyEnterprise,
+
+		TaxAccountNumber: 			applicantInfo.TaxAccountNumber,
+		TelNumber: 					applicantInfo.TelNumber,
+		TctNumber: 					applicantInfo.TctNumber,
+
+		PermitType: 				applicantInfo.PermitType,
+		Status: 					"Pending",
+		Email:  					applicantInfo.Email,
+		UserID: 					applicantInfo.UserID,
+
+		ScopeType:           		applicantInfo.ScopeType,
+		CharacterOfOccupancy: 		applicantInfo.CharacterOfOccupancy,
+
+		AdminApproved: "",
+	}
+
+	if result := sql.DB.Create(&application); result.Error != nil {
+		return result.Error
+	}
+
+
+	go func() {
+        if err := sql.CreateAssessments(application.ID); err != nil {
+            errorChan <- err
+        }
+    }()
+
+	go func() {
+        if err := sql.CreateFirstStepRequirements(application.ID); err != nil {
+            errorChan <- err
+        }
+    }()
+
+	var err error
+	for i := 0; i < 3; i++ {
+		if e := <-errorChan; e != nil {
+			err = e
+		}
+	}
+	close(errorChan)
+
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+
+func (sql *SQL) FetchApplication(status string, searchName string, selectedMonth string, selectedWeek string) ([]*types.ApplicantInfoFetching, error) {
+
+	var results []*types.ApplicantInfoFetching
+
+
+	query := sql.DB.Table("applications").
+		Select(`applications.id, applications.service_type, applications.application_code, applications.first_name, applications.middle_initial, applications.last_name, 
+		applications.barangay, applications.street, applications.municipality, applications.zip_code, applications.location_for_cons_and_install, applications.form_of_owner_ship, 
+		applications.construction_ownby_enterprise, applications.tax_account_number, applications.tel_number, applications.tct_number, applications.permit_type, 
+		applications.email, applications.admin_approved, applications.user_id, assessments.id, assessments.status`).
+
+		Joins("INNER JOIN assessments ON applications.id = assessments.application_id").
+		Where("applications.status = ?", status).
+		Order("applications.created_at DESC")
+
+
+	if searchName != "" {
+		searchName = "%" + searchName + "%"
+		query = query.Where("CONCAT(applications.first_name, ' ', applications.middle_initial, ' ', applications.last_name) ILIKE ?", searchName)
+	}
+
+	if selectedMonth != "" {
+		query = query.Where("TO_CHAR(applications.created_at, 'Month') = ?", selectedMonth)
+	}
+
+	if selectedWeek != "" {
+		weeksAgo, err := parseWeeksAgo(selectedWeek)
+		if err == nil {
+			endDate := time.Now().AddDate(0, 0, -7*weeksAgo)
+			endDate = time.Date(endDate.Year(), endDate.Month(), endDate.Day(), 23, 59, 59, 999999999, endDate.Location())
+			startDate := endDate.AddDate(0, 0, -6) // Cover the full 7 days
+			startDate = time.Date(startDate.Year(), startDate.Month(), startDate.Day(), 0, 0, 0, 0, startDate.Location())
+			query = query.Where("applications.created_at BETWEEN ? AND ?", startDate, endDate)
+		}
+	}
+
+	if err := query.Find(&results).Error; err != nil {
+		return nil, err
+	}
+
+	go func() {
+		if err := sql.AllAdminsApplicationApproval(results); err != nil {
+			fmt.Printf("Error updating admin approvals: %v\n", err)
+		}
+	}()
+
+
+	return results, nil
+}
+
+
+
+func (sql *SQL) AllAdminsApplicationApproval(results []*types.ApplicantInfoFetching) error {
+
+	for _, application := range results {
+		approvedAdmins := strings.Split(application.AdminApproved, ",")
+		requiredAdmins := []string{"architectural", "civil", "electrical"}
+	
+		allApproved := true
+		for _, required := range requiredAdmins {
+			if !contains(approvedAdmins, required) {
+				allApproved = false
+				break
+			}
+		}
+	
+		if allApproved {
+			// Update the application status to "Approved"
+			approvalResult := sql.DB.Model(&Application{}).Where("id = ?", application.ID).Updates(&Application{
+				Status: "Approved",
+			})
+	
+			if approvalResult.Error != nil {
+				return approvalResult.Error
+			}
+		}
+	
+	}
+
+	return nil
+
+	
+}
+
+
+func (sql *SQL) UpdateApplicationApproval(applicationID int64, adminApproved string) error {
+
+
+    var currentApplication types.UpdateApplicationApproval
+    err := sql.DB.Table("applications").Where("id = ?", applicationID).First(&currentApplication).Error
+    if err != nil {
+        return err
+    }
+
+
+    if currentApplication.AdminApproved != "" {
+        currentApplication.AdminApproved += "," + adminApproved
+    } else {
+        currentApplication.AdminApproved = adminApproved
+    }
+
+    result := sql.DB.Model(&Application{}).Where("id = ?", applicationID).Updates(&Application{
+        AdminApproved: currentApplication.AdminApproved,
+    })
+
+    if result.Error != nil {
+        return result.Error
+    }
+
+    return nil
+}
+
+
+func (sql *SQL) UpdateApplicationDisApproval(applicationID int64, disapprovalMessage string) error {
+
+	fmt.Println("applicationID: ", applicationID)
+	fmt.Println("disapprovalMessage: ", disapprovalMessage)
+
+    result := sql.DB.Model(&Application{}).Where("id = ?", applicationID).Updates(&Application{
+        Status: "Disapproved",
+    })
+
+    if result.Error != nil {
+        return result.Error
+    }
+
+    return nil
+}
+
+func contains(slice []string, item string) bool {
+    for _, s := range slice {
+        if s == item {
+            return true
+        }
+    }
+    return false
+}
+
+
+
+func parseWeeksAgo(selectedWeek string) (int, error) {
+	var weeksAgo int
+	_, err := fmt.Sscanf(selectedWeek, "%d week", &weeksAgo) // Extract the week number
+	return weeksAgo, err
+}
+
+
+
+func (sql *SQL) FetchAppliedServices(user_id int64) ([]*types.AppliedServicesFetching, error) {
+
+	var appliedServices []*types.AppliedServicesFetching
+
+	if err := sql.DB.Table("applications").
+		Select("applications.id, applications.service_type, applications.application_code, applications.first_name, applications.middle_initial, applications.last_name, applications.barangay, applications.street, applications.municipality, applications.zip_code, applications.location_for_cons_and_install, applications.form_of_owner_ship, applications.construction_ownby_enterprise, applications.tax_account_number, applications.tel_number, applications.tct_number, applications.permit_type, applications.status, applications.scope_type, applications.character_of_occupancy").
+		Joins("INNER JOIN users ON applications.user_id = users.id").
+		Where("applications.user_id = ?", user_id).
+		Order("applications.created_at DESC").
+		Find(&appliedServices).Error; err != nil {
+		return nil, err
+	}
+
+
+	return appliedServices, nil
+}
+
+
+
+
+
+func (sql *SQL) UpdateApplicationCode(applicationID int64, applicationCode string) error {
+
+	if err := sql.BuildAdminsRequirements(applicationID); err != nil{
+		return err
+	}
+
+	result := sql.DB.Model(&Application{}).Where("id = ?", applicationID).Updates(&Application{
+		ApplicationCode: applicationCode,
+		Status: "Paid",
+	})
+
+	if result.Error != nil{
+		return result.Error
+	}
+
+	return nil
+}
+
+
+
+
+
+
 func (sql *SQL) UpdateApplicationStatus(applicationID int64, status string) error {
 
 	errorChan := make(chan error, 3)
@@ -912,30 +1089,6 @@ func (sql *SQL) UpdateApplicationStatus(applicationID int64, status string) erro
 	})
 
 	if result.Error != nil{
-		return result.Error
-	}
-
-	return nil
-}
-
-func (sql *SQL) UpdateInboxStatus(inboxID int64) error {
-
-	fmt.Println("inbox id in db: ", inboxID)
-
-	result := sql.DB.Model(&Inbox{}).Where("id = ?", inboxID).Updates(&Inbox{
-		Status: "read",
-	})
-
-	if result.Error != nil{
-		return result.Error
-	}
-
-	return nil
-}
-
-func (sql *SQL) DeleteInbox(inbox_id string) error {
-
-	if result := sql.DB.Delete(&Inbox{}, inbox_id); result.Error != nil {
 		return result.Error
 	}
 

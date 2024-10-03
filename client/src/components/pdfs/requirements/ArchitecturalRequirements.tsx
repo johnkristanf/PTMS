@@ -6,10 +6,12 @@ import { CheckedArchituralRequirements } from '../../../http/put/application';
 import { ArchitecturalRequirementFormData } from '../../../types/application';
 import { FetchArchiteturalRequirements } from '../../../http/get/application';
 
-const ArchitecturalRequirements = ({ applicationID, setRequirementsModal }: {
+const ArchitecturalRequirements = ({ applicationID, setRequirementsModal, setAllRequirementsChecked, allRequirementsChecked }: {
     applicationID: number
-    setRequirementsModal: React.Dispatch<React.SetStateAction<boolean | undefined>>
-}) => {
+    setRequirementsModal: React.Dispatch<React.SetStateAction<boolean | undefined>>,
+    setAllRequirementsChecked: React.Dispatch<React.SetStateAction<boolean>>,
+    allRequirementsChecked: boolean
+})  => {
     const { register, handleSubmit, watch } = useForm<ArchitecturalRequirementFormData>();
     const [isChanged, setIsChanged] = useState(false);
 
@@ -41,13 +43,24 @@ const ArchitecturalRequirements = ({ applicationID, setRequirementsModal }: {
     };
 
     const { data: response } = useQuery({
-        queryKey: ["pending_applications", applicationID],
+        queryKey: ["architectural_requirements", applicationID],
         queryFn: async () => {
             const data = await FetchArchiteturalRequirements(applicationID);
             return data;
         },
         
     });
+
+
+    useEffect(() => {
+        // Check if all the fields from the response are true
+        if (response?.data) {
+            const allChecked = Object.values(response.data).every(Boolean);
+            console.log("allChecked", allChecked);
+            
+            setAllRequirementsChecked(allChecked);
+        }
+    }, [response, setAllRequirementsChecked]);
 
     useEffect(() => {
         const subscription = watch(() => {
@@ -66,6 +79,12 @@ const ArchitecturalRequirements = ({ applicationID, setRequirementsModal }: {
 
                 <div className="flex flex-col items-center h-[95%] py-4 w-[55%] bg-white rounded-md">
                     <h1 className='font-bold text-3xl mb-5'>Architectural Requirements</h1>
+                    <h1 className='font-semibold mb-8'>
+                        Requirement Status: 
+                        <span className={`${allRequirementsChecked ? 'text-green-600': 'text-red-800'} ml-1 font-bold`}>
+                            {allRequirementsChecked ? 'Completed': 'Incomplete'}
+                        </span> 
+                    </h1>
 
                     <form onSubmit={handleSubmit(onSubmit)} className="max-w-screen-sm w-full h-[100%] overflow-auto">
                         <div className="grid grid-cols-1 gap-3 p-5">
@@ -117,7 +136,109 @@ const ArchitecturalRequirements = ({ applicationID, setRequirementsModal }: {
                                 Accessible functional areas/comfort rooms
                             </label>
 
-                            {/* Continuing with similar styling for all other checkboxes */}
+
+                            <label className={`flex items-center font-semibold text-md p-2 rounded-md ${response?.data.Switches_Controls ? 'bg-green-600 text-white' : 'bg-gray-200'}`}>
+                                <input
+                                    type="checkbox"
+                                    {...register("Switches_Controls")}
+                                    defaultChecked={response?.data.Switches_Controls}
+                                    disabled={response?.data.Switches_Controls ? true : false}
+
+                                    className="mr-2 form-checkbox h-5 w-5 text-green-600"
+                                />
+                                Accessible switches, controls
+                            </label>
+
+                            <label className={`flex items-center font-semibold text-md p-2 rounded-md ${response?.data.Drinking_Fountains ? 'bg-green-600 text-white' : 'bg-gray-200'}`}>
+                                <input
+                                    type="checkbox"
+                                    {...register("Drinking_Fountains")}
+                                    defaultChecked={response?.data.Drinking_Fountains}
+                                    disabled={response?.data.Drinking_Fountains ? true : false}
+
+                                    className="mr-2 form-checkbox h-5 w-5 text-green-600"
+                                />
+                                Accessible drinking fountains
+                            </label>
+
+
+                            <label className={`flex items-center font-semibold text-md p-2 rounded-md ${response?.data.Telephone_Booth ? 'bg-green-600 text-white' : 'bg-gray-200'}`}>
+                                <input
+                                    type="checkbox"
+                                    {...register("Telephone_Booth")}
+                                    defaultChecked={response?.data.Telephone_Booth}
+                                    disabled={response?.data.Telephone_Booth ? true : false}
+
+                                    className="mr-2 form-checkbox h-5 w-5 text-green-600"
+                                />
+                                Accessible public telephone booths 
+                            </label>
+
+
+                            <label className={`flex items-center font-semibold text-md p-2 rounded-md ${response?.data.Automatic_AlarmSystem ? 'bg-green-600 text-white' : 'bg-gray-200'}`}>
+                                <input
+                                    type="checkbox"
+                                    {...register("Automatic_AlarmSystem")}
+                                    defaultChecked={response?.data.Automatic_AlarmSystem}
+                                    disabled={response?.data.Automatic_AlarmSystem ? true : false}
+
+                                    className="mr-2 form-checkbox h-5 w-5 text-green-600"
+                                />
+                                Accessible audio visual and automatic alarm system
+                            </label>
+
+
+                            <label className={`flex items-center font-semibold text-md p-2 rounded-md ${response?.data.Directional_Signs ? 'bg-green-600 text-white' : 'bg-gray-200'}`}>
+                                <input
+                                    type="checkbox"
+                                    {...register("Directional_Signs")}
+                                    defaultChecked={response?.data.Directional_Signs}
+                                    disabled={response?.data.Directional_Signs ? true : false}
+
+                                    className="mr-2 form-checkbox h-5 w-5 text-green-600"
+                                />
+                                Accessible access symbols and directional signs 
+                            </label>
+
+                            <label className={`flex items-center font-semibold text-md p-2 rounded-md ${response?.data.Reserved_Parking ? 'bg-green-600 text-white' : 'bg-gray-200'}`}>
+                                <input
+                                    type="checkbox"
+                                    {...register("Reserved_Parking")}
+                                    defaultChecked={response?.data.Reserved_Parking}
+                                    disabled={response?.data.Reserved_Parking ? true : false}
+
+                                    className="mr-2 form-checkbox h-5 w-5 text-green-600"
+                                />
+                                Reserved parking for disabled persons 
+                            </label>
+
+
+                            <label className={`flex items-center font-semibold text-md p-2 rounded-md ${response?.data.Wallbay_Sections ? 'bg-green-600 text-white' : 'bg-gray-200'}`}>
+                                <input
+                                    type="checkbox"
+                                    {...register("Wallbay_Sections")}
+                                    defaultChecked={response?.data.Wallbay_Sections}
+                                    disabled={response?.data.Wallbay_Sections ? true : false}
+
+                                    className="mr-2 form-checkbox h-5 w-5 text-green-600"
+                                />
+                                Typical wall/bay sections from ground to roof
+                            </label>
+
+
+                            <label className={`flex items-center font-semibold text-md p-2 rounded-md ${response?.data.Stairs_Interior_Exterior ? 'bg-green-600 text-white' : 'bg-gray-200'}`}>
+                                <input
+                                    type="checkbox"
+                                    {...register("Stairs_Interior_Exterior")}
+                                    defaultChecked={response?.data.Stairs_Interior_Exterior}
+                                    disabled={response?.data.Stairs_Interior_Exterior ? true : false}
+
+                                    className="mr-2 form-checkbox h-5 w-5 text-green-600"
+                                />
+                                Stairs, interior and exterior 
+                            </label>
+
+
                             <label className={`flex items-center font-semibold text-md p-2 rounded-md ${response?.data.Fire_Exit ? 'bg-green-600 text-white' : 'bg-gray-200'}`}>
                                 <input
                                     type="checkbox"
@@ -160,6 +281,19 @@ const ArchitecturalRequirements = ({ applicationID, setRequirementsModal }: {
                                     {...register("Schedule_Doors_Windows")}
                                     defaultChecked={response?.data.Schedule_Doors_Windows}
                                     disabled={response?.data.Schedule_Doors_Windows ? true : false}
+
+                                    className="mr-2 form-checkbox h-5 w-5 text-green-600"
+                                />
+                                Schedule of Doors and Windows
+                            </label>
+
+
+                            <label className={`flex items-center font-semibold text-md p-2 rounded-md ${response?.data.Schedule_Finishes ? 'bg-green-600 text-white' : 'bg-gray-200'}`}>
+                                <input
+                                    type="checkbox"
+                                    {...register("Schedule_Finishes")}
+                                    defaultChecked={response?.data.Schedule_Finishes}
+                                    disabled={response?.data.Schedule_Finishes ? true : false}
 
                                     className="mr-2 form-checkbox h-5 w-5 text-green-600"
                                 />
@@ -349,9 +483,14 @@ const ArchitecturalRequirements = ({ applicationID, setRequirementsModal }: {
                         </div>
 
                         <div className="flex flex-col items-center w-full gap-4 mt-5">
-                            <button type="submit" disabled={!isChanged} className={`w-[85%] text-white font-bold py-2 px-4 rounded w-1/2 ${isChanged ? 'bg-orange-500 hover:opacity-75' : 'bg-gray-500 cursor-not-allowed'}`}>
-                                Save
-                            </button>
+                            {
+                                !allRequirementsChecked && (
+                                    <button type="submit" disabled={!isChanged} className={`w-[85%] text-white font-bold py-2 px-4 rounded w-1/2 ${isChanged ? 'bg-orange-500 hover:opacity-75' : 'bg-gray-500 cursor-not-allowed'}`}>
+                                        Save
+                                    </button>
+                                )
+                            }
+                            
 
                             <button
                                 onClick={() => setRequirementsModal(false)}

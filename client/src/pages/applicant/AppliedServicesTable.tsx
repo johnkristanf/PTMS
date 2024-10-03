@@ -13,6 +13,7 @@ import CompletionPDF from '../../components/pdfs/Completion';
 import PlumbingPDF from '../../components/pdfs/Plumbing';
 import FencePDF from '../../components/pdfs/Fence';
 import { PTMSHeader } from '../../components/PtmsHeader';
+import { classNames } from '../../helpers/classNames';
 
 function ServicesPage(){
 
@@ -89,6 +90,7 @@ function ServicesPage(){
                                                 <tr>
                                                     <th scope="col" className="px-6 py-4">Name</th>
                                                     <th scope="col" className="px-6 py-4">Permit Type</th>
+                                                    <th scope="col" className="px-6 py-4">Status</th>
                                                     <th scope="col" className="px-6 py-4">Actions</th>
 
                                                 </tr>
@@ -106,6 +108,16 @@ function ServicesPage(){
 
                                                         <td className="whitespace-nowrap pl-6 py-4 font-medium">{data.firstname} {data.middleInitial} {data.lastName}</td>
                                                         <td className="whitespace-nowrap pl-6 py-4">{data.permit_type}</td>
+                                                        <td 
+                                                            className={classNames(
+                                                                data.status == "Approved" ? 'text-green-700' : '',
+                                                                data.status == "Disapproved" ? 'text-red-800': '',
+                                                                data.status == "Pending" ? 'text-gray-500': '',
+                                                                "whitespace-nowrap pl-6 py-4 font-bold uppercase"
+                                                            )}
+                                                        >
+                                                            {data.status}
+                                                        </td>
 
                                                         <td className="whitespace-nowrap pl-6 py-4">
                                                             <div className="flex gap-5">
@@ -133,8 +145,8 @@ function ServicesPage(){
 
                                                                 <button 
                                                                     onClick={() => setOpenCompletion(true)}
-                                                                    className={` ${data.status != 'completed' ? 'hover:cursor-not-allowed bg-gray-400': 'bg-green-700 '} text-white font-bold p-2 rounded-md hover:opacity-75`}
-                                                                    disabled={data.status != 'completed'}
+                                                                    className={` ${data.status != 'Approved' ? 'hover:cursor-not-allowed bg-gray-400': 'bg-green-700 '} text-white font-bold p-2 rounded-md hover:opacity-75`}
+                                                                    disabled={data.status != 'Approved'}
                                                                     >
                                                                     Completion
                                                                 </button>

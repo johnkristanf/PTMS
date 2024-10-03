@@ -30,32 +30,35 @@ type ApplicantInfo struct {
 }
 
 type ApplicantInfoFetching struct {
-	ID              int64  `json:"application_id"`
-	ApplicationCode string `json:"applicationCode"`
-	ServiceType     string `json:"serviceType"`
+	ID              		  	int64  `json:"application_id"`
+	ApplicationCode 			string `json:"applicationCode"`
+	ServiceType     		  	string `json:"serviceType"`
 
-	FirstName     string `json:"firstname"`
-	MiddleInitial string `json:"middleInitial"`
-	LastName      string `json:"lastName"`
+	FirstName     				string `json:"firstname"`
+	MiddleInitial 				string `json:"middleInitial"`
+	LastName      				string `json:"lastName"`
 
-	AddressNumber             string `json:"addressNo"`
-	Barangay                  string `json:"barangay"`
-	Street                    string `json:"street"`
-	Municipality              string `json:"municipality"`
-	ZipCode                   string `json:"zipCode"`
-	LocationForConsAndInstall string `json:"locationForConstruct_Install"`
+	AddressNumber             	string `json:"addressNo"`
+	Barangay                  	string `json:"barangay"`
+	Street                    	string `json:"street"`
+	Municipality              	string `json:"municipality"`
+	ZipCode                   	string `json:"zipCode"`
+	LocationForConsAndInstall 	string `json:"locationForConstruct_Install"`
 
 	FormOfOwnerShip             string `json:"formOwnership"`
 	ConstructionOwnbyEnterprise string `json:"constructOwnbyEnterprise"`
 
-	TaxAccountNumber string `json:"taxAccountNo"`
-	TelNumber        string `json:"telNo"`
-	TctNumber        string `json:"tctNo"`
+	TaxAccountNumber 			string `json:"taxAccountNo"`
+	TelNumber        			string `json:"telNo"`
+	TctNumber        			string `json:"tctNo"`
 
-	PermitType  string `json:"permit_type"`
-	Email       string `json:"email"`
-	ApplicantID int64  `json:"applicantID"`
-	Status      string `json:"assessment_status"`
+	PermitType  				string `json:"permit_type"`
+	Email       				string `json:"email"`
+	UserID       				string `json:"user_id"`
+	ApplicantID 				int64  `json:"applicantID"`
+	Status      				string `json:"assessment_status"`
+
+	AdminApproved    			string `json:"admin_approved"`
 }
 
 type AppliedServicesFetching struct {
@@ -135,8 +138,31 @@ type UpdateApplicationCode struct {
 	ApplicationCode string `json:"application_code"`
 }
 
+type UpdateApplicationApproval struct {
+	AdminApproved 			string `json:"admin_approved"`
+	Status                  string  `json:"status"`
+}
+
+type UpdateApplicationDisApproval struct {
+	ApplicationID		int64  `json:"application_id"`
+	FirstName 			string `json:"firstname"`
+	MiddleInitial 		string `json:"middleInitial"`
+	LastName 			string `json:"lastName"`
+
+	Email 				string `json:"email"`
+	UserID 				int64  `json:"user_id"`
+
+	DisapprovalMessage 	string `json:"disapproval_message"`
+}
+
 type UpdateApplicationStatus struct {
 	Status string `json:"status"`
+}
+
+
+type ApplicationApprovalFetching struct{
+	Results []*ApplicantInfoFetching
+	Error 	error
 }
 
 type FormattedInbox struct {
@@ -208,7 +234,10 @@ type AssessmentsPaidFormData struct {
 }
 
 
- 
+
+// Don't change the spelling of the swtches controls cause it is based on the db schema name
+// if you wish to change it you need to migrate again the db schema
+
 type ArchitecturalRequirements struct {
     ApplicationID                        int `json:"application_id"`
     
@@ -217,7 +246,7 @@ type ArchitecturalRequirements struct {
     WalkWays                              bool `json:"WalkWays"`
     ComfortRooms                          bool `json:"Comfort_Rooms"`
     DrinkingFountains                     bool `json:"Drinking_Fountains"`
-    SwitchesControls                      bool `json:"Switches_Controls"`
+    Swtches_Controls                      bool `json:"Switches_Controls"`
     TelephoneBooth                        bool `json:"Telephone_Booth"`
     AutomaticAlarmSystem                  bool `json:"Automatic_AlarmSystem"`
     DirectionalSigns                      bool `json:"Directional_Signs"`

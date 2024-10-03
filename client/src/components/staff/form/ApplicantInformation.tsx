@@ -33,14 +33,13 @@ export function ApplicantInformationFormStaff({ applicantInfo, setInformationMod
       Swal.fire({
         position: "top-end",
         icon: "success",
-        title: "Application Code Added!",
+        title: "Application code added the application procceds in administrators!",
         showConfirmButton: false,
-        timer: 1500
       });
 
       setInformationModal(false);
     },
-    onError: (error: any) => {
+    onError: (error: unknown) => {
       console.error("Set Assessment:", error);
     },
   });
@@ -69,7 +68,10 @@ export function ApplicantInformationFormStaff({ applicantInfo, setInformationMod
               <input 
                 type="text"
                 maxLength={8}
-                className={classNames("bg-gray-400 placeholder-black font-semibold rounded-md p-2 focus:outline-orange-500")}
+                className={classNames(
+                  isPending ? "hover:cursor-not-allowed": "",
+                  "bg-gray-400 placeholder-black font-semibold rounded-md p-2 focus:outline-orange-500"
+                )}
                 {...register("application_code")}
                 defaultValue={applicantInfo?.applicationCode}
                 disabled={isPending}

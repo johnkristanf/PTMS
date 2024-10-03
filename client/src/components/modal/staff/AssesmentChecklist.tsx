@@ -88,8 +88,8 @@ export const AssessmentCheckListModal = ({ applicationID, setAssessmentChecklist
         <div className="w-full h-full fixed top-0 left-0 flex justify-center items-center">
             <div className="fixed top-0 bg-gray-600 opacity-75 w-full h-screen"></div>
             
-            <div className="fixed top-0 w-full h-full flex items-center justify-center rounded-md p-5">
-                <div className="bg-white w-[70%] p-5 rounded-md h-full">
+            <div className="fixed top-0 w-full h-full flex items-center justify-end rounded-md p-5">
+                <div className="bg-white w-[70%] p-5 rounded-md h-full mr-[4rem]">
                     <form onSubmit={handleSubmit(onSubmit)}>
                         <div className="w-full flex items-center justify-between gap-8 mb-3">
                             <div className="flex flex-col gap-2">
@@ -113,25 +113,28 @@ export const AssessmentCheckListModal = ({ applicationID, setAssessmentChecklist
                                             type="number" 
                                             placeholder="Enter OR Number" 
                                             {...register("orNumber", { required: true })} 
-                                            className={`bg-gray-400 rounded-md p-1 placeholder-black focus:outline-white text-white ${errors.orNumber ? "border-red-500" : ""}`} 
+                                            className={`bg-gray-400 rounded-md p-1 placeholder-black focus:outline-white text-white placeholder:text-white ${errors.orNumber ? "border-red-500" : ""}`} 
                                         />
                                         {errors.orNumber && <span className="text-red-500">This field is required</span>}
                                     </div>
                                 </div>
                             )}
                         </div>
+
+
                         {/* Hidden input for applicationID */}
                         <input type="hidden" {...register("applicationID")} />
+
                         {/* TABLE DIV */}
                         <div className="flex flex-col bg-white w-full h-full rounded-md">
-                            <div className="overflow-y-auto overflow-x-hidden custom-scrollbar sm:-mx-6 lg:-mx-8 h-96">
+                            <div className="overflow-y-auto overflow-x-hidden custom-scrollbar h-96">
                                 <div className="inline-block min-w-full py-2 sm:px-6 lg:px-8">
                                     <div className="overflow-hidden">
                                         <table className="w-full text-left text-sm font-light">
                                             <thead className="border-b font-medium dark:border-neutral-500">
                                                 <tr>
                                                     <th scope="col" className="px-4 py-4">Assessment List</th>
-                                                    <th scope="col" className="px-4 py-4">Amount Due</th>
+                                                    <th scope="col" className="px-4 py-4">{isPaid ? 'Amount Paid': 'Amount Due'}</th>
                                                 </tr>
                                             </thead>
 
@@ -139,7 +142,7 @@ export const AssessmentCheckListModal = ({ applicationID, setAssessmentChecklist
                                                 {feeNames.map(fee => (
                                                     <tr key={fee.key} className="border-b transition duration-300 ease-in-out hover:bg-neutral-100 dark:border-neutral-500 dark:hover:bg-neutral-600">
                                                         <td className="whitespace-nowrap pl-6 py-4 font-medium">{fee.name}</td>
-                                                        <td className="whitespace-nowrap pl-6 py-4">{fee.key === "total_assessments" ? assessments?.[fee.key] : assessments?.[fee.key]}</td>
+                                                        <td className="whitespace-nowrap pl-6 py-4">₱ {fee.key === "total_assessments" ? assessments?.[fee.key] : assessments?.[fee.key]}</td>
                                                     </tr>
                                                 ))}
                                             </tbody>
@@ -149,6 +152,7 @@ export const AssessmentCheckListModal = ({ applicationID, setAssessmentChecklist
                             </div>
                         </div>
                         {/* END OF TABLE DIV */}
+                        
                         <div className="flex justify-between items-center w-full mt-5 px-8">
                             <div className="flex items-center mt-2 gap-3">
                                 <h1 className='font-semibold text-lg'>Assessed by:</h1>

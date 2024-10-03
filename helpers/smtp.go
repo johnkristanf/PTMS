@@ -8,28 +8,33 @@ import (
 
 var (
 	host = "smtp.gmail.com"
-	port = "465"
+	port = "587"
 
 	// password = "bkzd cgbb wywn qmvi"
 	// from="johnkristan01@gmail.com"
 
-	password = "qhub gqap gbyu capy"
-	from="panabocityengineeringptms07@gmail.com"
+	// password = "qhub gqap gbyu capy"
+	// from="panabocityengineeringptms07@gmail.com"
+
+	password = "nwmv kqis ixjg vcqs"
+	from="jkpogz4@gmail.com"
 )
 
 func Connection() (*smtp.Client, error) {
-	TLSconfig := &tls.Config{
-		InsecureSkipVerify: true,
-		ServerName: host,
-	}
+    serverAddress := fmt.Sprintf("%s:%s", host, port)
 
-	serverAddress := fmt.Sprintf("%s:%s", host, port)
-	connection, err := tls.Dial("tcp", serverAddress, TLSconfig)
-	if err != nil {
-		return nil, err
-	}
+    // Establish the initial connection
+    conn, err := smtp.Dial(serverAddress)
+    if err != nil {
+        return nil, err
+    }
 
-	return smtp.NewClient(connection, host)
+    // Upgrade to TLS
+    if err := conn.StartTLS(&tls.Config{ServerName: host}); err != nil {
+        return nil, err
+    }
+
+    return conn, nil
 }
 
 
@@ -110,4 +115,65 @@ Panabo City Engineering's Issuance of Permit Section `, applicantName)
 
 
 	return nil
+}
+
+
+func SendDisapprovalEmail(to string, disApprovalMessage string) error {
+
+	client, err := Connection();
+	if err != nil {
+        return err
+    }
+
+    defer Disconnection(client)
+
+	body := disApprovalMessage
+
+	headers := map[string]string{
+		"From":		from,
+		"To": 		to,
+		"Subject": "Panabo City's Engineering Office Issuance of Permits",
+	}
+
+	message := ""
+    for k, v := range headers {
+        message += fmt.Sprintf("%s: %s\r\n", k, v) 
+    }
+    message += "\r\n" + body
+
+	authenticate := smtp.PlainAuth("", from, password, host)
+
+
+	if err := client.Auth(authenticate); err != nil{
+		return err
+	}
+
+	if err := client.Mail(from); err != nil{
+		return err
+	}
+
+	if err := client.Rcpt(to); err != nil{
+		return err
+	}
+
+	writer, err := client.Data()
+    if err != nil {
+		fmt.Println("Data Error:", err)
+        return err
+    }
+
+
+    _, err = writer.Write([]byte(message))
+    if err != nil {
+        return err
+    }
+
+	
+	if err := writer.Close(); err != nil {
+        fmt.Println("Writer Close Error:", err)
+        return err
+    }
+
+    fmt.Println("Email sent successfully to:", to)
+    return nil
 }

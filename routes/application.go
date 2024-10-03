@@ -37,6 +37,8 @@ func ApplicationRoutes(e *echo.Echo, h *handlers.ApplicationHandler) {
 	g.POST("/check/electrical/requirements", h.CheckElectricalRequirementsHandler, h.JWT_METHOD.StaffAdminAutheticationMiddleware)
 
 	g.PUT("/update/code/:application_id", h.UpdateApplicationCodeHandler, h.JWT_METHOD.StaffAdminAutheticationMiddleware)
+	g.PUT("/update/approval/:application_id", h.UpdateApplicationApprovalHandler, h.JWT_METHOD.StaffAdminAutheticationMiddleware)
+	g.PUT("/update/disapproval", h.UpdateApplicationDisApprovalHandler, h.JWT_METHOD.StaffAdminAutheticationMiddleware)
 
 	// g.PUT("/update/status/:application_id", h.UpdateApplicationStatusHandler, h.JWT_METHOD.StaffAdminAutheticationMiddleware)
 

@@ -65,55 +65,6 @@ export function PendingTable({ searchTerm, selectedMonth, selectedWeek }: dropDo
         setRequirementsListModal(true);
     };
 
-
-    // kaning gi comment na logic after ni ma butngan og application code
-
-    // const queryClient = useQueryClient();
-
-    // const mutation = useMutation({
-    //     mutationFn: UpdateApplicationStatus,
-    //     onSuccess: () => {
-    //         queryClient.invalidateQueries({ queryKey: ["pending_applications"] });
-
-    //         Swal.fire({
-    //             position: "top-end",
-    //             icon: "success",
-    //             title: "Applicant Paid!",
-    //             showConfirmButton: false,
-    //             timer: 1500,
-    //         });
-    //     },
-    //     onError: (error: any) => {
-    //         console.error("Signup error:", error);
-    //     },
-    // });
-
-    // const setPaidApplication = (application_id: number) => {
-    //     Swal.fire({
-    //         title: "Are you sure?",
-    //         text: "That this applicant has successfully completed paid assessments.",
-    //         icon: "warning",
-    //         showCancelButton: true,
-    //         confirmButtonColor: "#3085d6",
-    //         cancelButtonColor: "#d33",
-    //         confirmButtonText: "Yes, delete it!",
-    //     }).then((result) => {
-    //         if (result.isConfirmed) {
-    //             const data = {
-    //                 application_id,
-    //                 status: "Paid",
-    //             };
-
-    //             mutation.mutate(data);
-    //         }
-    //     });
-    // };
-
-    // const getCurrentDate = () => {
-    //     const date = new Date();
-    //     const options: Intl.DateTimeFormatOptions = { year: 'numeric', month: 'long', day: 'numeric' };
-    //     return date.toLocaleDateString(undefined, options);
-    // };
     if (isLoading) return <div className="text-white font-bold text-xl">Fetching Pending Applications...</div>;
 
     return (
@@ -152,7 +103,7 @@ export function PendingTable({ searchTerm, selectedMonth, selectedWeek }: dropDo
             <div className="flex flex-col bg-orange-100 w-[99%] h-[70%] rounded-md">
                 <div className=" p-3">
                     <div className="inline-block min-w-full py-2">
-                        <div className="overflow-hidden">
+                        <div className="overflow-hidden overflow-y-auto h-[400px] custom-scrollbar">
 
 
                             <table className="min-w-full text-left text-sm font-light">

@@ -49,11 +49,28 @@ export type Application = {
 
     email: string
     user_id: number
+    admin_approved: string
+    
     assessment_status: string
 
     scopeType: string
     characterOfOccupancy: string
 }
+
+
+export type DisapprovalData = {
+    application_id: number
+
+    firstname: string
+    middleInitial: string
+    lastName: string
+
+    email: string
+    user_id: number
+
+    disapproval_message?: string
+}
+
 
 
 export type AppliedServices = {

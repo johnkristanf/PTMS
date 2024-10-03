@@ -1,10 +1,28 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import axios, { AxiosResponse } from "axios";
-import { ArchitecturalRequirementFormData, CivilRequirementFormData, ElectricalRequirementFormData, FirstStepRequirements, UpdateApplicationCodeTypes } from "../../types/application";
+import { ArchitecturalRequirementFormData, CivilRequirementFormData, DisapprovalData, ElectricalRequirementFormData, FirstStepRequirements, UpdateApplicationCodeTypes } from "../../types/application";
 
 export const UpdateApplicationCode = async (updateData: UpdateApplicationCodeTypes): Promise<AxiosResponse<any, any>> => {
     const { application_code, application_id } = updateData
 
     return axios.put(`http://localhost:4040/application/update/code/${application_id}`, { application_code }, {
+        withCredentials: true
+    });
+};
+
+
+
+export const UpdateApplicationApprovedAdmin = async (data: {application_id: number, admin_approved: string}): Promise<AxiosResponse<any, any>> => {
+    const { application_id, admin_approved } = data;
+    return axios.put(`http://localhost:4040/application/update/approval/${application_id}`, { admin_approved }, {
+        withCredentials: true
+    });
+};
+
+
+export const UpdateApplicationDisapprovedAdmin = async (data: DisapprovalData): Promise<AxiosResponse<any, any>> => {
+    console.log("data dis: ", data)
+    return axios.put(`http://localhost:4040/application/update/disapproval`, data, {
         withCredentials: true
     });
 };
@@ -17,6 +35,8 @@ export const UpdateApplicationStatus = async (data: {application_id: number, sta
         withCredentials: true
     });
 };
+
+
 
 
 export const UpdateFirstStepRequirements = (checkRequirements: FirstStepRequirements): Promise<AxiosResponse<any, any>> => {

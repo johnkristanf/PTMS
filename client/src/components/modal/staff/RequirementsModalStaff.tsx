@@ -5,6 +5,7 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import Swal from 'sweetalert2';
 import { UpdateFirstStepRequirements } from '../../../http/put/application';
 import { FetchCheckedRequirements } from '../../../http/get/application';
+import { classNames } from '../../../helpers/classNames';
 
 type RequirementsWithoutID = Omit<FirstStepRequirements, 'application_id'>;
 
@@ -12,20 +13,13 @@ function RequirementsModalStaff({ applicationID, setShowRequirements }: {
     applicationID: number;
     setShowRequirements: React.Dispatch<React.SetStateAction<boolean>>;
 }) {
-
     const queryClient = useQueryClient();
-    const [incompleteReq, setIncompleteReq] = useState<boolean>();
-
-    const fullyAccomplished = [
-        "Fully Accomplished Application Form",
-    ];
-
+    const fullyAccomplished = ["Fully Accomplished Application Form"];
     const supportingDocuments = [
         "Latest Certified true copy of Land Title (ROD)",
         "Latest Tax Declaration",
         "Latest Tax Clearance",
     ];
-
     const notRegisteredLotOwner = [
         "Notarized Deed of Absolute Sale",
         "Notarized Contract of Lease Sale",
@@ -33,25 +27,19 @@ function RequirementsModalStaff({ applicationID, setShowRequirements }: {
         "Notarized Extra-Judicial Partition/Affidavit of Heirship with Consent",
         "Certificate of Award/Affidavit of Undertaking/any document showing proof of authority (Government of Public Land)",
     ];
-
     const fiveSetsOf = [
         "Plans",
         "Specifications",
         "Bill of Materials and Cost Estimate",
         "Structural Analysis",
     ];
-
     const dulySignedSealed = [
         "A duly licensed Architect or Civil Engineer",
         "In case of architectural, A duly licensed Sanitary Engineer or Master Plumber, in case of",
         "A duly licensed Professional Mechanical Engineer, in case of",
         "A duly licensed Professional Electronics Engineer, in case of Electrical",
     ];
-
-    const otherDocuments = [
-        "Barangay Clearance where the project is located",
-        "Locational Clearance",
-    ];
+    const otherDocuments = ["Barangay Clearance where the project is located", "Locational Clearance"];
 
     const itemKeyMapping: { [key: string]: keyof RequirementsWithoutID } = {
         "Fully Accomplished Application Form": "accomplished_form",
@@ -127,24 +115,9 @@ function RequirementsModalStaff({ applicationID, setShowRequirements }: {
     const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
 
-        // const allChecked = Object.values(checkRequirements).every(value => value);
-
-        // if (!allChecked) {
-        //     setIncompleteReq(true);
-
-        //     Swal.fire({
-        //         icon: "warning",
-        //         title: "Incomplete Requirements",
-        //         text: "Please make sure all requirements are checked before submitting.",
-        //         confirmButtonColor: "#ff981a",
-        //     });
-        //     return;
-        // }
-
-        // setIncompleteReq(false);
         const requirements: FirstStepRequirements = {
             application_id: applicationID,
-            ...checkRequirements
+            ...checkRequirements,
         };
 
         mutation.mutate(requirements);
@@ -187,60 +160,53 @@ function RequirementsModalStaff({ applicationID, setShowRequirements }: {
         }
     }, [response]);
 
-    useEffect(() => {
-        // Check if all the required fields are true
-        const requirementsMet = Object.values(checkRequirements).every(value => value);
-        setIncompleteReq(requirementsMet);
-    }, [checkRequirements]);
-
     const onCheckRequirements = (item: string) => {
         const checkboxElement = document.getElementById(item) as HTMLInputElement;
         if (checkboxElement) {
-        checkboxElement.click(); 
+            checkboxElement.click();
         }
-    }
-    
+    };
 
     const renderCheckboxes = (items: string[], title: string) => (
         <div className="mb-4">
-          <h2 className="font-semibold mb-1">{title}</h2>
-      
-          {items.map((item) => (
-            <div
-                key={item}
-                className="flex items-center mb-2 hover:bg-gray-200 w-full p-2 rounded-md cursor-pointer"
-                onClick={() => onCheckRequirements(item)}
-            >
-                <input
-                    type="checkbox"
-                    id={item}
-                    name={item}
-                    checked={checkRequirements[itemKeyMapping[item]] || false}
-                    onChange={handleCheckboxChange}
-                    className="mr-2"
-                    onClick={(e) => e.stopPropagation()} // Prevent double toggle when clicking the checkbox
-                />
-        
-                <label 
-                    className="text-black cursor-pointer" htmlFor={item}
+            <h2 className="font-semibold mb-1">{title}</h2>
+            {items.map((item) => (
+                <div
+                    key={item}
+                    className="flex items-center mb-2 hover:bg-gray-200 w-full p-2 rounded-md cursor-pointer"
                     onClick={() => onCheckRequirements(item)}
                 >
-                    {item}
-                </label>
-
-            </div>
-          ))}
+                    <input
+                        type="checkbox"
+                        id={item}
+                        name={item}
+                        checked={checkRequirements[itemKeyMapping[item]] || false}
+                        onChange={handleCheckboxChange}
+                        className="mr-2"
+                        onClick={(e) => e.stopPropagation()}
+                    />
+                    <label className="text-black cursor-pointer" htmlFor={item} onClick={() => onCheckRequirements(item)}>
+                        {item}
+                    </label>
+                </div>
+            ))}
         </div>
     );
-      
-      
+
+    const allRequirementsChecked = Object.values(checkRequirements).every(Boolean);
+
     return (
         <>
             <div className="fixed top-0 left-0 w-full h-full bg-gray-800 opacity-75"></div>
-
             <div className="w-full fixed top-3 left-0 h-screen flex justify-center">
                 <div className="flex flex-col items-center h-[95%] py-4 w-[55%] bg-white rounded-md p-5 overflow-auto custom-scrollbar">
                     <h1 className='text-black text-2xl font-bold my-3'>FIRST STEP REQUIREMENTS</h1>
+                    <h1 className='font-semibold mb-8'>
+                        Requirement Status: 
+                        <span className={`${allRequirementsChecked ? 'text-green-600': 'text-red-800'} ml-1`}>
+                            {allRequirementsChecked ? 'Completed': 'Incomplete'}
+                        </span> 
+                    </h1>
 
                     <form onSubmit={handleSubmit}>
                         {renderCheckboxes(fullyAccomplished, 'Fully Accomplished Application Form')}
@@ -250,15 +216,19 @@ function RequirementsModalStaff({ applicationID, setShowRequirements }: {
                         {renderCheckboxes(dulySignedSealed, 'Duly Signed/Sealed')}
                         {renderCheckboxes(otherDocuments, 'Other Documents')}
 
-                        <button
-                            type="submit"
-                            className={`${incompleteReq ? 'bg-orange-500' : 'bg-gray-500 cursor-not-allowed'} text-white font-bold rounded-md p-2 mt-4 w-full`}
-                            disabled={!incompleteReq}
-                        >
-                            Submit
-                        </button>
-                    </form>
+                        {/* {!allRequirementsChecked && ( */}
+                            <button
+                                type="submit"
+                                className={classNames(
+                                    "bg-orange-500 text-white font-bold rounded-md p-2 mt-4 w-full hover:opacity-75"
+                                )}
+                            >
+                                Submit
+                            </button>
+                        {/* )} */}
 
+                        
+                    </form>
                     <button
                         className="bg-black text-white font-bold rounded-md p-2 hover:opacity-75 mt-4 w-full"
                         onClick={() => setShowRequirements(false)}

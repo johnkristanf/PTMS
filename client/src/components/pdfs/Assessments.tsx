@@ -271,12 +271,7 @@ export const AssessmentsPDF = ({ application_id, setAssessment }: {
             >
               Print
             </button>
-            <button
-              className="bg-black rounded-md p-2 hover:opacity-75"
-              onClick={() => setAssessment(false)}
-            >
-              Close
-            </button>
+            
           </div>
         </div>
       )}
