@@ -1,18 +1,18 @@
 import { Page, StyleSheet, View } from "@react-pdf/renderer";
 import { AppliedServices } from "../../../types/application";
-import { PermitHeader } from "../plumbing/header";
-import { PermitBodyBox1 } from "../plumbing/box1";
-import { PermitBodyBox2 } from "../plumbing/box2";
-import PermitBodyBox3 from "../plumbing/box3";
-import { PermitBodyBox4 } from "../plumbing/box4";
-import PermitBodyBox5 from "../plumbing/box5";
-import { PermitBodyBox6 } from "../plumbing/box6";
-import { PermitBodyBox7 } from "../plumbing/box7";
-import { PermitBodyBox8 } from "../plumbing/box8";
-import { PermitBodyBox9 } from "../plumbing/box9";
-import { PermitBodyBox10 } from "../plumbing/box10";
+import { PermitHeader } from "./header";
+import { PermitBodyBox1 } from "./box1";
+// import { PermitBodyBox2 } from "../plumbing/box2";
+import PermitBodyBox3 from "./box3";
+import { PermitBodyBox4 } from "./box4";
+import PermitBodyBox5 from "./box5";
+import { PermitBodyBox6 } from "./box6";
+import { PermitBodyBox7 } from "./box7";
+import { PermitBodyBox8 } from "./box8";
+import { PermitBodyBox9 } from "./box9";
+import { PermitBodyBox10 } from "./box10";
 
-export function PlumbingPermit({ permitInfo }: { 
+export function PlumbingPermitComponent({ permitInfo }: { 
     permitInfo: AppliedServices 
   }) {
   
@@ -110,4 +110,4 @@ export function PlumbingPermit({ permitInfo }: {
       marginTop: 5,
       height: 2,
     },
-  });
+});

@@ -5,15 +5,15 @@ import { FetchAppliedServices } from '../../http/get/application';
 import { AppliedServices } from '../../types/application';
 import { useQuery } from '@tanstack/react-query';
 import RequirementsModal from '../../components/modal/applicant/RequirementsModal';
-import ElectronicsPDF from '../../components/pdfs/Electronics';
 import BuildingPDF from '../../components/pdfs/Building';
 
 import '../../assets/scrollStyle.css'
 import CompletionPDF from '../../components/pdfs/Completion';
-import PlumbingPDF from '../../components/pdfs/Plumbing';
-import FencePDF from '../../components/pdfs/Fence';
 import { PTMSHeader } from '../../components/PtmsHeader';
 import { classNames } from '../../helpers/classNames';
+import PlumbingPDF from '../../components/pdfs/Plumbing';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faEllipsisVertical } from '@fortawesome/free-solid-svg-icons';
 
 function ServicesPage(){
 
@@ -22,6 +22,8 @@ function ServicesPage(){
     const [informationModal, setInformationModal] = useState<boolean>();
     const [showRequirements, setShowRequirements] = useState<boolean>(false);
     const [openCompletion, setOpenCompletion] = useState<boolean>(false);
+    const [showOptionsId, setShowOptionsId] = useState<number | null | undefined>(); // Track the ID of clicked ellipsis
+
 
     const { data: response, isLoading } = useQuery({
         queryKey: ["applied_services"],
@@ -48,28 +50,28 @@ function ServicesPage(){
                 (applicantInfo && informationModal) && <ApplicantInformationModalApplicant applicantInfo={applicantInfo} setInformationModal={setInformationModal} />
             }
 
-            {
-                showRequirements && <RequirementsModal setShowRequirements={setShowRequirements} role='applicant'/>
-            }
-
+           
+                {/* PDFS MODAL */}
             {
                 permits && permits.permit_type === "Building" && <BuildingPDF permitInfo={permits} setPermitsInfo={setPermits} />
             }
 
             {
-                permits && permits.permit_type === "Electronics" && <ElectronicsPDF setPermitsInfo={setPermits} />
+                permits && permits.permit_type === "Plumbing" && <PlumbingPDF permitInfo={permits} setPermitsInfo={setPermits} />
             }
 
-            {
-                permits && permits.permit_type === "Plumbing" && <PlumbingPDF setPermitsInfo={setPermits} />
-            }
+                {/* END::PDFS MODAL */}
 
 
             {
-                permits && permits.permit_type === "Fence" && <FencePDF setPermitsInfo={setPermits} />
+                showRequirements && <RequirementsModal setShowRequirements={setShowRequirements} role='applicant'/>
             }
 
-            {openCompletion && <CompletionPDF setOpenCompletion={setOpenCompletion} /> }
+
+            {
+                openCompletion && <CompletionPDF setOpenCompletion={setOpenCompletion} /> 
+            }
+
 
             <div className="flex justify-center items-start h-screen w-[79%] pt-32">
                 <PTMSHeader />
@@ -103,7 +105,6 @@ function ServicesPage(){
 
                                                     <tr 
                                                         key={data.application_id}
-                                                        className="border-b transition duration-300 ease-in-out hover:bg-neutral-100 dark:border-neutral-500 dark:hover:bg-neutral-600"
                                                         >
 
                                                         <td className="whitespace-nowrap pl-6 py-4 font-medium">{data.firstname} {data.middleInitial} {data.lastName}</td>
@@ -142,14 +143,55 @@ function ServicesPage(){
                                                                     >
                                                                     Requirements
                                                                 </button>
+                                                                
 
-                                                                <button 
+                                                                <FontAwesomeIcon 
+                                                                    icon={faEllipsisVertical} 
+                                                                    className='text-2xl mt-1 p-1 hover:cursor-pointer hover:opacity-75'
+                                                                    onClick={() =>
+                                                                        setShowOptionsId(showOptionsId === data.application_id ? null : data.application_id)
+                                                                    }
+                                                                />
+
+                                                                {showOptionsId === data.application_id && (
+                                                                    <div 
+                                                                            className="font-semibold w-[200px] absolute top-1/2 right-[18rem] flex flex-col gap-3 ml-2 p-4 bg-gray-300 text-black p-2 rounded-md shadow-md z-10"
+                                                                        >
+
+                                                                        <button 
+                                                                            disabled={data.status != 'Approved'}
+                                                                            className={classNames(
+                                                                                "w-full text-white p-2 hover:opacity-75 rounded-md cursor-pointer text-center",
+                                                                                data.status != 'Approved' ? 'hover:cursor-not-allowed bg-gray-400': 'bg-green-700'
+                                                                            )}
+
+                                                                            onClick={() => {
+                                                                                    setShowOptionsId(null)
+                                                                                    setOpenCompletion(true)
+                                                                                }}
+                                                                            >
+                                                                                Completion
+                                                                        </button>
+                                                                        
+                                                                        <button 
+                                                                            className={classNames(
+                                                                                "w-full text-white p-2 hover:opacity-75 rounded-md cursor-pointer text-center",
+                                                                                data.status != 'Approved' ? 'hover:cursor-not-allowed bg-gray-400': 'bg-black'
+                                                                            )}
+
+                                                                            >
+                                                                                Occupancy
+                                                                        </button>
+                                                                    </div>
+                                                                )}
+
+                                                                {/* <button 
                                                                     onClick={() => setOpenCompletion(true)}
                                                                     className={` ${data.status != 'Approved' ? 'hover:cursor-not-allowed bg-gray-400': 'bg-green-700 '} text-white font-bold p-2 rounded-md hover:opacity-75`}
                                                                     disabled={data.status != 'Approved'}
                                                                     >
                                                                     Completion
-                                                                </button>
+                                                                </button> */}
                                                             </div>
                                                         </td>
 

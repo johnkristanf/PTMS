@@ -50,8 +50,8 @@ export type Application = {
     email: string
     user_id: number
 
-    release_date: string
-    admin_approved: string
+    release_date?: string
+    admin_approved?: string
     
     assessment_status: string
 
@@ -125,7 +125,11 @@ export type AssessmentApplicationData = {
     permit_type: string
 }
 
-
+export type ApplicationLetterInfoTypes = {
+    firstName: string;
+    middleName: string;
+    familyName: string;
+}
 
 export type UpdateApplicationCodeTypes = {
     application_id: number,

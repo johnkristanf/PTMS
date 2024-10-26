@@ -30,9 +30,13 @@ export const ServiceModalForm = ({ selectedService, setServiceModalOpen }: {
     const [isFormValid, setIsFormValid] = useState<boolean>(false); // Track form validity
 
 
-    const watchFields = watch()
+    const watchFields = watch();
+    
     useEffect(() => {
-        const requiredFieldsFilled = Object.values(watchFields).every(field => field !== "");
+        const requiredFieldsFilled = Object.entries(watchFields)
+        .filter(([key]) => key !== "constructOwnbyEnterprise") // Exclude the optional field
+        .every(([, field]) => field !== "");
+
         const scopesSelected = scopeTypes.length > 0;
         const occupancySelected = occupancyTypes.length > 0;
 
@@ -173,16 +177,22 @@ export const ServiceModalForm = ({ selectedService, setServiceModalOpen }: {
                             <label>NEW</label>
                         </div>
 
-                        <div className="flex gap-1">
-                            <input 
-                                type="radio" 
-                                name="serviceType" 
-                                value="RENEWAL" 
-                                checked={serviceType === "RENEWAL"} 
-                                onChange={(e) => setServiceType(e.target.value)}
-                            />
-                            <label>RENEWAL</label>
-                        </div>
+                        {
+                            selectedService == "Electrical" && (
+                                <div className="flex gap-1">
+                                    <input 
+                                        type="radio" 
+                                        name="serviceType" 
+                                        value="RENEWAL" 
+                                        checked={serviceType === "RENEWAL"} 
+                                        onChange={(e) => setServiceType(e.target.value)}
+                                    />
+                                    <label>RENEWAL</label>
+                                </div>
+                            )
+                        }
+
+                        
 
                         
 
@@ -213,7 +223,7 @@ export const ServiceModalForm = ({ selectedService, setServiceModalOpen }: {
 
                             <label className="font-semibold">Enter Ownership</label>
                             <div className="flex gap-5">
-                                <select 
+                                {/* <select 
                                     className="bg-gray-200 placeholder-black font-semibold rounded-md p-2 focus:outline-slate-800"
                                     {...register("formOwnership")}
                                 >
@@ -223,14 +233,13 @@ export const ServiceModalForm = ({ selectedService, setServiceModalOpen }: {
                                     <option value="Tenants by Entirety">Tenants by Entirety</option>
                                     <option value="Sole Ownership">Sole Ownership</option>
                                     <option value="Community Property">Community Property</option>
-                                </select>
+                                </select> */}
                                 {
                                     applicantOwnership.map((data) => (
                                         <input 
                                             key={data.registerName}
                                             type={data.inputType} 
                                             placeholder={data.placeHolder} 
-                                            required
                                             className={classNames("bg-gray-200 placeholder-black font-semibold rounded-md p-2 focus:outline-slate-800 w-full")}
                                             {...register(data.registerName as keyof ApplicantInfo)}
                                         />
@@ -300,11 +309,12 @@ export const ServiceModalForm = ({ selectedService, setServiceModalOpen }: {
                                             <input 
                                                 type="checkbox" 
                                                 name="scopeType" 
+                                                id={scope}
                                                 value={scope} 
                                                 checked={scopeTypes.includes(scope)} 
                                                 onChange={handleScopeChange}
                                             />
-                                            <label>{scope}</label>
+                                            <label htmlFor={scope}>{scope}</label>
                                         </div>
                                     ))
                                 }
@@ -322,11 +332,12 @@ export const ServiceModalForm = ({ selectedService, setServiceModalOpen }: {
                                             <input 
                                                 type="checkbox" 
                                                 name="occupancyType" 
+                                                id={occupancy}
                                                 value={occupancy} 
                                                 checked={occupancyTypes.includes(occupancy)} 
                                                 onChange={handleOccupancyChange}
                                             />
-                                            <label>{occupancy}</label>
+                                            <label htmlFor={occupancy}>{occupancy}</label>
                                         </div>
                                     ))
                                 }
@@ -363,7 +374,7 @@ const applicantName = [
 ];
 
 const applicantOwnership = [
-    { registerName: "constructOwnbyEnterprise", placeHolder: "Construction Owned By Enterprise", inputType: "text" },
+    { registerName: "constructOwnbyEnterprise", placeHolder: "Construction Owned By Enterprise (optional)", inputType: "text" },
 ];
 
 const applicantAddress = [

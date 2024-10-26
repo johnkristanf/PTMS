@@ -12,6 +12,8 @@ function ApplyServicesPage() {
         { name: "Building Permit", permit_type: "Building" },
         { name: "Plumbing Permit", permit_type: "Plumbing" },
         { name: "Electronics Permit", permit_type: "Electronics" },
+        { name: "Electrical Permit", permit_type: "Electrical" },
+        { name: "Mechanical Permit", permit_type: "Mechanical" },
         { name: "Fence Permit", permit_type: "Fence" },
         { name: "Excavation Permit", permit_type: "Excavation" },
         { name: "Sanitary Permit", permit_type: "Sanitary" },

@@ -1,6 +1,6 @@
 import React from 'react';
 import { Document, PDFViewer, Page, StyleSheet, View, pdf } from '@react-pdf/renderer';
-import { AppliedServices } from '../../types/application';
+import { ApplicationLetterInfoTypes, AppliedServices } from '../../types/application';
 import { PermitBodyBox1 } from './building/box1';
 import { PermitHeader } from './building/header';
 import { PermitBodyBox2 } from './building/box2';
@@ -11,11 +11,10 @@ import { PermitBodyBox6 } from './building/box6';
 import { PermitBodyBox7 } from './building/box7';
 import { PermitBodyBox8 } from './building/box8';
 import { saveAs } from 'file-saver';
-import { ElectricalPermitSoloPDF } from './solo/Electrical';
 
 import '../../assets/scrollStyle.css'
-import { PlumbingPermitSoloPDF } from './solo/Plumbing';
-import { PlumbingPermit } from './solo/Plumbing2';
+import { PlumbingPermitComponent } from './plumbing/PlumbingPermitComponent';
+import { ApplicationLetter } from './application_letter/ApplicationLetter';
 
 function BuildingPDF({ permitInfo, setPermitsInfo }: { 
   permitInfo: AppliedServices,
@@ -27,11 +26,9 @@ function BuildingPDF({ permitInfo, setPermitsInfo }: {
     const doc = (
 
       <>
-      <Document>
-        <BuildingPermit permitInfo={permitInfo} />
-      </Document>
-
-      <ElectricalPermitSoloPDF />
+        <Document>
+          <BuildingPermit permitInfo={permitInfo} />
+        </Document>
 
       </>
       
@@ -41,6 +38,12 @@ function BuildingPDF({ permitInfo, setPermitsInfo }: {
     const blob = await pdf(doc).toBlob();
     saveAs(blob, 'Applicationform_BuildingPermit.pdf');
   };
+
+  const applicationLetterInfo: ApplicationLetterInfoTypes = {
+    firstName: permitInfo.firstname,
+    middleName: permitInfo.middleInitial,
+    familyName: permitInfo.lastName,
+  }
 
   return (
     <>
@@ -56,12 +59,18 @@ function BuildingPDF({ permitInfo, setPermitsInfo }: {
 
             <PDFViewer className='w-full h-full' showToolbar={false}>
               <Document>
+                <ApplicationLetter applicationLetterInfo={applicationLetterInfo}/>
                 <BuildingPermit permitInfo={permitInfo} />
-                <PlumbingPermit permitInfo={permitInfo} />
+                <PlumbingPermitComponent permitInfo={permitInfo} />
+                
+                {/* 
+                  DIRI I ADD ANG MGA EXTRA PDFS NA DALA SA 
+                  BUILDING PERMIT LIKE ELECTRICAL ETC.. 
+                */}
+
               </Document>
             </PDFViewer>
 
-            <ElectricalPermitSoloPDF />
 
           </div>
 
