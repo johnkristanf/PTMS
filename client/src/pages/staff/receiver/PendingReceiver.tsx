@@ -1,28 +1,13 @@
-import { ChangeEvent, useState } from "react";
+import { useState } from "react";
 import { PendingTable } from "../../../components/staff/PendingTable";
 import { SideBar } from "../../../components/SideBar";
 import { PTMSHeader } from "../../../components/PtmsHeader";
-import { dropDownMonths, dropDownWeeks } from "../../../helpers/dropdownlist";
+import { DropdownDate } from "../../../components/DropdownDate";
 
 function ReceiverPage() {
   const [searchTerm, setSearchTerm] = useState<string>("");
-  const [selectedWeek, setSelectedWeek] = useState<string>("");
-  const [selectedMonth, setSelectedMonth] = useState<string>(""); // State to track the selected month
-
-  const handleSearchChange = (event: ChangeEvent<HTMLInputElement>) => {
-    setSearchTerm(event.target.value);
-  };
-
-  const handleMonthChange = (event: ChangeEvent<HTMLSelectElement>) => {
-    setSelectedMonth(event.target.value); 
-  };
-
-  const handleWeekChange = (event: ChangeEvent<HTMLSelectElement>) => {
-    setSelectedWeek(event.target.value); 
-  };
-
-  console.log("mont: ", selectedMonth);
-  console.log("week: ", selectedWeek);
+  // const [selectedWeek, setSelectedWeek] = useState<string>("");
+  const [selectedMonth, setSelectedMonth] = useState<string>("");
   
 
   return (
@@ -37,43 +22,17 @@ function ReceiverPage() {
           <div className="flex justify-between mb-5">
             <h1 className="text-orange-400 text-4xl font-bold">Pending Applications</h1>
 
-            <div className="flex gap-3">
-              <select
-                className="bg-gray-500 text-white p-2 rounded-md focus:outline-none"
-                value={selectedMonth}
-                onChange={handleMonthChange} 
-              >
-                {dropDownMonths.map((month, index) => (
-                  <option key={index} value={month}>
-                    {month}
-                  </option>
-                ))}
-              </select>
-
-              <select 
-                value={selectedWeek}
-                className="bg-gray-500 text-white p-2 rounded-md focus:outline-none"
-                onChange={handleWeekChange}
-              >
-                  {dropDownWeeks.map((week, index) => (
-                    <option key={index} value={String(week)}>
-                      {week}
-                    </option>
-                ))}
-              </select>
-
-              <input
-                type="search"
-                className="bg-gray-500 rounded-md p-2 font-bold text-white placeholder-white focus:outline-none"
-                placeholder="Search Applicant"
-                value={searchTerm}
-                onChange={handleSearchChange}
-              />
-
-            </div>
+            <DropdownDate
+              searchTerm={searchTerm}
+              //    selectedWeek={selectedWeek}
+              selectedMonth={selectedMonth}
+              setSearchTerm={setSearchTerm}
+              //    setSelectedWeek={setSelectedWeek}
+              setSelectedMonth={setSelectedMonth} 
+            />
           </div>
 
-          <PendingTable searchTerm={searchTerm} selectedMonth={selectedMonth} selectedWeek={selectedWeek} />
+          <PendingTable searchTerm={searchTerm} selectedMonth={selectedMonth} />
         </div>
       </div>
     </div>

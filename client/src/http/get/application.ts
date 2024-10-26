@@ -1,9 +1,9 @@
 import axios from "axios";
 
 
-export const FetchPendingApplicantInfo = async (searchTerm: string, selectedMonth: string, selectedWeek: string) => {
+export const FetchPendingApplicantInfo = async (searchTerm: string, selectedMonth: string) => {
     const status = "Pending";
-    const params = new URLSearchParams({ status, searchTerm, selectedMonth, selectedWeek });
+    const params = new URLSearchParams({ status, searchTerm, selectedMonth });
 
     return axios.get(`http://localhost:4040/application/get?${params.toString()}`, {
         withCredentials: true
@@ -11,9 +11,9 @@ export const FetchPendingApplicantInfo = async (searchTerm: string, selectedMont
 }
 
 
-export const FetchPaidApplications = async (searchTerm: string) => {
+export const FetchPaidApplications = async (searchTerm: string, selectedMonth: string) => {
     const status = "Paid";
-    const params = new URLSearchParams({ status, searchTerm });
+    const params = new URLSearchParams({ status, searchTerm, selectedMonth });
 
     return axios.get(`http://localhost:4040/application/get?${params.toString()}`, {
         withCredentials: true
@@ -21,18 +21,18 @@ export const FetchPaidApplications = async (searchTerm: string) => {
 }
 
 
-export const FetchApprovedApplications = async (searchTerm: string) => {
+export const FetchApprovedApplications = async (searchTerm: string, selectedMonth: string) => {
     const status = "Approved";
-    const params = new URLSearchParams({ status, searchTerm });
+    const params = new URLSearchParams({ status, searchTerm, selectedMonth });
 
     return axios.get(`http://localhost:4040/application/get?${params.toString()}`, {
         withCredentials: true
     });
 }
 
-export const FetchDisApprovedApplications = async (searchTerm: string) => {
+export const FetchDisApprovedApplications = async (searchTerm: string, selectedMonth: string) => {
     const status = "Disapproved";
-    const params = new URLSearchParams({ status, searchTerm });
+    const params = new URLSearchParams({ status, searchTerm, selectedMonth});
 
     return axios.get(`http://localhost:4040/application/get?${params.toString()}`, {
         withCredentials: true

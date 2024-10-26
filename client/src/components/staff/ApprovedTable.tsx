@@ -1,27 +1,31 @@
-import { useRef, useState } from "react";
+import React, { useRef, useState } from "react";
 import { ReleaseDateModal } from "../modal/staff/ReleaseModal";
 import { ApplicationFileModal } from "../modal/staff/ApplicationFilesModal";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { FetchApprovedApplications } from "../../http/get/application";
-import { Application } from "../../types/application";
+import { Application, ReleaseDateData } from "../../types/application";
 import Swal from "sweetalert2";
 import { UploadDocument } from "../../http/post/document";
 
 import '../../assets/scrollStyle.css'
 
 interface ApproveTableProps {
+    searchTerm: string,
+    selectedMonth: string,
     staffRole: string;
     ScannerReport?: boolean;
 }
 
-export function ApproveTable({ staffRole, ScannerReport }: ApproveTableProps) {
+export function ApproveTable({ searchTerm, selectedMonth, staffRole, ScannerReport }: ApproveTableProps) {
+
     const [openReleaseModal, setOpenReleaseModal] = useState<boolean>(false);
     const [openFile, setOpenFile] = useState<boolean>(false);
+
     const [selectedApplicationCode, setSelectedApplicationCode] = useState<string>(); 
+    const [releaseDateData, setReleaseDateData] = useState<ReleaseDateData>(); 
     const fileInputRef = useRef<HTMLInputElement | null>(null);
 
     const queryClient = useQueryClient();
-
 
 
     const handleRowClick = (e: React.MouseEvent<HTMLTableRowElement, MouseEvent>, application_code: string) => {
@@ -42,13 +46,21 @@ export function ApproveTable({ staffRole, ScannerReport }: ApproveTableProps) {
         fileInputRef.current?.click(); 
     };
 
-    // this just static data apply the real search algorithm next time
-    const searchTerm = "";
+
+    const onOpenReleaseModal = (e: React.MouseEvent, applicationId: number, email: string, user_id: number) => {
+        handleButtonClick(e);
+        setOpenReleaseModal(true);
+        setReleaseDateData({
+            application_id: applicationId,
+            email,
+            user_id
+        }); 
+    }
 
     const { data: response } = useQuery({
-        queryKey: ["approved_applications", searchTerm],
+        queryKey: ["approved_applications", searchTerm, selectedMonth],
         queryFn: async () => {
-            const data = await FetchApprovedApplications(searchTerm);
+            const data = await FetchApprovedApplications(searchTerm, selectedMonth);
             return data;
         },
     });
@@ -114,9 +126,12 @@ export function ApproveTable({ staffRole, ScannerReport }: ApproveTableProps) {
 
     const approvedApplication: Application[] = response?.data || [];
 
+    console.log("approvedApplication", approvedApplication);
+    
+
     return (
         <>
-            {openReleaseModal && staffRole === 'releaser' && <ReleaseDateModal setOpenReleaseModal={setOpenReleaseModal} />}
+            {openReleaseModal && staffRole === 'releaser' && <ReleaseDateModal setOpenReleaseModal={setOpenReleaseModal} releaseDateData={releaseDateData} />}
 
             {openFile && staffRole === 'scanner'&&  <ApplicationFileModal setOpenFile={setOpenFile} selectedApplicationCode={selectedApplicationCode} />}
 
@@ -131,89 +146,96 @@ export function ApproveTable({ staffRole, ScannerReport }: ApproveTableProps) {
                                         <th scope="col" className="px-6 py-4">Name</th>
                                         <th scope="col" className="px-6 py-4">Address</th>
                                         <th scope="col" className="px-6 py-4">Permit Type</th>
+
                                         {staffRole === 'releaser' && (
                                             <th scope="col" className="px-6 py-4">Release Date</th>
                                         )}
+
+                                        
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    {
+                                    {approvedApplication.length === 0 ? (
+                                        <tr>
+                                        <td colSpan={staffRole === 'releaser' ? 6 : 5} className="text-center py-4 text-gray-900 text-xl font-semibold pt-5">
+                                            No application available
+                                        </td>
+                                        </tr>
+                                    ) : (
                                         approvedApplication.map((item) => (
-                                            <tr
-                                                key={item.application_id}
-                                                onClick={(e) => handleRowClick(e, item.applicationCode)}
-                                                className={`border-b transition duration-300 ease-in-out hover:bg-neutral-100 dark:hover:bg-neutral-600 cursor-pointer`}
-                                            >
-                                                <td className="whitespace-nowrap px-3 py-2 font-medium">{item.applicationCode}</td>
-                                                <td className="whitespace-nowrap px-3 py-2 font-medium">{item.firstname} {item.middleInitial} {item.lastName}</td>
-                                                <td className="whitespace-normal px-3 py-2 break-words">
-                                                    {item.addressNo} {item.barangay} {item.street}{" "}
-                                                    {item.municipality} {item.zipCode}
-                                                </td>
-        
-                                                <td className="whitespace-nowrap pl-6 py-4">{item.permit_type}</td>
-        
-                                                {/* RELEASER CAPABILITIES */}
-                                                {staffRole === 'releaser' && (
-                                                    <td className="whitespace-nowrap pl-6 py-4">N/A</td>
-                                                )}
+                                        <tr
+                                            key={item.application_id}
+                                            onClick={(e) => handleRowClick(e, item.applicationCode)}
+                                            className={`border-b transition duration-300 ease-in-out hover:bg-neutral-100 dark:hover:bg-neutral-600 cursor-pointer`}
+                                        >
+                                            <td className="whitespace-nowrap px-3 py-2 font-medium">{item.applicationCode}</td>
+                                            <td className="whitespace-nowrap px-3 py-2 font-medium">
+                                            {item.firstname} {item.middleInitial} {item.lastName}
+                                            </td>
+                                            <td className="whitespace-normal px-3 py-2 break-words">
+                                            {item.addressNo} {item.barangay} {item.street} {item.municipality} {item.zipCode}
+                                            </td>
+                                            <td className="whitespace-nowrap pl-6 py-4">{item.permit_type}</td>
 
+                                            {/* RELEASER CAPABILITIES */}
+                                            {staffRole === 'releaser' && (
+                                            <td className="whitespace-nowrap px-5 py-4">
+                                                {item.release_date === "" ? "N/A" : item.release_date}
+                                            </td>
+                                            )}
 
-                                                {/* SCANNER CAPABILITIES */}
+                                            {/* SCANNER CAPABILITIES */}
+                                            {staffRole === 'scanner' && !ScannerReport && (
+                                            <td className="whitespace-nowrap py-4">
+                                                <div className="flex gap-3">
+                                                <input
+                                                    type="file"
+                                                    ref={fileInputRef}
+                                                    style={{ display: "none" }}
+                                                    onClick={handleButtonClick}
+                                                    onChange={handleFileChange}
+                                                />
 
-                                                {staffRole === 'scanner' && !ScannerReport && (
-                                                    <td className="whitespace-nowrap py-4">
-                                                        <div className="flex gap-3">
+                                                <button
+                                                    onClick={(e) => {
+                                                    triggerFileInput(e, item.applicationCode);
+                                                    }}
+                                                    className="bg-orange-500 text-white font-bold p-3 rounded-md hover:opacity-75"
+                                                >
+                                                    Scan
+                                                </button>
 
-                                                            <input
-                                                                type="file"
-                                                                ref={fileInputRef}
-                                                                style={{ display: "none" }}
-                                                                onClick={handleButtonClick}
-                                                                onChange={handleFileChange}
-                                                            />
+                                                <button
+                                                    onClick={(e) => {
+                                                    handleButtonClick(e);
+                                                    console.log("Submit clicked");
+                                                    }}
+                                                    className="bg-green-600 text-white font-bold p-3 rounded-md hover:opacity-75"
+                                                >
+                                                    Submit
+                                                </button>
+                                                </div>
+                                            </td>
+                                            )}
 
-                                                            <button 
-                                                                onClick={(e) => { triggerFileInput(e, item.applicationCode) }} 
-                                                                className="bg-orange-500 text-white font-bold p-3 rounded-md hover:opacity-75"
-                                                            >
-                                                                Upload
-                                                            </button>
-
-
-                                                            <button 
-                                                                onClick={(e) => {
-                                                                    handleButtonClick(e);
-                                                                    console.log("Submit clicked");
-                                                                }} 
-                                                                className="bg-green-600 text-white font-bold p-3 rounded-md hover:opacity-75"
-                                                            >
-                                                                Submit
-                                                            </button>
-                                                        </div>
-                                                    </td>
-                                                )}
-
-
-                                                {/* RELEASER CAPABILITIES */}
-                                                {staffRole === 'releaser' && (
-                                                    <td className="whitespace-nowrap py-4">
-                                                        <button
-                                                            onClick={(e) => {
-                                                                handleButtonClick(e);
-                                                                setOpenReleaseModal(true);
-                                                            }}
-                                                            className="bg-orange-500 text-white font-bold p-3 rounded-md hover:opacity-75"
-                                                        >
-                                                            Release
-                                                        </button>
-                                                    </td>
-                                                )}
-                                            </tr>
+                                            {/* RELEASER CAPABILITIES */}
+                                            {staffRole === 'releaser' && item.release_date === "" && (
+                                            <td className="whitespace-nowrap pl-4 py-4">
+                                                <button
+                                                onClick={(e) =>
+                                                    onOpenReleaseModal(e, item.application_id, item.email, item.user_id)
+                                                }
+                                                className="bg-orange-500 text-white font-bold p-3 rounded-md hover:opacity-75"
+                                                >
+                                                Release
+                                                </button>
+                                            </td>
+                                            )}
+                                        </tr>
                                         ))
-                                    }
-                                  
-                                </tbody>
+                                    )}
+                                    </tbody>
+
                             </table>
                         </div>
                     </div>

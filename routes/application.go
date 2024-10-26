@@ -40,6 +40,8 @@ func ApplicationRoutes(e *echo.Echo, h *handlers.ApplicationHandler) {
 	g.PUT("/update/approval/:application_id", h.UpdateApplicationApprovalHandler, h.JWT_METHOD.StaffAdminAutheticationMiddleware)
 	g.PUT("/update/disapproval", h.UpdateApplicationDisApprovalHandler, h.JWT_METHOD.StaffAdminAutheticationMiddleware)
 
+	g.PUT("/set/release/date", h.SetReleaseDateHandler, h.JWT_METHOD.StaffAdminAutheticationMiddleware)
+
 	// g.PUT("/update/status/:application_id", h.UpdateApplicationStatusHandler, h.JWT_METHOD.StaffAdminAutheticationMiddleware)
 
 

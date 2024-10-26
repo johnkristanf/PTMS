@@ -45,17 +45,36 @@ func main(){
 		LogStatus: true,
 		LogURI:    true,
 		BeforeNextFunc: func(c echo.Context) {
-			// You can put anything right here for debugging purposes, it could be user payload 
-			// request id etc...
 			c.Set("customValueFromContext", 42)
 		},
 		LogValuesFunc: func(c echo.Context, v middleware.RequestLoggerValues) error {
 			value, _ := c.Get("customValueFromContext").(int)
-			fmt.Printf("REQUEST: uri: %v, status: %v, custom-value: %v\n", v.URI, v.Status, value)
+	
+			// Determine the color based on HTTP method
+			var colorStart string
+			switch c.Request().Method {
+			case "GET":
+				colorStart = "\033[32m" // Green for GET requests
+			case "POST":
+				colorStart = "\033[33m" // Yellow for POST requests
+			case "PUT":
+				colorStart = "\033[34m" // Blue for PUT requests
+			case "DELETE":
+				colorStart = "\033[31m" // Red for DELETE requests
+			default:
+				colorStart = "\033[0m"  // Default color (no color)
+			}
+	
+			// ANSI escape code for resetting the color
+			colorEnd := "\033[0m"
+	
+			// Print the log with colored text
+			fmt.Printf("%sREQUEST: method: %v, uri: %v, status: %v, custom-value: %v%s\n", 
+				colorStart, c.Request().Method, v.URI, v.Status, value, colorEnd)
 			return nil
 		},
 	}))
-
+	
 
 	db, err := database.DB_CONFIG()
 	if err != nil{

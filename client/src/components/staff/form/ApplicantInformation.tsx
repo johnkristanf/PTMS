@@ -33,12 +33,25 @@ export function ApplicantInformationFormStaff({ applicantInfo, setInformationMod
       Swal.fire({
         position: "top-end",
         icon: "success",
-        title: "Application code added the application procceds in administrators!",
+        title: "Application submit",
         showConfirmButton: false,
       });
 
       setInformationModal(false);
     },
+
+    onMutate: () => {
+      Swal.fire({
+          title: 'Please wait...',
+          text: 'Your request is being processed',
+          allowOutsideClick: false,
+          showConfirmButton: false,
+          willOpen: () => {
+              Swal.showLoading();
+          },
+      });
+  },
+  
     onError: (error: unknown) => {
       console.error("Set Assessment:", error);
     },
@@ -49,7 +62,12 @@ export function ApplicantInformationFormStaff({ applicantInfo, setInformationMod
 
     const updateApplicationData = {
       application_id: applicantInfo.application_id,
-      application_code: data.application_code
+      application_code: data.application_code,
+      email: applicantInfo.email,
+      firstname: applicantInfo.firstname,
+      middleInitial: applicantInfo.middleInitial,
+      lastName: applicantInfo.lastName,
+      user_id: Number(applicantInfo.user_id)
     };
 
     mutation.mutate(updateApplicationData);

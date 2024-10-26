@@ -1,11 +1,14 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import axios, { AxiosResponse } from "axios";
-import { ArchitecturalRequirementFormData, CivilRequirementFormData, DisapprovalData, ElectricalRequirementFormData, FirstStepRequirements, UpdateApplicationCodeTypes } from "../../types/application";
+import { ArchitecturalRequirementFormData, CivilRequirementFormData, DisapprovalData, ElectricalRequirementFormData, FirstStepRequirements, ReleaseDateData, UpdateApplicationCodeTypes } from "../../types/application";
 
+
+
+// -----------------------------------APPLICATIONS----------------------------------
 export const UpdateApplicationCode = async (updateData: UpdateApplicationCodeTypes): Promise<AxiosResponse<any, any>> => {
-    const { application_code, application_id } = updateData
+    const { application_code, firstname, middleInitial, lastName, email, user_id, application_id } = updateData
 
-    return axios.put(`http://localhost:4040/application/update/code/${application_id}`, { application_code }, {
+    return axios.put(`http://localhost:4040/application/update/code/${application_id}`, { application_code, firstname, middleInitial, lastName, email, user_id }, {
         withCredentials: true
     });
 };
@@ -21,7 +24,6 @@ export const UpdateApplicationApprovedAdmin = async (data: {application_id: numb
 
 
 export const UpdateApplicationDisapprovedAdmin = async (data: DisapprovalData): Promise<AxiosResponse<any, any>> => {
-    console.log("data dis: ", data)
     return axios.put(`http://localhost:4040/application/update/disapproval`, data, {
         withCredentials: true
     });
@@ -37,8 +39,18 @@ export const UpdateApplicationStatus = async (data: {application_id: number, sta
 };
 
 
+export const SetReleaseDate = async (data: ReleaseDateData): Promise<AxiosResponse<any, any>> => {
+    console.log("release date data: ", data);
+    
+    return axios.put(`http://localhost:4040/application/set/release/date`, data, {
+        withCredentials: true
+    });
+};
 
 
+
+
+// -----------------------------------REQUIREMENTS----------------------------------
 export const UpdateFirstStepRequirements = (checkRequirements: FirstStepRequirements): Promise<AxiosResponse<any, any>> => {
     console.log("checkRequirements", checkRequirements)
     return axios.post(`http://localhost:4040/application/update/requirements`, checkRequirements, {

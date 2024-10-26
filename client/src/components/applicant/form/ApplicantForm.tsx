@@ -44,6 +44,7 @@ export function ApplicantInformationFormApplicant({ applicantInfo }: {
                                 className={classNames("bg-gray-400 placeholder-black font-semibold rounded-md p-2 focus:outline-orange-500")}
                                 value={applicantInfo?.applicationCode}
                                 readOnly
+                                disabled
                                 />
                         </div>
                     </div>

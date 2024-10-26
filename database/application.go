@@ -5,6 +5,7 @@ import (
 	"strings"
 	"time"
 
+	"github.com/johnkristanf/TMS-IPAS/helpers"
 	"github.com/johnkristanf/TMS-IPAS/types"
 )
 
@@ -42,6 +43,7 @@ type Application struct {
 
 	AdminApproved				string		`gorm:"not null"`
 
+	ReleaseDate					string		`gorm:"not null"`
 	CreatedAt 					time.Time 	`gorm:"not null;autoCreateTime"`
 }
 
@@ -85,7 +87,7 @@ type Architectural_Requirements struct {
 	WalkWays                               bool    `gorm:"not null;default:false"`
 	Comfort_Rooms                          bool    `gorm:"not null;default:false"`
 	Drinking_Fountains                     bool    `gorm:"not null;default:false"`
-	Swtches_Controls                       bool    `gorm:"not null;default:false"`
+	Switches_Controls                      bool    `gorm:"not null;default:false"`
 	Telephone_Booth                        bool    `gorm:"not null;default:false"`
 	Automatic_AlarmSystem                  bool    `gorm:"not null;default:false"`
 	Directional_Signs                      bool    `gorm:"not null;default:false"`
@@ -190,7 +192,7 @@ type Inbox struct {
 
 type APPLICATION_DB_METHOD interface {
 	AddApplication(applicantInfo *types.ApplicantInfo) error
-	FetchApplication(string, string, string, string) ([]*types.ApplicantInfoFetching, error)
+	FetchApplication(string, string, string) ([]*types.ApplicantInfoFetching, error)
 	FetchAppliedServices(int64) ([]*types.AppliedServicesFetching, error)
 	FetchRequirements(int64) (*types.FirstStepRequirementsFetching, error)
 
@@ -216,12 +218,18 @@ type APPLICATION_DB_METHOD interface {
 
 	
 	UpdateApplicationStatus(int64, string) error
-	AllAdminsApplicationApproval([]*types.ApplicantInfoFetching) error
+	UpdateReleaseDate(int64, string, string) error
+	// AllAdminsApplicationApproval([]*types.ApplicantInfoFetching) error
 
 	SetPaidAsssesment(types.AssessmentsPaidFormData) error
 	FetchAssessments(int64) (*types.AssessmentRender, error)
+
 	ApplicationInbox(int64, string) error
+	SetApplicationCodeInbox(int64, string, string) error
+	ApplicationApprovalInbox(int64, string) error
+
 	DisapprovalInbox(int64, string) error
+	ReleaseDateInbox(int64, string) error
 
 	FetchInboxesToday(int64) ([]*types.FormattedInbox, error)
 	FetchUnreadInboxes(int64) ([]*types.FormattedInbox, error)
@@ -355,6 +363,9 @@ func (sql *SQL) FetchAssessments(applicationID int64) (assessments *types.Assess
 }
 
 
+
+
+
 // ----------------------REQUIREMENTS----------------------
 
 func (sql *SQL) CreateFirstStepRequirements(applicationID int64) error {
@@ -391,7 +402,7 @@ func (sql *SQL) FetchArchitechturalRequirements(applicationID int64) (*types.Arc
 	var requirements *types.ArchitecturalRequirements
 
 	result := sql.DB.Table("architectural_requirements").
-        Select("application_id, ramps, stairs, walk_ways, comfort_rooms, drinking_fountains, swtches_controls, telephone_booth, automatic_alarm_system, directional_signs, reserved_parking, wallbay_sections, stairs_interior_exterior, fire_exit, built_in_cabinets, partitions, schedule_doors_windows, schedule_finishes, other_architectural_elements, space_plan, architecture_interior, furniture_funishing_equipments, detail_design_architectural, plan_layout_interior, interior_wall_elevations, floor_ceiling_wall_patterns_details, list_material_used, cost_estimates, plans_specific_locations, design_accessibility_facilities, plan_evacuation_route, details_windows_fire_exits, details_fire_resistive_vertical_openings, details_fire_resistive_decorative_materials").
+        Select("application_id, ramps, stairs, walk_ways, comfort_rooms, drinking_fountains, switches_controls, telephone_booth, automatic_alarm_system, directional_signs, reserved_parking, wallbay_sections, stairs_interior_exterior, fire_exit, built_in_cabinets, partitions, schedule_doors_windows, schedule_finishes, other_architectural_elements, space_plan, architecture_interior, furniture_funishing_equipments, detail_design_architectural, plan_layout_interior, interior_wall_elevations, floor_ceiling_wall_patterns_details, list_material_used, cost_estimates, plans_specific_locations, design_accessibility_facilities, plan_evacuation_route, details_windows_fire_exits, details_fire_resistive_vertical_openings, details_fire_resistive_decorative_materials").
         Where("application_id = ?", applicationID).
         First(&requirements)
 
@@ -517,7 +528,7 @@ func (sql *SQL) CheckArchitecturalRequirements(requirements *types.Architectural
 		WalkWays:                               requirements.WalkWays,
 		Comfort_Rooms:                          requirements.ComfortRooms,
 		Drinking_Fountains:                     requirements.DrinkingFountains,
-		Swtches_Controls:                       requirements.Swtches_Controls,
+		Switches_Controls:                      requirements.Switches_Controls,
 		Telephone_Booth:                        requirements.TelephoneBooth,
 		Automatic_AlarmSystem:                  requirements.AutomaticAlarmSystem,
 		Directional_Signs:                      requirements.DirectionalSigns,
@@ -636,6 +647,9 @@ func (sql *SQL) CreateElectricalRequirements(applicationID int64) error {
 
 
 
+
+
+
 // ----------------------INBOXES----------------------
 
 func (sql *SQL) ApplicationInbox(user_id int64, applicantName string) error {
@@ -667,9 +681,18 @@ Panabo City Engineering's Issuance of Permit Section`, applicantName)
 }
 
 
-func (sql *SQL) DisapprovalInbox(user_id int64, disApprovalMessage string) error {
+func (sql *SQL) SetApplicationCodeInbox(user_id int64, applicantName string, applicationCode string) error {
 
-	message := disApprovalMessage
+	message := fmt.Sprintf(`Dear %s,
+
+We are pleased to inform you that your application code %s has been successfully set. This signifies that your application is now ready to proceed to the next stage and is currently under review by the PTMS administration team.
+
+We appreciate your patience as we move forward with the review process. You will be notified of any further updates regarding your application status. Should you need further assistance or have any questions, please feel free to reach out to us.
+
+Thank you for your cooperation.
+
+Sincerely,
+Panabo City Engineering's Issuance of Permit Section`, applicantName, applicationCode)
 
 	inbox := &Inbox{
 		Message: message,
@@ -682,6 +705,62 @@ func (sql *SQL) DisapprovalInbox(user_id int64, disApprovalMessage string) error
 
 	return nil
 }
+
+
+func (sql *SQL) ApplicationApprovalInbox(user_id int64, applicantName string) error {
+
+	message := fmt.Sprintf(`Dear %s,
+
+	We are delighted to inform you that your application for a permit has been successfully reviewed and approved by the PTMS team of Panabo City's Engineering Office. Your submitted documents and information have met all the necessary requirements, and we are now proceeding with the final stages of your permit issuance.
+	
+	We appreciate your effort and cooperation throughout the process. Should you need further assistance or have any questions, please feel free to reach out to us.
+	
+	Thank you and congratulations on the approval of your application!
+	
+	Sincerely,
+	Panabo City Engineering's Issuance of Permit Section`, applicantName)
+
+	inbox := &Inbox{
+		Message: message,
+		UserID: user_id,
+	}
+
+	if result := sql.DB.Create(&inbox); result.Error != nil {
+		return result.Error
+	}
+
+	return nil
+}
+
+func (sql *SQL) DisapprovalInbox(user_id int64, disApprovalMessage string) error {
+
+	inbox := &Inbox{
+		Message: disApprovalMessage,
+		UserID: user_id,
+	}
+
+	if result := sql.DB.Create(&inbox); result.Error != nil {
+		return result.Error
+	}
+
+	return nil
+}
+
+
+func (sql *SQL) ReleaseDateInbox(user_id int64, releaseDateMessage string) error {
+
+	inbox := &Inbox{
+		Message: releaseDateMessage,
+		UserID: user_id,
+	}
+
+	if result := sql.DB.Create(&inbox); result.Error != nil {
+		return result.Error
+	}
+
+	return nil
+}
+
 
 
 
@@ -788,6 +867,10 @@ func (sql *SQL) DeleteInbox(inbox_id string) error {
 
 
 
+
+
+
+
 // ----------------------APPLICATIONS----------------------
 
 func (sql *SQL) AddApplication(applicantInfo *types.ApplicantInfo) error {
@@ -858,7 +941,7 @@ func (sql *SQL) AddApplication(applicantInfo *types.ApplicantInfo) error {
 }
 
 
-func (sql *SQL) FetchApplication(status string, searchName string, selectedMonth string, selectedWeek string) ([]*types.ApplicantInfoFetching, error) {
+func (sql *SQL) FetchApplication(status string, searchName string, selectedMonth string) ([]*types.ApplicantInfoFetching, error) {
 
 	var results []*types.ApplicantInfoFetching
 
@@ -867,7 +950,7 @@ func (sql *SQL) FetchApplication(status string, searchName string, selectedMonth
 		Select(`applications.id, applications.service_type, applications.application_code, applications.first_name, applications.middle_initial, applications.last_name, 
 		applications.barangay, applications.street, applications.municipality, applications.zip_code, applications.location_for_cons_and_install, applications.form_of_owner_ship, 
 		applications.construction_ownby_enterprise, applications.tax_account_number, applications.tel_number, applications.tct_number, applications.permit_type, 
-		applications.email, applications.admin_approved, applications.user_id, assessments.id, assessments.status`).
+		applications.email, applications.admin_approved, applications.release_date, applications.user_id, assessments.id, assessments.status`).
 
 		Joins("INNER JOIN assessments ON applications.id = assessments.application_id").
 		Where("applications.status = ?", status).
@@ -880,29 +963,29 @@ func (sql *SQL) FetchApplication(status string, searchName string, selectedMonth
 	}
 
 	if selectedMonth != "" {
-		query = query.Where("TO_CHAR(applications.created_at, 'Month') = ?", selectedMonth)
+		query = query.Where("TO_CHAR(applications.created_at, 'FMMonth') = ?", selectedMonth)
 	}
 
-	if selectedWeek != "" {
-		weeksAgo, err := parseWeeksAgo(selectedWeek)
-		if err == nil {
-			endDate := time.Now().AddDate(0, 0, -7*weeksAgo)
-			endDate = time.Date(endDate.Year(), endDate.Month(), endDate.Day(), 23, 59, 59, 999999999, endDate.Location())
-			startDate := endDate.AddDate(0, 0, -6) // Cover the full 7 days
-			startDate = time.Date(startDate.Year(), startDate.Month(), startDate.Day(), 0, 0, 0, 0, startDate.Location())
-			query = query.Where("applications.created_at BETWEEN ? AND ?", startDate, endDate)
-		}
-	}
+	// if selectedWeek != "" {
+	// 	weeksAgo, err := parseWeeksAgo(selectedWeek)
+	// 	if err == nil {
+	// 		endDate := time.Now().AddDate(0, 0, -7*weeksAgo)
+	// 		endDate = time.Date(endDate.Year(), endDate.Month(), endDate.Day(), 23, 59, 59, 999999999, endDate.Location())
+	// 		startDate := endDate.AddDate(0, 0, -6) // Cover the full 7 days
+	// 		startDate = time.Date(startDate.Year(), startDate.Month(), startDate.Day(), 0, 0, 0, 0, startDate.Location())
+	// 		query = query.Where("applications.created_at BETWEEN ? AND ?", startDate, endDate)
+	// 	}
+	// }
 
 	if err := query.Find(&results).Error; err != nil {
 		return nil, err
 	}
 
-	go func() {
-		if err := sql.AllAdminsApplicationApproval(results); err != nil {
-			fmt.Printf("Error updating admin approvals: %v\n", err)
-		}
-	}()
+	// go func() {
+	// 	if err := sql.AllAdminsApplicationApproval(results); err != nil {
+	// 		fmt.Printf("Error updating admin approvals: %v\n", err)
+	// 	}
+	// }()
 
 
 	return results, nil
@@ -910,37 +993,36 @@ func (sql *SQL) FetchApplication(status string, searchName string, selectedMonth
 
 
 
-func (sql *SQL) AllAdminsApplicationApproval(results []*types.ApplicantInfoFetching) error {
+// func (sql *SQL) AllAdminsApplicationApproval(results []*types.ApplicantInfoFetching) error {
 
-	for _, application := range results {
-		approvedAdmins := strings.Split(application.AdminApproved, ",")
-		requiredAdmins := []string{"architectural", "civil", "electrical"}
+// 	for _, application := range results {
+// 		approvedAdmins := strings.Split(application.AdminApproved, ",")
+// 		requiredAdmins := []string{"architectural", "civil", "electrical"}
 	
-		allApproved := true
-		for _, required := range requiredAdmins {
-			if !contains(approvedAdmins, required) {
-				allApproved = false
-				break
-			}
-		}
+// 		allApproved := true
+// 		for _, required := range requiredAdmins {
+// 			if !contains(approvedAdmins, required) {
+// 				allApproved = false
+// 				break
+// 			}
+// 		}
 	
-		if allApproved {
-			// Update the application status to "Approved"
-			approvalResult := sql.DB.Model(&Application{}).Where("id = ?", application.ID).Updates(&Application{
-				Status: "Approved",
-			})
+// 		if allApproved {
+// 			approvalResult := sql.DB.Model(&Application{}).Where("id = ?", application.ID).Updates(&Application{
+// 				Status: "Approved",
+// 			})
 	
-			if approvalResult.Error != nil {
-				return approvalResult.Error
-			}
-		}
+// 			if approvalResult.Error != nil {
+// 				return approvalResult.Error
+// 			}
+// 		}
 	
-	}
+// 	}
 
-	return nil
+// 	return nil
 
 	
-}
+// }
 
 
 func (sql *SQL) UpdateApplicationApproval(applicationID int64, adminApproved string) error {
@@ -958,6 +1040,31 @@ func (sql *SQL) UpdateApplicationApproval(applicationID int64, adminApproved str
     } else {
         currentApplication.AdminApproved = adminApproved
     }
+
+
+	adminsApproved := len(strings.Split(currentApplication.AdminApproved, ","))
+
+	if adminsApproved == 3 { 
+
+		applicantName := fmt.Sprintf("%s %s %s", currentApplication.FirstName, currentApplication.MiddleInitial, currentApplication.LastName)
+		if err := helpers.SendApprovalEmail(currentApplication.Email, applicantName); err != nil{
+			return err
+		}
+
+		if err := sql.ApplicationApprovalInbox(currentApplication.UserID, applicantName); err != nil{
+			return err
+		}
+		
+
+		approvalResult := sql.DB.Model(&Application{}).Where("id = ?", applicationID).Updates(&Application{
+			Status: "Approved",
+		})
+
+		if approvalResult.Error != nil {
+			return approvalResult.Error
+		}
+	}
+
 
     result := sql.DB.Model(&Application{}).Where("id = ?", applicationID).Updates(&Application{
         AdminApproved: currentApplication.AdminApproved,
@@ -987,22 +1094,22 @@ func (sql *SQL) UpdateApplicationDisApproval(applicationID int64, disapprovalMes
     return nil
 }
 
-func contains(slice []string, item string) bool {
-    for _, s := range slice {
-        if s == item {
-            return true
-        }
-    }
-    return false
-}
+// func contains(slice []string, item string) bool {
+//     for _, s := range slice {
+//         if s == item {
+//             return true
+//         }
+//     }
+//     return false
+// }
 
 
 
-func parseWeeksAgo(selectedWeek string) (int, error) {
-	var weeksAgo int
-	_, err := fmt.Sscanf(selectedWeek, "%d week", &weeksAgo) // Extract the week number
-	return weeksAgo, err
-}
+// func parseWeeksAgo(selectedWeek string) (int, error) {
+// 	var weeksAgo int
+// 	_, err := fmt.Sscanf(selectedWeek, "%d week", &weeksAgo) // Extract the week number
+// 	return weeksAgo, err
+// }
 
 
 
@@ -1036,6 +1143,21 @@ func (sql *SQL) UpdateApplicationCode(applicationID int64, applicationCode strin
 	result := sql.DB.Model(&Application{}).Where("id = ?", applicationID).Updates(&Application{
 		ApplicationCode: applicationCode,
 		Status: "Paid",
+	})
+
+	if result.Error != nil{
+		return result.Error
+	}
+
+	return nil
+}
+
+
+
+func (sql *SQL) UpdateReleaseDate(applicationID int64, dateFrom string, dateTo string) error {
+
+	result := sql.DB.Model(&Application{}).Where("id = ?", applicationID).Updates(&Application{
+		ReleaseDate: fmt.Sprintf("%s-%s", dateFrom, dateTo),
 	})
 
 	if result.Error != nil{

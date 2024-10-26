@@ -4,6 +4,7 @@ import { Login } from "../http/post/auth"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { faArrowLeft, faEye, faEyeSlash } from "@fortawesome/free-solid-svg-icons"
 import { useState } from "react"
+import Swal from "sweetalert2"
 
 
 export function LoginForm({ setRole }: {
@@ -17,12 +18,23 @@ export function LoginForm({ setRole }: {
     const togglePasswordVisibility = () => setShowPassword(!showPassword);
 
     const onSubmit: SubmitHandler<LoginCredentials> = async (data) => {
+        Swal.fire({
+            title: 'Logging In...',
+            text: 'Your request is being processed',
+            allowOutsideClick: false,
+            showConfirmButton: false,
+            willOpen: () => {
+                Swal.showLoading();
+            },
+        });
+
         const isLogin = await Login(data)
         if(!isLogin){
             setInvalidCredentials(true)
+            Swal.close();
         }
 
-        reset()
+        reset();
 
     }
 

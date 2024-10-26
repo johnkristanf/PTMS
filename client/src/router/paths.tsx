@@ -40,8 +40,8 @@ import PaidElectricalPage from "../pages/admin/electrical/PaidElectrical"
 import ApprovedElectricalPage from "../pages/admin/electrical/ApprovedElectrical"
 import DisapprovedElectricalPage from "../pages/admin/electrical/DisapprovedElectrical"
 import StaffAccountsElectricalPage from "../pages/admin/electrical/StaffAccountElectrical"
-import DisapprovedReleaserPage from "../pages/staff/releaser/Disapproved"
-import ApplicationReleaserPage from "../pages/staff/releaser/Application"
+import DisapprovedReleaserPage from "../pages/staff/releaser/DisapprovedReleaser"
+import ApplicationReleaserPage from "../pages/staff/releaser/ApplicationReleaser"
 import RetiredApplicationPage from "../pages/staff/receiver/RetiredApplication"
 
 

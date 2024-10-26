@@ -49,6 +49,8 @@ export type Application = {
 
     email: string
     user_id: number
+
+    release_date: string
     admin_approved: string
     
     assessment_status: string
@@ -69,6 +71,19 @@ export type DisapprovalData = {
     user_id: number
 
     disapproval_message?: string
+}
+
+
+export type ReleaseDateData = {
+    application_id: number
+
+    date_from?: string
+    date_to?: string
+    message?: string
+
+    email: string
+    user_id: number
+
 }
 
 
@@ -114,7 +129,14 @@ export type AssessmentApplicationData = {
 
 export type UpdateApplicationCodeTypes = {
     application_id: number,
-    application_code: string
+    application_code: string,
+
+    firstname: string
+    middleInitial: string
+    lastName: string
+
+    user_id: number
+    email: string
 }
 
 

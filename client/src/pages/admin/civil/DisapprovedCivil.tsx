@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { DropdownDate } from "../../../components/DropdownDate";
 import { PTMSHeader } from "../../../components/PtmsHeader";
 import { SideBar } from "../../../components/SideBar";
@@ -5,12 +6,9 @@ import { DisapprovedTable } from "../../../components/staff/DisapprovedTable";
 
 function DisapprovedCivilPage(){
 
-    const months: string[] = [
-        "January", "February", "March", "April", "May", "June",
-        "July", "August", "September", "October", "November", "December"
-    ];
-    
-    const weeks: number[] = Array.from({ length: 4 }, (_, i) => i + 1); 
+    const [searchTerm, setSearchTerm] = useState<string>("");
+    // const [selectedWeek, setSelectedWeek] = useState<string>("");
+    const [selectedMonth, setSelectedMonth] = useState<string>("");
 
     return(
         <div className="flex justify-between items-center h-[125vh] w-full bg-white">
@@ -26,24 +24,18 @@ function DisapprovedCivilPage(){
                         <h1 className="text-orange-400 text-4xl font-bold">Disapproved Applications</h1>
                         <div className="flex gap-3">
                             <DropdownDate
-                                options={months}
-                                optionFormatter={(month) => month}
-                            />
-
-                            <DropdownDate
-                                options={weeks}
-                                optionFormatter={(week) => `${week} week${week > 1 ? 's' : ''} ago`}
-                            />
-
-                            <input
-                                type="search"
-                                className="bg-gray-500 rounded-md p-2 font-bold text-white placeholder-white focus:outline-none"
-                                placeholder="Search Applicant"
+                               searchTerm={searchTerm}
+                               selectedMonth={selectedMonth}
+                               setSearchTerm={setSearchTerm}
+                               setSelectedMonth={setSelectedMonth}
                             />
                         </div>
                     </div>
 
-                    <DisapprovedTable />
+                    <DisapprovedTable
+                        searchTerm={searchTerm}
+                        selectedMonth={selectedMonth}
+                    />
                 </div>
             </div>
         </div>

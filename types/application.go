@@ -58,6 +58,7 @@ type ApplicantInfoFetching struct {
 	ApplicantID 				int64  `json:"applicantID"`
 	Status      				string `json:"assessment_status"`
 
+	ReleaseDate					string `json:"release_date"`
 	AdminApproved    			string `json:"admin_approved"`
 }
 
@@ -135,12 +136,27 @@ type AssessmentRender struct {
 }
 
 type UpdateApplicationCode struct {
-	ApplicationCode string `json:"application_code"`
+	ApplicationCode 	string `json:"application_code"`
+
+	FirstName 			string `json:"firstname"`
+	MiddleInitial 		string `json:"middleInitial"`
+	LastName 			string `json:"lastName"`
+
+	UserID 				int64 `json:"user_id"`
+	Email 				string `json:"email"`
 }
 
 type UpdateApplicationApproval struct {
-	AdminApproved 			string `json:"admin_approved"`
-	Status                  string  `json:"status"`
+	AdminApproved 		string  `json:"admin_approved"`
+
+	FirstName 			string  `json:"firstname"`
+	MiddleInitial 		string  `json:"middleInitial"`
+	LastName 			string  `json:"lastName"`
+
+	UserID				int64 	`json:"user_id"`
+	
+	Email 				string `json:"email"`
+	Status              string  `json:"status"`
 }
 
 type UpdateApplicationDisApproval struct {
@@ -153,6 +169,18 @@ type UpdateApplicationDisApproval struct {
 	UserID 				int64  `json:"user_id"`
 
 	DisapprovalMessage 	string `json:"disapproval_message"`
+}
+
+
+type ReleaseDateData struct {
+	ApplicationID	int64  `json:"application_id"`
+
+	Message			string `json:"message"`
+	DateFrom 		string `json:"date_from"`
+	DateTo 			string `json:"date_to"`
+
+	Email 			string `json:"email"`
+	UserID 			int64  `json:"user_id"`
 }
 
 type UpdateApplicationStatus struct {
@@ -246,7 +274,7 @@ type ArchitecturalRequirements struct {
     WalkWays                              bool `json:"WalkWays"`
     ComfortRooms                          bool `json:"Comfort_Rooms"`
     DrinkingFountains                     bool `json:"Drinking_Fountains"`
-    Swtches_Controls                      bool `json:"Switches_Controls"`
+    Switches_Controls                     bool `json:"Switches_Controls"`
     TelephoneBooth                        bool `json:"Telephone_Booth"`
     AutomaticAlarmSystem                  bool `json:"Automatic_AlarmSystem"`
     DirectionalSigns                      bool `json:"Directional_Signs"`

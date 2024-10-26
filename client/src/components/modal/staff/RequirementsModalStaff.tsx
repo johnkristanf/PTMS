@@ -86,6 +86,7 @@ function RequirementsModalStaff({ applicationID, setShowRequirements }: {
     };
 
     const [checkRequirements, setCheckRequirements] = useState<RequirementsWithoutID>(initialRequirementsState);
+    const [disabledRequirements, setDisabledRequirements] = useState<RequirementsWithoutID>(initialRequirementsState);
 
     const handleCheckboxChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         const key = itemKeyMapping[event.target.name];
@@ -157,6 +158,7 @@ function RequirementsModalStaff({ applicationID, setShowRequirements }: {
                 locationalClearance: response.data.locationalClearance,
             };
             setCheckRequirements(fetchedRequirements);
+            setDisabledRequirements(fetchedRequirements); 
         }
     }, [response]);
 
@@ -181,8 +183,9 @@ function RequirementsModalStaff({ applicationID, setShowRequirements }: {
                         id={item}
                         name={item}
                         checked={checkRequirements[itemKeyMapping[item]] || false}
+                        disabled={disabledRequirements[itemKeyMapping[item]] || false} // Disable based on fetched data
                         onChange={handleCheckboxChange}
-                        className="mr-2"
+                        className={`${disabledRequirements[itemKeyMapping[item]] ? 'bg-green-700': '' } mr-2`}
                         onClick={(e) => e.stopPropagation()}
                     />
                     <label className="text-black cursor-pointer" htmlFor={item} onClick={() => onCheckRequirements(item)}>
@@ -194,6 +197,7 @@ function RequirementsModalStaff({ applicationID, setShowRequirements }: {
     );
 
     const allRequirementsChecked = Object.values(checkRequirements).every(Boolean);
+    const disableIfallRequirementsChecked = Object.values(disabledRequirements).every(Boolean);
 
     return (
         <>
@@ -216,7 +220,7 @@ function RequirementsModalStaff({ applicationID, setShowRequirements }: {
                         {renderCheckboxes(dulySignedSealed, 'Duly Signed/Sealed')}
                         {renderCheckboxes(otherDocuments, 'Other Documents')}
 
-                        {/* {!allRequirementsChecked && ( */}
+                        {!disableIfallRequirementsChecked && (
                             <button
                                 type="submit"
                                 className={classNames(
@@ -225,7 +229,7 @@ function RequirementsModalStaff({ applicationID, setShowRequirements }: {
                             >
                                 Submit
                             </button>
-                        {/* )} */}
+                        )} 
 
                         
                     </form>

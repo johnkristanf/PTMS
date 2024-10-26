@@ -99,9 +99,9 @@ func (h *ApplicationHandler) FetchApplicationDataHandler(c echo.Context) error {
 	status := c.QueryParam("status")
 	searchTerm := c.QueryParam("searchTerm")
 	selectedMonth := c.QueryParam("selectedMonth")
-	selectedWeek := c.QueryParam("selectedWeek")
+	// selectedWeek := c.QueryParam("selectedWeek")
 	
-	applicantInfo, err := h.DB_METHOD.FetchApplication(status, searchTerm, selectedMonth, selectedWeek)
+	applicantInfo, err := h.DB_METHOD.FetchApplication(status, searchTerm, selectedMonth)
 	if err != nil{
 		return err
 	}
@@ -132,10 +132,10 @@ func (h *ApplicationHandler) UpdateApplicationApprovalHandler(c echo.Context) er
 
 
 func (h *ApplicationHandler) UpdateApplicationDisApprovalHandler(c echo.Context) error {
-	errorChan := make(chan error, 2) // Create a buffered channel to hold potential errors
+
+	errorChan := make(chan error, 2) 
 	var application *types.UpdateApplicationDisApproval
 
-	// Bind the request body to the application struct
 	if err := c.Bind(&application); err != nil {
 		return err
 	}
@@ -186,6 +186,69 @@ func (h *ApplicationHandler) UpdateApplicationDisApprovalHandler(c echo.Context)
 
 	return c.JSON(http.StatusOK, "Application Disapproved Successfully")
 }
+
+
+
+func (h *ApplicationHandler) SetReleaseDateHandler(c echo.Context) error {
+
+    var releaseDate *types.ReleaseDateData
+	if err := c.Bind(&releaseDate); err != nil {
+		return err
+	}
+
+    fmt.Println("Application ID:", releaseDate.ApplicationID)
+    fmt.Println("DateFrom:", releaseDate.DateFrom)
+    fmt.Println("DateTo:", releaseDate.DateTo)
+    fmt.Println("Email:", releaseDate.Email)
+    fmt.Println("UserID:", releaseDate.UserID)
+    fmt.Println("Message:", releaseDate.Message)
+
+    if releaseDate.ApplicationID == 0 || releaseDate.DateFrom == "" || releaseDate.DateTo == "" {
+        return c.JSON(http.StatusBadRequest, map[string]string{"error": "Missing required fields"})
+    }
+
+    if err := h.DB_METHOD.UpdateReleaseDate(releaseDate.ApplicationID, releaseDate.DateFrom, releaseDate.DateTo); err != nil {
+        return c.JSON(http.StatusInternalServerError, map[string]string{"error": "Failed to update release date"})
+    }
+
+    errorChan := make(chan error, 2)
+    var wg sync.WaitGroup
+
+    wg.Add(2)
+
+    go func() {
+        defer wg.Done()
+        if err := helpers.SendReleaseDateEmail(releaseDate.Email, releaseDate.Message); err != nil {
+            errorChan <- err
+        }
+    }()
+
+    go func() {
+        defer wg.Done()
+        if err := h.DB_METHOD.ReleaseDateInbox(releaseDate.UserID, releaseDate.Message); err != nil {
+            errorChan <- err
+        }
+    }()
+
+    go func() {
+        wg.Wait()
+        close(errorChan)
+    }()
+
+    var chanErr error
+    for e := range errorChan {
+        if e != nil {
+            chanErr = e
+        }
+    }
+
+    if chanErr != nil {
+        return c.JSON(http.StatusInternalServerError, map[string]string{"error": chanErr.Error()})
+    }
+
+    return c.JSON(http.StatusOK, "Set Release Date Successfully")
+}
+
 
 
 
@@ -244,13 +307,14 @@ func (h *ApplicationHandler) SetPaidAssessmentHandler(c echo.Context) error {
 
 func (h *ApplicationHandler) UpdateApplicationCodeHandler(c echo.Context) error {
 	
+	
 	param := c.Param("application_id")
 	application_id, err := strconv.Atoi(param)
 	if err != nil{
 		return err
 	}
-	var update types.UpdateApplicationCode
 
+	var update types.UpdateApplicationCode
 	if err := c.Bind(&update); err != nil{
 		return err
 	}
@@ -259,8 +323,53 @@ func (h *ApplicationHandler) UpdateApplicationCodeHandler(c echo.Context) error 
 		return err
 	}
 
+
+	applicantName := fmt.Sprintf("%s %s %s", update.FirstName, update.MiddleInitial, update.LastName)
+	errorChan := make(chan error, 2)
+    var wg sync.WaitGroup
+
+    wg.Add(2)
+
+	go func ()  {
+		defer wg.Done()
+
+		if err := helpers.SendApplicationCodeSetEmail(update.ApplicationCode, update.Email, applicantName); err != nil{
+			errorChan <- err
+		}
+	}()
+
+	go func ()  {
+		defer wg.Done()
+
+		if err := h.DB_METHOD.SetApplicationCodeInbox(update.UserID, applicantName, update.ApplicationCode); err != nil{
+			errorChan <- err
+		}
+	}()
+
+	go func ()  {
+		wg.Wait()
+		close(errorChan)	
+	}()
+
+	var chanErr error
+    for e := range errorChan {
+        if e != nil {
+            chanErr = e
+        }
+    }
+
+    if chanErr != nil {
+        return c.JSON(http.StatusInternalServerError, map[string]string{"error": chanErr.Error()})
+    }
+
+	
+
 	return c.JSON(http.StatusOK, "Application Code Updated Successfully")
 }
+
+
+
+
 
 
 // REQUIREMENTS
@@ -402,6 +511,10 @@ func (h *ApplicationHandler) FetchElectricalRequirementsHandler(c echo.Context) 
 
 	return c.JSON(http.StatusOK, requirements)
 }
+
+
+
+
 
 
 

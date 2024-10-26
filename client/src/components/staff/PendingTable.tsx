@@ -10,7 +10,7 @@ import { AssessmentCheckListModal } from "../modal/staff/AssesmentChecklist";
 import RequirementsModalStaff from "../modal/staff/RequirementsModalStaff";
 import { dropDownSelectType } from "../../types/dropdown";
 
-export function PendingTable({ searchTerm, selectedMonth, selectedWeek }: dropDownSelectType) {
+export function PendingTable({ searchTerm, selectedMonth }: dropDownSelectType) {
 
     const [applicantAssessmentInfo, setApplicantAssessmentInfo] = useState<AssessmentApplicationData>({
         application_id: 0,
@@ -45,9 +45,9 @@ export function PendingTable({ searchTerm, selectedMonth, selectedWeek }: dropDo
     };
 
     const { data: response, isLoading } = useQuery({
-        queryKey: ["pending_applications", searchTerm, selectedMonth, selectedWeek],
+        queryKey: ["pending_applications", searchTerm, selectedMonth],
         queryFn: async () => {
-            const data = await FetchPendingApplicantInfo(searchTerm, selectedMonth, selectedWeek);
+            const data = await FetchPendingApplicantInfo(searchTerm, selectedMonth);
             return data;
         },
     });

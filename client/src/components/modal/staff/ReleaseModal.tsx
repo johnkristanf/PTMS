@@ -1,26 +1,95 @@
 import { useState } from 'react';
 import { faX } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import Swal from 'sweetalert2';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { SetReleaseDate } from '../../../http/put/application';
+import { ReleaseDateData } from '../../../types/application';
 
-export function ReleaseDateModal({ setOpenReleaseModal }: {
-    setOpenReleaseModal: React.Dispatch<React.SetStateAction<boolean>>
+export function ReleaseDateModal({ setOpenReleaseModal, releaseDateData }: {
+    setOpenReleaseModal: React.Dispatch<React.SetStateAction<boolean>>,
+    releaseDateData: ReleaseDateData | undefined
 }) {
+
+    const queryClient = useQueryClient();
+
     const [message, setMessage] = useState<string>('');
     const [fromDate, setFromDate] = useState<string>('');
     const [toDate, setToDate] = useState<string>('');
 
-    // Determine if the Save button should be disabled
     const isSaveDisabled = !message.trim() || !fromDate || !toDate;
+
+    const mutation = useMutation({
+        mutationFn: SetReleaseDate,
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ["approved_applications"] });
+            queryClient.invalidateQueries({ queryKey: ["paid_applications"] });
+
+            Swal.fire({
+                position: "top-end",
+                icon: "success",
+                title: "Release Date Set Successfully",
+                showConfirmButton: false,
+                timer: 1500,
+            });
+
+            setOpenReleaseModal(false)
+        },
+
+        onMutate: () => {
+            Swal.fire({
+                title: 'Please wait...',
+                text: 'Your request is being processed',
+                allowOutsideClick: false,
+                showConfirmButton: false,
+                willOpen: () => {
+                    Swal.showLoading();
+                },
+            });
+        },
+
+        onError: (error: unknown) => {
+            console.error("Request error:", error);
+        },
+    });
+
+    const formatDate = (dateString: string): string => {
+        const date = new Date(dateString);
+        return date.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' });
+    };
+
+    const getTodayDate = () => {
+        const today = new Date();
+        return today.toISOString().split('T')[0]; 
+    };
+
+    const onSubmit = (e: React.FormEvent) => {
+        e.preventDefault();
+
+        if (releaseDateData) {
+            const formattedFromDate = formatDate(fromDate);
+            const formattedToDate = formatDate(toDate);
+
+            mutation.mutate({
+                application_id: releaseDateData.application_id,
+                message: message,
+                date_from: formattedFromDate,  
+                date_to: formattedToDate,
+                email: releaseDateData.email,
+                user_id: Number(releaseDateData.user_id),
+            });
+        }
+    };
 
     return (
         <div className="w-full h-full fixed top-0 left-0 flex justify-center items-center">
             <div className="fixed top-0 bg-gray-600 opacity-75 w-full h-screen"></div>
 
-            <div className="flex flex-col bg-white rounded-md p-8 fixed top-12 w-1/2">
+            <div className="flex flex-col bg-white rounded-md p-8 fixed top-4 w-1/2">
                 <div className="flex justify-between items-center">
                     <div className="flex-col flex">
                         <h1 className="font-bold text-3xl">Set Release Date</h1>
-                        <h1 className="font-bold text-md mb-5">Sending document release date via Gmail</h1>
+                        <h1 className="font-bold text-md mb-5">Sending document release date to {releaseDateData?.email}</h1>
                     </div>
 
                     <FontAwesomeIcon
@@ -30,14 +99,14 @@ export function ReleaseDateModal({ setOpenReleaseModal }: {
                     />
                 </div>
 
-                <form className="flex flex-col">
+                <form onSubmit={onSubmit} className="flex flex-col">
                     <div className="flex flex-col gap-5">
-                        <input
-                            type="text"
-                            placeholder="Enter Message"
-                            className="bg-gray-200 p-3 font-bold rounded-md placeholder-black focus:outline-none"
+                        <textarea
+                            placeholder="Enter your message here..."
+                            className="h-[100px] bg-gray-200 p-3 font-bold rounded-md placeholder-black focus:outline-none"
                             value={message}
-                            onChange={(e) => setMessage(e.target.value)} // Update message state on input change
+                            style={{ resize: "none" }}
+                            onChange={(e) => setMessage(e.target.value)} 
                         />
 
                         <label className="font-bold text-2xl mt-4">Estimated Date:</label>
@@ -47,7 +116,8 @@ export function ReleaseDateModal({ setOpenReleaseModal }: {
                             type="date"
                             className="p-3 font-bold rounded-md placeholder-gray-600 focus:outline-none"
                             value={fromDate}
-                            onChange={(e) => setFromDate(e.target.value)} // Update fromDate state on input change
+                            min={getTodayDate()} 
+                            onChange={(e) => setFromDate(e.target.value)} 
                         />
 
                         <label className="font-bold">To:</label>
@@ -55,7 +125,8 @@ export function ReleaseDateModal({ setOpenReleaseModal }: {
                             type="date"
                             className="p-3 font-bold rounded-md placeholder-gray-600 focus:outline-none"
                             value={toDate}
-                            onChange={(e) => setToDate(e.target.value)} // Update toDate state on input change
+                            min={fromDate || getTodayDate()} 
+                            onChange={(e) => setToDate(e.target.value)} 
                         />
                     </div>
 

@@ -12,10 +12,14 @@ import { UpdateApplicationApprovedAdmin } from "../../http/put/application";
 import { classNames } from "../../helpers/classNames";
 import { DisapprovedModal } from "../modal/admin/DisapprovedModal";
 
-export function PaidTable({ searchTerm, adminType }: {
-    searchTerm: string,
-    adminType?: string
-}){
+
+interface PaidTableProps {
+    searchTerm: string;
+    selectedMonth: string;
+    adminType?: string;
+}
+
+export function PaidTable({ searchTerm, selectedMonth, adminType }: PaidTableProps){
 
     const queryClient = useQueryClient();
 
@@ -27,9 +31,9 @@ export function PaidTable({ searchTerm, adminType }: {
     const [disapprovalData, setDisapprovalData] = useState<DisapprovalData>();
 
     const { data: response } = useQuery({
-        queryKey: ["paid_applications", searchTerm],
+        queryKey: ["paid_applications", searchTerm, selectedMonth],
         queryFn: async () => {
-            const data = await FetchPaidApplications(searchTerm);
+            const data = await FetchPaidApplications(searchTerm, selectedMonth);
             return data;
         },
     });
@@ -223,7 +227,7 @@ export function PaidTable({ searchTerm, adminType }: {
                                                     {item.addressNo} {item.barangay} {item.street} {item.municipality} {item.zipCode}
                                                 </td>
                                                 <td className="whitespace-nowrap px-3 py-2">
-                                                    {item.admin_approved !== "" ? item.admin_approved : "0"}
+                                                    {item.admin_approved !== "" ? item.admin_approved : "No admins approved"}
                                                 </td>
                                                 <td className="whitespace-nowrap px-3 py-2">{item.permit_type}</td>
                                                 <td className="whitespace-nowrap py-4">

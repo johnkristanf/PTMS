@@ -32,7 +32,7 @@ export const Login = async (loginCredentials: LoginCredentials): Promise<boolean
                     window.location.href = "/scanner/approved";
                     break;
                 case "RELEASER":
-                    window.location.href = "/releaser/approved";
+                    window.location.href = "/releaser/application";
                     break;
                     
                 default:

@@ -1,23 +1,13 @@
-import { ChangeEvent, useState } from "react";
 import { SideBar } from "../../../components/SideBar";
 import { DropdownDate } from "../../../components/DropdownDate";
 import { RetiredTable } from "../../../components/staff/RetiredTable";
 import { PTMSHeader } from "../../../components/PtmsHeader";
+import { useState } from "react";
 
 function RetiredApplicationPage() {
-  const [searchTerm, setSearchTerm] = useState("");
-
-  const months: string[] = [
-    "January", "February", "March", "April", "May", "June",
-    "July", "August", "September", "October", "November", "December"
-  ];
-
-  const weeks: number[] = Array.from({ length: 4 }, (_, i) => i + 1);  
-
-  const handleSearchChange = (event: ChangeEvent<HTMLInputElement>) => {
-    setSearchTerm(event.target.value);
-  };
-
+  const [searchTerm, setSearchTerm] = useState<string>("");
+  const [selectedMonth, setSelectedMonth] = useState<string>(""); 
+  
   return (
     <div className="flex justify-between items-center h-[110vh] bg-white">
       <SideBar role={"receiver"} />
@@ -32,21 +22,10 @@ function RetiredApplicationPage() {
 
             <div className="flex gap-3">
                   <DropdownDate
-                      options={months}
-                      optionFormatter={(month) => month}
-                  />
-
-                  <DropdownDate
-                      options={weeks}
-                      optionFormatter={(week) => `${week} week${week > 1 ? 's' : ''} ago`}
-                  />
-
-                  <input
-                    type="search"
-                    className="bg-gray-500 rounded-md p-2 font-bold text-white placeholder-white focus:outline-none"
-                    placeholder="Search Applicant"
-                    value={searchTerm}
-                    onChange={handleSearchChange}
+                      searchTerm={searchTerm}
+                      selectedMonth={selectedMonth}
+                      setSearchTerm={setSearchTerm}
+                      setSelectedMonth={setSelectedMonth}
                   />
             </div>
 
