@@ -79,6 +79,24 @@ func (h *ApplicationHandler) AddApplicationHandler(c echo.Context) error {
 	return c.JSON(http.StatusOK, "New Applicant Added")
 }
 
+
+func (h *ApplicationHandler) ApplicationExistsHandler(c echo.Context) error {
+	firstName := c.QueryParam("firstName")
+	lastName := c.QueryParam("lastName")
+	permitType := c.QueryParam("permitType")
+
+	isApplicationExists, err := h.DB_METHOD.IsApplicationExists(firstName, lastName, permitType)
+	if err != nil {
+		return err
+	}
+
+	if isApplicationExists {
+		return c.JSON(http.StatusOK, "application_exists")
+	}
+
+	return c.JSON(http.StatusOK, "application_dont_exists")
+}
+
 func (h *ApplicationHandler) FetchAppliedServicesHandler(c echo.Context) error {
 	userPayload, ok := c.Get("userPayload").(*types.UserPayload)
 	if !ok{

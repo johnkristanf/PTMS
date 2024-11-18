@@ -53,16 +53,16 @@ func main(){
 			// Determine the color based on HTTP method
 			var colorStart string
 			switch c.Request().Method {
-			case "GET":
-				colorStart = "\033[32m" // Green for GET requests
-			case "POST":
-				colorStart = "\033[33m" // Yellow for POST requests
-			case "PUT":
-				colorStart = "\033[34m" // Blue for PUT requests
-			case "DELETE":
-				colorStart = "\033[31m" // Red for DELETE requests
-			default:
-				colorStart = "\033[0m"  // Default color (no color)
+				case "GET":
+					colorStart = "\033[32m" // Green for GET requests
+				case "POST":
+					colorStart = "\033[33m" // Yellow for POST requests
+				case "PUT":
+					colorStart = "\033[34m" // Blue for PUT requests
+				case "DELETE":
+					colorStart = "\033[31m" // Red for DELETE requests
+				default:
+					colorStart = "\033[0m"  // Default color (no color)
 			}
 	
 			// ANSI escape code for resetting the color
@@ -104,6 +104,13 @@ func main(){
 		JWT_METHOD: jwt,
 	}
 
+	accessHandler := &handlers.AccessHandler{
+		DB_METHOD: db,
+		JWT_METHOD: jwt,
+	}
+
+	go accessHandler.DeleteOldLogsSchedulerHandler()
+	
 	s3Err := documentHandler.InitS3Client()
 	if s3Err != nil {
         log.Fatalf("Unable to load SDK config, %v", s3Err)
@@ -112,6 +119,7 @@ func main(){
 	routes.AuthRoutes(e, authHandler)
 	routes.ApplicationRoutes(e, applicationHandler)
 	routes.DocumentRoutes(e, documentHandler)
+	routes.AccessRoutes(e, accessHandler)
 
   
 	log.Println("Go http server is listening on port 4040")

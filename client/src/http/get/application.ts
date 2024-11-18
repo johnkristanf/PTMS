@@ -1,6 +1,36 @@
 import axios from "axios";
 
 
+export const IsApplicationExists = async (firstName: string, lastName: string, permitType: string) => {
+
+    try {
+        const params = new URLSearchParams({ firstName, lastName, permitType });
+
+        const response = await axios.get(`http://localhost:4040/application/exists?${params.toString()}`, {
+            withCredentials: true
+        });
+
+        console.log("response in application: ", response);
+
+        return response.data
+
+    } catch (error) {
+        console.error("Error in application exists checker: ", error);
+    }
+}
+
+
+export const FetchTrashApplication = async (searchTerm: string, selectedMonth: string) => {
+    const status = "Trash";
+    const params = new URLSearchParams({ status, searchTerm, selectedMonth });
+
+    return axios.get(`http://localhost:4040/application/get?${params.toString()}`, {
+        withCredentials: true
+    });
+}
+
+
+
 export const FetchPendingApplicantInfo = async (searchTerm: string, selectedMonth: string) => {
     const status = "Pending";
     const params = new URLSearchParams({ status, searchTerm, selectedMonth });
@@ -73,3 +103,10 @@ export const FetchElectricalRequirements = async (applicationID: number) => {
     });
 }
 
+
+
+export const FetchRequirements = async (applicationID: number, adminType: string) => {
+    return axios.get(`http://localhost:4040/application/fetch/${adminType}/requirements/${applicationID}`, {
+        withCredentials: true
+    });
+}

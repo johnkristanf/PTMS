@@ -202,7 +202,7 @@ export function ApproveTable({ searchTerm, selectedMonth, staffRole, ScannerRepo
                                                     }}
                                                     className="bg-orange-500 text-white font-bold p-3 rounded-md hover:opacity-75"
                                                 >
-                                                    Scan
+                                                    Store
                                                 </button>
 
                                                 <button

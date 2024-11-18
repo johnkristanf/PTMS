@@ -9,6 +9,8 @@ func ApplicationRoutes(e *echo.Echo, h *handlers.ApplicationHandler) {
 	
 	g := e.Group("/application")
 
+	g.GET("/exists", h.ApplicationExistsHandler, h.JWT_METHOD.AutheticationMiddleware)
+
 	g.GET("/fetch/assessments/:applicationID", h.FetchAssessmentsHandler, h.JWT_METHOD.StaffAdminAutheticationMiddleware)
 	g.GET("/get", h.FetchApplicationDataHandler, h.JWT_METHOD.StaffAdminAutheticationMiddleware)
 	g.GET("/get/applied", h.FetchAppliedServicesHandler, h.JWT_METHOD.AutheticationMiddleware)

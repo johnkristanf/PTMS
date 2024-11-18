@@ -43,7 +43,18 @@ func DB_CONFIG() (*SQL, error) {
 	sql.SetConnMaxLifetime(time.Hour * 1)
 	sql.SetConnMaxIdleTime(time.Minute * 30)
 
-	if err := db.AutoMigrate(&OfficeAccounts{}, &User{}, &Application{}, &First_Step_Requirements{}, &Architectural_Requirements{}, &Civil_Requirements{}, &Electrical_Requirements{}, &Assessment{}, &Inbox{}); err != nil {
+	if err := db.AutoMigrate(
+		&OfficeAccounts{}, 
+		&User{}, 
+		&Application{}, 
+		&First_Step_Requirements{}, 
+		&Architectural_Requirements{}, 
+		&Civil_Requirements{}, 
+		&Electrical_Requirements{}, 
+		&Assessment{}, 
+		&Inbox{},
+		&Access_Logs{},
+	); err != nil {
 		return nil, err
 	}
 

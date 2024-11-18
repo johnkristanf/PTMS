@@ -88,8 +88,8 @@ export const AssessmentCheckListModal = ({ applicationID, setAssessmentChecklist
         <div className="w-full h-full fixed top-0 left-0 flex justify-center items-center">
             <div className="fixed top-0 bg-gray-600 opacity-75 w-full h-screen"></div>
             
-            <div className="fixed top-0 w-full h-full flex items-center justify-end rounded-md p-5">
-                <div className="bg-white w-[70%] p-5 rounded-md h-full mr-[4rem]">
+            <div className="fixed top-16 w-full h-[90%] flex items-center justify-end rounded-md p-5">
+                <div className="bg-white w-[70%] p-5 rounded-md h-full mr-[4rem] overflow-auto">
                     <form onSubmit={handleSubmit(onSubmit)}>
                         <div className="w-full flex items-center justify-between gap-8 mb-3">
                             <div className="flex flex-col gap-2">

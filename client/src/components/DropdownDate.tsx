@@ -1,5 +1,7 @@
 import { ChangeEvent } from "react";
 import { dropDownMonths } from "../helpers/dropdownlist";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faSearch } from "@fortawesome/free-solid-svg-icons";
 
 interface DropdownDateProps {
   searchTerm: string;
@@ -23,7 +25,6 @@ export const DropdownDate: React.FC<DropdownDateProps> = ({
     setSelectedMonth(event.target.value);
   };
 
-
   return (
     <div className="flex gap-3">
       <select
@@ -38,25 +39,19 @@ export const DropdownDate: React.FC<DropdownDateProps> = ({
         ))}
       </select>
 
-      {/* <select
-        value={selectedWeek}
-        className="bg-gray-500 text-white p-2 rounded-md focus:outline-none"
-        onChange={handleWeekChange}
-      >
-        {dropDownWeeks.map((week, index) => (
-          <option key={index} value={String(week)}>
-            {week}
-          </option>
-        ))}
-      </select> */}
-
-      <input
-        type="search"
-        className="bg-gray-500 rounded-md p-2 font-bold text-white placeholder-white focus:outline-none"
-        placeholder="Search Applicant"
-        value={searchTerm}
-        onChange={handleSearchChange}
-      />
+      <div className="relative flex items-center">
+        <FontAwesomeIcon
+          icon={faSearch}
+          className="absolute left-2 text-white"
+        />
+        <input
+          type="search"
+          className="bg-gray-500 rounded-md p-2 pl-8 font-bold text-white placeholder-white focus:outline-none"
+          placeholder="Search Applicant"
+          value={searchTerm}
+          onChange={handleSearchChange}
+        />
+      </div>
     </div>
   );
 };

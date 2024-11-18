@@ -77,11 +77,15 @@ function ServicesPage(){
                 <PTMSHeader />
 
                 <div className="flex flex-col gap-5 w-full pb-5">
-                    <h1 className="text-4xl font-bold text-orange-500">Applied Services</h1>
+
+                    <div className="flex flex-col">
+                        <h1 className='font-bold text-xl text-gray-600 mb-5'>Step 3:</h1>
+                        <h1 className="text-4xl font-bold text-orange-500">Applied Services</h1>
+                    </div>
 
                     <div className="flex gap-3 pr-12">
 
-                                <div className="flex flex-col bg-orange-50 h-[70%] rounded-md">
+                                <div className="flex flex-col bg-orange-100 h-[70%] rounded-md">
 
                                     <div className="overflow-x-auto sm:-mx-6 lg:-mx-8">
                                         <div className="inline-block min-w-full py-2 sm:px-6 lg:px-8">
@@ -113,7 +117,9 @@ function ServicesPage(){
                                                             className={classNames(
                                                                 data.status == "Approved" ? 'text-green-700' : '',
                                                                 data.status == "Disapproved" ? 'text-red-800': '',
+                                                                data.status == "Trash" ? 'text-red-800': '',
                                                                 data.status == "Pending" ? 'text-gray-500': '',
+                                                                data.status == "Paid" ? 'text-green-700': '',
                                                                 "whitespace-nowrap pl-6 py-4 font-bold uppercase"
                                                             )}
                                                         >
@@ -131,7 +137,7 @@ function ServicesPage(){
 
                                                                 <button 
                                                                     onClick={() => setPermits(data)}
-                                                                    className="bg-gray-500 rounded-md p-2 text-white font-bold hover:opacity-75"
+                                                                    className="bg-green-700 rounded-md p-2 text-white font-bold hover:opacity-75"
                                                                     >
                                                                     Application Form
                                                                 </button>
@@ -139,7 +145,7 @@ function ServicesPage(){
 
                                                                 <button 
                                                                     onClick={() => setShowRequirements(true)}
-                                                                    className="bg-black text-white font-bold p-2 rounded-md hover:opacity-75"
+                                                                    className="bg-sky-600 text-white font-bold p-2 rounded-md hover:opacity-75"
                                                                     >
                                                                     Requirements
                                                                 </button>
@@ -162,7 +168,7 @@ function ServicesPage(){
                                                                             disabled={data.status != 'Approved'}
                                                                             className={classNames(
                                                                                 "w-full text-white p-2 hover:opacity-75 rounded-md cursor-pointer text-center",
-                                                                                data.status != 'Approved' ? 'hover:cursor-not-allowed bg-gray-400': 'bg-green-700'
+                                                                                data.status != 'Approved' ? 'hover:cursor-not-allowed bg-gray-400': 'bg-orange-600'
                                                                             )}
 
                                                                             onClick={() => {
@@ -174,9 +180,10 @@ function ServicesPage(){
                                                                         </button>
                                                                         
                                                                         <button 
+                                                                            disabled={data.status != 'Approved'}
                                                                             className={classNames(
                                                                                 "w-full text-white p-2 hover:opacity-75 rounded-md cursor-pointer text-center",
-                                                                                data.status != 'Approved' ? 'hover:cursor-not-allowed bg-gray-400': 'bg-black'
+                                                                                data.status != 'Approved' ? 'hover:cursor-not-allowed bg-gray-400': 'bg-orange-600'
                                                                             )}
 
                                                                             >
@@ -185,13 +192,7 @@ function ServicesPage(){
                                                                     </div>
                                                                 )}
 
-                                                                {/* <button 
-                                                                    onClick={() => setOpenCompletion(true)}
-                                                                    className={` ${data.status != 'Approved' ? 'hover:cursor-not-allowed bg-gray-400': 'bg-green-700 '} text-white font-bold p-2 rounded-md hover:opacity-75`}
-                                                                    disabled={data.status != 'Approved'}
-                                                                    >
-                                                                    Completion
-                                                                </button> */}
+                                                                
                                                             </div>
                                                         </td>
 
@@ -210,11 +211,14 @@ function ServicesPage(){
                                 </div>
                                 
 
-                        <div className="bg-white rounded-md p-5 h-1/2">
+                        <div className=" rounded-md p-5 h-1/2 ">
                             <h1 className='font-bold text-xl'>Note:</h1>
 
                             <div className="flex flex-col gap-5">
-                                <h1 className='font-bold text-sm'>Please secure copies of requirements and permits to be submitted to City's Engineering Office</h1>
+                                <h1 className='font-bold text-sm'>Please secure copies of requirements 
+                                    and permits to be submitted to City's Engineering Office. Completion and occupancy cannot be 
+                                    access once your application is disapproved
+                                </h1>
 
                                 <div className="flex flex-col text-gray-500 font-bold text-sm">
                                     <h1>Thank You</h1>

@@ -1,19 +1,22 @@
 import { Link, useLocation } from "react-router-dom";
 import { classNames } from "../helpers/classNames";
 import { SignOut } from "../http/post/auth";
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import { FetchLoginAccount } from "../http/get/auth";
 import { useEffect, useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faChevronRight, faSignOut } from "@fortawesome/free-solid-svg-icons";
 import { LoginAccount } from "../types/auth";
+import Swal from "sweetalert2";
+import { RequestAccessRole } from "../http/post/access";
+import { AccessRoleTypes } from "../types/access";
 
 export function SideBar({role}: {
   role: string
 }){
     return(
-        <div className="flex flex-col items-center gap-2 p-8 items-center bg-gray-200 h-full w-[19%] z-[9999]">
-          <img src="/img/ENGINEER_LOGO.png" alt="City Engineering Logo" width={90} />
+        <div className="flex flex-col  gap-2 p-8 bg-gray-200 h-[130vh] w-[19%] z-[9999]">
+          <img src="/img/ENGINEER_LOGO.png" alt="City Engineering Logo" width={90} className="mt-8" />
 
           <UserInfo />
           
@@ -98,12 +101,18 @@ function NavLinks({ role }: { role: string }) {
     iconSrc: string
   }
 
+  type SwitchRoleNavigation = {
+    name: string,
+    role: string,
+    iconSrc: string
+  }
+
 
   const location = useLocation();
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const navLinks: NavigationTypes[] = [];
   const admins: NavigationTypes[] = [];
-  const staffs: NavigationTypes[] = [];
+  const accessStaffs: SwitchRoleNavigation[] = [];
 
   const [isAdminModalVisible, setIsAdminModalVisible] = useState(false); 
   const toggleAdminModal = () => setIsAdminModalVisible((prevState) => !prevState);
@@ -121,11 +130,55 @@ function NavLinks({ role }: { role: string }) {
   ]
 
 
+  const mutation = useMutation({
+    mutationFn: RequestAccessRole,
+    onSuccess: () => {
+
+        Swal.fire({
+          position: "top-end",
+          icon: "success",
+          title: "Access Request Sent Successfully",
+          text: "Please wait for the admins approval",
+        });
+
+    },
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    onError: (error: any) => {
+        console.error("Request Access error:", error);
+    },
+  });
+  
+
+  const staffRequestAccessRole = (role: string, user_id: number, access_role: string) => {
+    toggleAdminModal();
+    const accessRole: AccessRoleTypes = {
+      role,
+      user_id, 
+      access_role
+    }
+
+    console.log("role data: ", accessRole);
+    
+
+    mutation.mutate(accessRole)
+  }
+
+
+  const { data: response } = useQuery({
+    queryKey: ["login_account"],
+    queryFn: FetchLoginAccount,
+  });
+
+  const loginAccount: LoginAccount = response?.data; 
+
+
   // ----------------------------------ADMINS----------------------------------------
   if (role === "architectural") {
     navLinks.push({ name: "Applicants", to: "/architectural/paid/applications", iconSrc: "/img/icons/applicants.png" });
+
     navLinks.push({ name: "Approved", to: "/architectural/approved/applications", iconSrc: "/img/icons/approved.png" });
     navLinks.push({ name: "Disapproved", to: "/architectural/disapproved/applications", iconSrc: "/img/icons/disapproved.png" });
+    navLinks.push({ name: "Trash", to: "/architectural/trash/applications", iconSrc: "/img/icons/trash.png" });
 
     admins.push({ name: "Electrical", to: "/electrical/paid/applications", iconSrc: "/img/icons/applicants.png" });
     admins.push({ name: "Civil/Structural", to: "/civil/paid/applications", iconSrc: "/img/icons/applicants.png" });
@@ -138,6 +191,7 @@ function NavLinks({ role }: { role: string }) {
     navLinks.push({ name: "Applicants", to: "/civil/paid/applications", iconSrc: "/img/icons/applicants.png" });
     navLinks.push({ name: "Approved", to: "/civil/approved/applications", iconSrc: "/img/icons/approved.png" });
     navLinks.push({ name: "Disapproved", to: "/civil/disapproved/applications", iconSrc: "/img/icons/disapproved.png" });
+    navLinks.push({ name: "Trash", to: "/civil/trash/applications", iconSrc: "/img/icons/trash.png" });
 
     admins.push({ name: "Architectural", to: "/architectural/paid/applications", iconSrc: "/img/icons/applicants.png" });
     admins.push({ name: "Electrical", to: "/electrical/paid/applications", iconSrc: "/img/icons/applicants.png" });
@@ -149,6 +203,7 @@ function NavLinks({ role }: { role: string }) {
     navLinks.push({ name: "Applicants", to: "/electrical/paid/applications", iconSrc: "/img/icons/applicants.png" });
     navLinks.push({ name: "Approved", to: "/electrical/approved/applications", iconSrc: "/img/icons/approved.png" });
     navLinks.push({ name: "Disapproved", to: "/electrical/disapproved/applications", iconSrc: "/img/icons/disapproved.png" });
+    navLinks.push({ name: "Trash", to: "/electrical/trash/applications", iconSrc: "/img/icons/trash.png" });
     
     admins.push({ name: "Architectural", to: "/architectural/paid/applications", iconSrc: "/img/icons/applicants.png" });
     admins.push({ name: "Civil/Structural", to: "/civil/paid/applications", iconSrc: "/img/icons/applicants.png" });
@@ -161,10 +216,10 @@ function NavLinks({ role }: { role: string }) {
 
   if (role === "receiver") {
     navLinks.push({ name: "Pending", to: "/receiver/pending/applications", iconSrc: "/img/icons/services_option.png" });
-    navLinks.push({ name: "Retired", to: "/receiver/retired/applications", iconSrc: "/img/icons/services_option.png" });
+    navLinks.push({ name: "Trash", to: "/receiver/trash/applications", iconSrc: "/img/icons/trash.png" });
 
-    staffs.push({ name: "Scanner", to: "/scanner/approved", iconSrc: "/img/icons/scanner_icon.png" });
-    staffs.push({ name: "Releaser", to: "/releaser/application", iconSrc: "/img/icons/releaser_icon.png" });
+    accessStaffs.push({ name: "Scanner", role: "SCANNER", iconSrc: "/img/icons/scanner_icon.png" });
+    accessStaffs.push({ name: "Releaser", role: "RELEASER", iconSrc: "/img/icons/releaser_icon.png" });
     
     navLinks.push({ name: "Edit Account", to: "/edit/receiver", iconSrc: "/img/icons/edit_account.png" });
   }
@@ -173,19 +228,19 @@ function NavLinks({ role }: { role: string }) {
     navLinks.push({ name: "Approved", to: "/scanner/approved", iconSrc: "/img/icons/approved.png" });
     navLinks.push({ name: "Report", to: "/scanner/report", iconSrc: "/img/icons/approved.png" });
 
-    staffs.push({ name: "Receiver", to: "/receiver/pending/applications", iconSrc: "/img/icons/receiver_icon.png" });
-    staffs.push({ name: "Releaser", to: "/releaser/application", iconSrc: "/img/icons/releaser_icon.png" });
+    accessStaffs.push({ name: "Receiver", role: "RECEIVER", iconSrc: "/img/icons/receiver_icon.png" });
+    accessStaffs.push({ name: "Releaser", role: "RELEASER", iconSrc: "/img/icons/releaser_icon.png" });
     
     navLinks.push({ name: "Edit Account", to: "/edit/scanner", iconSrc: "/img/icons/edit_account.png" });
   }
 
   if (role === "releaser") {
-    navLinks.push({ name: "Applications", to: "/releaser/application", iconSrc: "/img/icons/approved.png" });
+    // navLinks.push({ name: "Applications", to: "/releaser/application", iconSrc: "/img/icons/approved.png" });
     navLinks.push({ name: "Approved", to: "/releaser/approved", iconSrc: "/img/icons/approved.png" });
     navLinks.push({ name: "Disapproved", to: "/releaser/disapproved", iconSrc: "/img/icons/approved.png" });
 
-    staffs.push({ name: "Receiver", to: "/receiver/pending/applications", iconSrc: "/img/icons/receiver_icon.png" });
-    staffs.push({ name: "Scanner", to: "/scanner/approved", iconSrc: "/img/icons/scanner_icon.png" });
+    accessStaffs.push({ name: "Receiver", role: "RELEASER", iconSrc: "/img/icons/receiver_icon.png" });
+    accessStaffs.push({ name: "Scanner", role: "SCANNER", iconSrc: "/img/icons/scanner_icon.png" });
 
     navLinks.push({ name: "Edit Account", to: "/edit/releaser", iconSrc: "/img/icons/edit_account.png" });
   }
@@ -221,7 +276,7 @@ function NavLinks({ role }: { role: string }) {
             replace={true}
             onClick={() => setActiveLink(item.to)}
             className={classNames(
-              "font-bold text-lg p-2 rounded-md w-full text-center flex items-center justify-center gap-1",
+              "font-bold text-lg p-2 rounded-md w-full text-center flex items-center gap-1",
               activeLink === item.to ? "bg-orange-400 text-white" : "text-gray-600 hover:bg-gray-500 hover:text-white"
             )}
           >
@@ -237,7 +292,7 @@ function NavLinks({ role }: { role: string }) {
 
           <div 
             onClick={toggleAdminModal}
-            className="relative flex items-center justify-center text-lg p-2 rounded-md gap-2 text-gray-600 hover:bg-gray-500 hover:text-white"
+            className="relative flex  justify-center text-lg p-2 rounded-md gap-2 text-gray-600 hover:bg-gray-500 hover:text-white"
           >
             <img 
               src="/img/icons/staff_picture.png"             
@@ -282,7 +337,7 @@ function NavLinks({ role }: { role: string }) {
         
           <div 
             onClick={toggleAdminModal}
-            className="relative flex items-center justify-center gap-3 text-lg p-2 rounded-md text-gray-600 hover:bg-gray-500 hover:text-white"
+            className="relative flex gap-3 text-lg p-2 rounded-md text-gray-600 hover:bg-gray-500 hover:text-white"
           >
             <img 
               src="/img/icons/staff_picture.png"             
@@ -294,7 +349,7 @@ function NavLinks({ role }: { role: string }) {
             <button
               className="font-bold w-full text-center"
             >
-              Switch Staff
+              Access Staff
             </button>
 
             <FontAwesomeIcon icon={faChevronRight} className="text-black"/>
@@ -302,21 +357,20 @@ function NavLinks({ role }: { role: string }) {
             {isAdminModalVisible && (
                 <div className="absolute right-[-200px] top-[-20px] bg-gray-400 text-white p-2 rounded-md w-[180px] h-[100px] shadow-lg">
                   
-                  {staffs.map((item) => (
-                    <Link
+                  {accessStaffs.map((item) => (
+                    <button
                       key={item.name}
-                      to={item.to}
-                      replace={true}
                       onClick={() => {
-                        setActiveLink(item.to);
+                        setActiveLink(item.role);
                         toggleAdminModal(); 
+                        staffRequestAccessRole(loginAccount.role, loginAccount.id, item.role)
                       }}
                       className={classNames(
                         "font-bold text-lg p-2 rounded-md w-full text-center flex items-center justify-center gap-1 hover:text-black"
                       )}
                     >
                       {item.name}
-                    </Link>
+                    </button>
                   ))}
 
                 </div>

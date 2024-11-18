@@ -11,6 +11,7 @@ import Swal from "sweetalert2";
 import { UpdateApplicationApprovedAdmin } from "../../http/put/application";
 import { classNames } from "../../helpers/classNames";
 import { DisapprovedModal } from "../modal/admin/DisapprovedModal";
+import { AssessmentCheckListModal } from "../modal/staff/AssesmentChecklist";
 
 
 interface PaidTableProps {
@@ -25,28 +26,38 @@ export function PaidTable({ searchTerm, selectedMonth, adminType }: PaidTablePro
 
     const [openDisapprovedModal, setOpenDisapprovedModal] = useState<boolean>(false);
     const [requirementsModal, setRequirementsModal] = useState<boolean | undefined>(false);
+    const [assessmentChecklistModal, setAssessmentChecklistModal] = useState<boolean>(false); 
+
+
     const [applicationID, setApplicationID] = useState<number>();
     const [allRequirementsChecked, setAllRequirementsChecked] = useState<boolean>(false); 
 
     const [disapprovalData, setDisapprovalData] = useState<DisapprovalData>();
 
-    const { data: response } = useQuery({
+    const { data: paidApplicationsResponse } = useQuery({
         queryKey: ["paid_applications", searchTerm, selectedMonth],
         queryFn: async () => {
             const data = await FetchPaidApplications(searchTerm, selectedMonth);
             return data;
         },
     });
-
-    const paidApplication: Application[] = response?.data || [];
-
-    console.log("paidApplication: ", paidApplication)
-    console.log("allRequirementsChecked: ", allRequirementsChecked)
-
+    
+   
+    
+    const paidApplication: Application[] = paidApplicationsResponse?.data || [];
+    
+    
     const openRequirements = (applicationID: number) => {
         setRequirementsModal(true)
         setApplicationID(applicationID)
     }
+
+
+    const openAssessments = (applicationID: number) => {
+        setAssessmentChecklistModal(true)
+        setApplicationID(applicationID)
+    }
+
 
     const mutation = useMutation({
         mutationFn: UpdateApplicationApprovedAdmin,
@@ -83,56 +94,33 @@ export function PaidTable({ searchTerm, selectedMonth, adminType }: PaidTablePro
     const onApprove = (application_id: number, admin_approved: string) => {
         const admins = admin_approved.split(',').length
 
-        if(admins == 2){
-            Swal.fire({
-                title: "Approve this Application?",
-                text: "You are the last admin to approve this application. Applicant can now procceed to the next step",
-                icon: "question",
-                showCancelButton: true,
-                confirmButtonColor: "#ff981a",
-                cancelButtonColor: "#000000",
-                confirmButtonText: "Yes",
-            }).then((result) => {
-                if (result.isConfirmed) {
+        const lastAdminToApproveMessage = "You are the last admin to approve this application. Applicant can now procceed to the next step"
+        const adminToApproveMessage = "This changes cannot be revert"
+
+        Swal.fire({
+            title: "Approve this Application?",
+            text: admins == 2 ? lastAdminToApproveMessage : adminToApproveMessage,
+            icon: "question",
+            showCancelButton: true,
+            confirmButtonColor: "#ff981a",
+            cancelButtonColor: "#000000",
+            confirmButtonText: "Yes",
+        }).then((result) => {
+            if (result.isConfirmed) {
     
-                    if(adminType){
-                        const data = {
-                            application_id,
-                            admin_approved: adminType,
-                        };
+                if(adminType){
+                    const data = {
+                        application_id,
+                        admin_approved: adminType,
+                    };
         
-                        mutation.mutate(data);
-                    }
+                    mutation.mutate(data);
+                }
                     
                 }
             });
 
-        } else {
-            
-            Swal.fire({
-                title: "Approve this Application?",
-                text: "This changes cannot be revert",
-                icon: "question",
-                showCancelButton: true,
-                confirmButtonColor: "#ff981a",
-                cancelButtonColor: "#000000",
-                confirmButtonText: "Yes",
-            }).then((result) => {
-                if (result.isConfirmed) {
-    
-                    if(adminType){
-                        const data = {
-                            application_id,
-                            admin_approved: adminType,
-                        };
         
-                        mutation.mutate(data);
-                    }
-                    
-                }
-            });
-        }
-
         
     }
 
@@ -184,12 +172,26 @@ export function PaidTable({ searchTerm, selectedMonth, adminType }: PaidTablePro
 
 
             {
+                assessmentChecklistModal && (
+                    <AssessmentCheckListModal
+                        applicationID={applicationID}
+                        setAssessmentChecklist={setAssessmentChecklistModal}
+                    />
+                )
+            }
+
+
+            {
                 openDisapprovedModal && (
                     <DisapprovedModal 
                         disapprovalData={disapprovalData}
                         setOpenDisapprovedModal={setOpenDisapprovedModal}
                     />
                 )
+            }
+
+            {
+
             }
 
             
@@ -226,28 +228,46 @@ export function PaidTable({ searchTerm, selectedMonth, adminType }: PaidTablePro
                                                 <td className="whitespace-normal px-3 py-2 break-words">
                                                     {item.addressNo} {item.barangay} {item.street} {item.municipality} {item.zipCode}
                                                 </td>
-                                                <td className="whitespace-nowrap px-3 py-2">
-                                                    {item.admin_approved !== "" ? item.admin_approved : "No admins approved"}
+                                                <td className="whitespace-nowrap px-3 py-2 font-bold">
+
+                                                    { item.admin_approved !== "" ? (
+                                                        item.admin_approved?.split(",").map((admin, index) => (
+                                                            <div key={index}>{admin}</div>  
+                                                        ))
+
+                                                    ) : "N/A"}
                                                 </td>
+
                                                 <td className="whitespace-nowrap px-3 py-2">{item.permit_type}</td>
                                                 <td className="whitespace-nowrap py-4">
                                                     <div className="flex gap-2">
-                                                        {adminType && !item.admin_approved.split(",").includes(adminType) && (
+
+                                                        {adminType && !item.admin_approved?.split(",").includes(adminType) && (
+                                                            <button
+                                                                onClick={() => openAssessments(item.application_id)}
+                                                                className="bg-green-700 rounded-md p-3 text-white font-bold hover:opacity-75"
+                                                            >
+                                                                Assessments
+                                                            </button>
+                                                        )}
+
+                                                        {adminType && !item.admin_approved?.split(",").includes(adminType) && (
                                                             <button
                                                                 onClick={() => openRequirements(item.application_id)}
-                                                                className="bg-orange-400 rounded-md p-3 text-white font-bold hover:opacity-75"
+                                                                className="bg-sky-600 rounded-md p-3 text-white font-bold hover:opacity-75"
                                                             >
                                                                 Requirements
                                                             </button>
                                                         )}
 
-                                                        {adminType && item.admin_approved.split(",").includes(adminType) ? (
+                                                        {adminType && item.admin_approved?.split(",").includes(adminType) ? (
                                                             <h1 className="text-green-500 font-bold text-md">Application Approved</h1>
                                                         ) : (
+
                                                             <button
-                                                                onClick={() => onApprove(item.application_id, item.admin_approved)}
+                                                                onClick={() => onApprove(item.application_id, item.admin_approved || "")}
                                                                 className={classNames(
-                                                                    allRequirementsChecked ? "bg-green-700" : "bg-gray-400 hover:cursor-not-allowed",
+                                                                    allRequirementsChecked && item.application_id == applicationID ? "bg-orange-600" : "bg-gray-400 hover:cursor-not-allowed",
                                                                     "text-white font-bold p-3 rounded-md hover:opacity-75"
                                                                 )}
                                                                 disabled={!allRequirementsChecked}
@@ -256,7 +276,7 @@ export function PaidTable({ searchTerm, selectedMonth, adminType }: PaidTablePro
                                                             </button>
                                                         )}
 
-                                                        {adminType && !item.admin_approved.split(",").includes(adminType) && (
+                                                        {adminType && !item.admin_approved?.split(",").includes(adminType) && (
                                                             <button
                                                                 onClick={() =>
                                                                     onOpenDisapprovedModal({

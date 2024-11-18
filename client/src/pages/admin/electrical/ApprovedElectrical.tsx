@@ -3,44 +3,64 @@ import { DropdownDate } from "../../../components/DropdownDate";
 import { PTMSHeader } from "../../../components/PtmsHeader";
 import { SideBar } from "../../../components/SideBar";
 import { ApproveTable } from "../../../components/staff/ApprovedTable";
+import AdminRequestAccessModal from "../../../components/admin/AdminRequestAccessModal";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faBell } from "@fortawesome/free-solid-svg-icons";
 
 function ApprovedElectricalPage(){
 
     const [searchTerm, setSearchTerm] = useState<string>("");
-    // const [selectedWeek, setSelectedWeek] = useState<string>("");
     const [selectedMonth, setSelectedMonth] = useState<string>(""); 
 
+    const [isNotificationModalOpen, setIsNotificationModalOpen] = useState<boolean>(false);
+   
+    const toggleNotificationModal = () => setIsNotificationModalOpen((prevState) => !prevState);
+
     return(
-        <div className="flex justify-between items-center h-[125vh] bg-white">
-            <SideBar role={"electrical"}/>
 
-            <div className="w-[78%] h-full flex justify-center items-center">
+        <>
+            {
+                isNotificationModalOpen && (<AdminRequestAccessModal />)
+            }
 
-                <PTMSHeader />
+            <div className="flex justify-between items-center h-[125vh] bg-white">
+                <SideBar role={"electrical"}/>
 
-                <div className="flex flex-col justify-start gap-2 w-full h-[80%] mr-5 mt-32">
+                <div className="w-[78%] h-full flex justify-center items-center">
 
-                    <div className="flex justify-between">
-                        <h1 className="text-orange-500 text-4xl font-bold">Approved Applications</h1>
-                        <div className="flex gap-3">
-                            <DropdownDate
-                               searchTerm={searchTerm}
-                               selectedMonth={selectedMonth}
-                               setSearchTerm={setSearchTerm}
-                               setSelectedMonth={setSelectedMonth}
-                            />
+                    <PTMSHeader />
 
+                    <div className="flex flex-col justify-start gap-2 w-full h-[80%] mr-5 mt-32">
+
+                        <div className="flex justify-between">
+                            <h1 className="text-orange-500 text-4xl font-bold">Approved Applications</h1>
+                            <div className="flex items-center gap-3">
+
+                                <FontAwesomeIcon 
+                                    icon={faBell}
+                                    className="text-2xl hover:opacity-75 hover:cursor-pointer"
+                                    onClick={toggleNotificationModal}
+                                />
+
+                                <DropdownDate
+                                searchTerm={searchTerm}
+                                selectedMonth={selectedMonth}
+                                setSearchTerm={setSearchTerm}
+                                setSelectedMonth={setSelectedMonth}
+                                />
+
+                            </div>
                         </div>
-                    </div>
 
-                    <ApproveTable 
-                        searchTerm={searchTerm} 
-                        selectedMonth={selectedMonth} 
-                        staffRole="" 
-                    />
+                        <ApproveTable 
+                            searchTerm={searchTerm} 
+                            selectedMonth={selectedMonth} 
+                            staffRole="" 
+                        />
+                    </div>
                 </div>
             </div>
-        </div>
+        </>
     )
 }
 

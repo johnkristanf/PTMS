@@ -29,6 +29,10 @@ type ApplicantInfo struct {
 	CharacterOfOccupancy string `json:"characterOfOccupancy"`
 }
 
+type IsApplicationExits struct {
+	ID  int64  `json:"application_id"`
+}
+
 type ApplicantInfoFetching struct {
 	ID              		  	int64  `json:"application_id"`
 	ApplicationCode 			string `json:"applicationCode"`

@@ -9,6 +9,7 @@ import { useQuery } from "@tanstack/react-query";
 import { Apply } from "../../http/post/application";
 import Swal from "sweetalert2";
 import '../../assets/scrollStyle.css';
+import { IsApplicationExists } from '../../http/get/application';
 
 export const ServiceModalForm = ({ selectedService, setServiceModalOpen }: {
     selectedService: string,
@@ -27,14 +28,13 @@ export const ServiceModalForm = ({ selectedService, setServiceModalOpen }: {
     const [serviceType, setServiceType] = useState<string>("NEW");
     const [scopeTypes, setScopeTypes] = useState<string[]>([]);
     const [occupancyTypes, setOccupancyTypes] = useState<string[]>([]);
-    const [isFormValid, setIsFormValid] = useState<boolean>(false); // Track form validity
-
+    const [isFormValid, setIsFormValid] = useState<boolean>(false); 
 
     const watchFields = watch();
     
     useEffect(() => {
         const requiredFieldsFilled = Object.entries(watchFields)
-        .filter(([key]) => key !== "constructOwnbyEnterprise") // Exclude the optional field
+        .filter(([key]) => key !== "constructOwnbyEnterprise") 
         .every(([, field]) => field !== "");
 
         const scopesSelected = scopeTypes.length > 0;
@@ -55,7 +55,24 @@ export const ServiceModalForm = ({ selectedService, setServiceModalOpen }: {
     const login_applicant: { user_id: number, email: string } = response?.data;
 
     const onSubmit: SubmitHandler<ApplicantInfo> = (data) => {
-        console.log("data submit form", data);
+        console.log("selectedService: ", selectedService);
+        
+        data.firstName
+        data.lastName
+
+        IsApplicationExists(data.firstName, data.lastName, selectedService).
+            then(res => {
+                if(res == 'application_exists'){
+                    Swal.fire({
+                        title: "Application Exists!",
+                        text: "Kindly please apply for new permit or continue your old application",
+                        icon: "warning",
+                    })
+
+                    return;
+                }
+            }).
+            catch(err => console.error("error in checking application exists: ", err))
 
         Swal.fire({
             text: "Are you sure you want to submit this Information?",
@@ -145,13 +162,15 @@ export const ServiceModalForm = ({ selectedService, setServiceModalOpen }: {
         <>
             <div className="fixed top-0 w-full h-full bg-gray-800 opacity-75"></div>
 
-            <div className="flex fixed top-0 justify-center items-center w-full p-2">
+            <div className="flex fixed top-20 justify-center items-center w-full p-2">
 
-                <div className="w-1/2 bg-white rounded-md p-8 overflow-y-auto max-h-[90vh] custom-scrollbar">
+                <div className="w-1/2 bg-white rounded-md p-8 overflow-y-auto max-h-[80vh] custom-scrollbar">
 
                     <div className="flex justify-between items-center mb-5">
 
                         <div className="flex-col flex">
+                            <h1 className='font-bold text-xl text-gray-600 mb-5'>Step 2:</h1>
+
                             <h1 className="text-black font-semibold text-xl mb-2">{selectedService} Permit</h1>
                             <h1 className="text-black font-bold text-3xl">Application Form</h1>
                         </div>
@@ -166,7 +185,7 @@ export const ServiceModalForm = ({ selectedService, setServiceModalOpen }: {
 
                     <div className="flex justify-center w-full gap-5 font-semibold mb-5">
 
-                        <div className="flex gap-1">
+                        {/* <div className="flex gap-1">
                             <input 
                                 type="radio" 
                                 name="serviceType" 
@@ -175,7 +194,7 @@ export const ServiceModalForm = ({ selectedService, setServiceModalOpen }: {
                                 onChange={(e) => setServiceType(e.target.value)}
                             />
                             <label>NEW</label>
-                        </div>
+                        </div> */}
 
                         {
                             selectedService == "Electrical" && (
@@ -198,21 +217,24 @@ export const ServiceModalForm = ({ selectedService, setServiceModalOpen }: {
 
                     </div>
 
-                    <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-3 w-full">
+                    <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-6 w-full">
 
                         <div className="w-full border border-gray-300 p-3 rounded-md">
-                            <label className="font-semibold">Enter Name</label>
+                            {/* <label className="font-semibold">Enter Name</label> */}
                             <div className="flex gap-2">
                                 {
                                     applicantName.map((data) => (
-                                        <input 
-                                            key={data.registerName}
-                                            type={data.inputType} 
-                                            placeholder={data.placeHolder} 
-                                            required
-                                            className={classNames("bg-gray-200 placeholder-black font-semibold rounded-md p-2 focus:outline-slate-800 w-full")}
-                                            {...register(data.registerName as keyof ApplicantInfo)}
-                                        />
+                                        <div className='flex flex-col font-semibold'>
+                                            <label>{data.placeHolder}</label>
+                                            <input 
+                                                key={data.registerName}
+                                                type={data.inputType} 
+                                                required
+                                                className={classNames("bg-gray-200 placeholder-black font-semibold rounded-md p-2 focus:outline-slate-800 w-full")}
+                                                {...register(data.registerName as keyof ApplicantInfo)}
+                                            />
+                                        </div>
+                                        
                                     ))
                                 }
                             </div>
@@ -221,7 +243,7 @@ export const ServiceModalForm = ({ selectedService, setServiceModalOpen }: {
                         
                         <div className="w-full border border-gray-300 p-3 rounded-md">
 
-                            <label className="font-semibold">Enter Ownership</label>
+                            {/* <label className="font-semibold">Enter Ownership</label> */}
                             <div className="flex gap-5">
                                 {/* <select 
                                     className="bg-gray-200 placeholder-black font-semibold rounded-md p-2 focus:outline-slate-800"
@@ -236,13 +258,15 @@ export const ServiceModalForm = ({ selectedService, setServiceModalOpen }: {
                                 </select> */}
                                 {
                                     applicantOwnership.map((data) => (
-                                        <input 
-                                            key={data.registerName}
-                                            type={data.inputType} 
-                                            placeholder={data.placeHolder} 
-                                            className={classNames("bg-gray-200 placeholder-black font-semibold rounded-md p-2 focus:outline-slate-800 w-full")}
-                                            {...register(data.registerName as keyof ApplicantInfo)}
-                                        />
+                                        <div className='flex flex-col font-semibold w-full'>
+                                            <label>{data.placeHolder}</label>
+                                            <input 
+                                                key={data.registerName}
+                                                type={data.inputType} 
+                                                className={classNames("bg-gray-200 placeholder-black font-semibold rounded-md p-2 focus:outline-slate-800 w-full")}
+                                                {...register(data.registerName as keyof ApplicantInfo)}
+                                            />
+                                        </div>
                                     ))
                                 }
                             </div>
@@ -251,49 +275,53 @@ export const ServiceModalForm = ({ selectedService, setServiceModalOpen }: {
 
                         <div className="w-full border border-gray-300 p-3 rounded-md">
 
-                            <label className="font-semibold">Enter Address</label>
-                            <div className="flex gap-2 flex-wrap">
+                            {/* <label className="font-semibold">Enter Address</label> */}
+                            <div className="flex flex-col gap-5 font-semibold">
                                 {
                                     applicantAddress.map((data) => (
-                                        <input 
-                                            key={data.registerName}
-                                            type={data.inputType} 
-                                            placeholder={data.placeHolder} 
-                                            defaultValue={data.value}
-                                            disabled={data.disabled}
-                                            required
-                                            className={classNames(`${data.value ? "bg-gray-400 text-white": "bg-gray-200"} placeholder-black font-semibold rounded-md p-2 focus:outline-slate-800 w-[40%]`)}
-                                            {...register(data.registerName as keyof ApplicantInfo)}
-                                        />
+                                        <div className='flex flex-col w-full'>
+                                            <label>{data.placeHolder}</label>
+                                            <input 
+                                                key={data.registerName}
+                                                type={data.inputType} 
+                                                defaultValue={data.value}
+                                                disabled={data.disabled}
+                                                required
+                                                className={classNames(`${data.value ? "bg-gray-400 text-white": "bg-gray-200"} placeholder-black font-semibold rounded-md p-2 focus:outline-slate-800 w-full`)}
+                                                {...register(data.registerName as keyof ApplicantInfo)}
+                                            />
+                                        </div>
                                     ))
                                 }
                                 <select 
-                                    className="bg-gray-200 placeholder-black font-semibold rounded-md p-2 focus:outline-slate-800 w-[40%]"
+                                    className="bg-gray-200 placeholder-black font-semibold rounded-md p-2 focus:outline-slate-800 w-full"
                                     {...register("barangay")}
                                     required
                                 >
-                                    <option value="" disabled selected>Select Barangay</option>
-                                    {barangayOptions.map((barangay) => (
-                                        <option key={barangay} value={barangay}>{barangay}</option>
+                                    <option disabled selected>Select Barangay</option>
+                                    {barangayOptions.map((barangay, index) => (
+                                        <option key={index} value={barangay}>{barangay}</option>
                                     ))}
                                 </select>
                             </div>
                         </div>
 
                         <div className="w-full border border-gray-300 p-3 rounded-md">
-                            <label className="font-semibold">Enter Numbers</label>
+                            {/* <label className="font-semibold">Enter Numbers</label> */}
                             <div className="flex gap-2">
                                 {
                                     applicantNumber.map((data) => (
-                                        <input 
-                                            key={data.registerName}
-                                            type={data.inputType} 
-                                            placeholder={data.placeHolder}
-                                            maxLength={data.maxLength}
-                                            required
-                                            className={classNames("bg-gray-200 placeholder-black font-semibold rounded-md p-2 focus:outline-slate-800 w-full")}
-                                            {...register(data.registerName as keyof ApplicantInfo)}
-                                        />
+                                        <div className='flex flex-col font-semibold w-full'>
+                                            <label>{data.placeHolder}</label>
+                                            <input 
+                                                key={data.registerName}
+                                                type={data.inputType} 
+                                                maxLength={data.maxLength}
+                                                required
+                                                className={classNames("bg-gray-200 placeholder-black font-semibold rounded-md p-2 focus:outline-slate-800 w-full")}
+                                                {...register(data.registerName as keyof ApplicantInfo)}
+                                            />
+                                        </div>
                                     ))
                                 }
                             </div>

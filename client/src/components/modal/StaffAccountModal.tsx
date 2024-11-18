@@ -6,12 +6,11 @@ import { StaffAccountModalFormProps } from "../../types/props";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { CreateStaffAccount } from "../../http/post/auth";
 import Swal from "sweetalert2";
-import { useState } from "react";
 
 const staffAccountInputs = [
     { registerName: "name", placeHolder: "Name", inputType: "text" },
     { registerName: "email", placeHolder: "Email", inputType: "email" },
-    { registerName: "role", placeHolder: "Role", inputType: "text" },
+    // { registerName: "role", placeHolder: "Role", inputType: "text" },
     { registerName: "password", placeHolder: "Password", inputType: "password" }
 ];
 
@@ -35,6 +34,7 @@ export const StaffAccountModalForm: React.FC<StaffAccountModalFormProps> = ({ se
 
             reset();
         },
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         onError: (error: any) => {
             console.error("Signup error:", error);
         },
@@ -44,7 +44,7 @@ export const StaffAccountModalForm: React.FC<StaffAccountModalFormProps> = ({ se
         mutation.mutate(data);
     };
 
-    const handleRoleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const handleRoleChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
         const uppercaseValue = event.target.value.toUpperCase();
         setValue("role", uppercaseValue);
     };
@@ -76,10 +76,20 @@ export const StaffAccountModalForm: React.FC<StaffAccountModalFormProps> = ({ se
                                     placeholder={data.placeHolder}
                                     className="bg-gray-400 placeholder-black font-semibold rounded-md p-2 focus:outline-orange-500 w-full"
                                     {...register(data.registerName as keyof StaffAccount)}
-                                    onChange={data.registerName === "role" ? handleRoleChange : undefined}
                                 />
                             ))}
                         </div>
+
+                        <select
+                            {...register("role")}
+                            className="bg-gray-400 text-black font-semibold rounded-md p-2 focus:outline-orange-500 w-full"
+                            onChange={(e) => handleRoleChange(e)}
+                        >
+                            <option value="">Select Role</option>
+                            <option value="SCANNER">Scanner</option>
+                            <option value="RELEASER">Releaser</option>
+                            <option value="RECEIVER">Receiver</option>
+                        </select>
 
                         <button
                             type="submit"

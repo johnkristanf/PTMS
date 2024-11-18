@@ -62,7 +62,7 @@ export function DisapprovedModal({ disapprovalData, setOpenDisapprovedModal }: {
         <div className="w-full h-full fixed top-0 left-0 flex justify-center items-center">
             <div className="fixed top-0 bg-gray-600 opacity-75 w-full h-screen"></div>
 
-            <div className="flex flex-col bg-white rounded-md p-8 fixed top-12 w-1/2">
+            <div className="flex flex-col bg-white rounded-md p-8 fixed top-32 w-1/2">
                 <div className="flex justify-between items-center">
                     <div className="flex-col flex">
                         <h1 className="font-bold text-2xl">Reason for Application Disapproval</h1>

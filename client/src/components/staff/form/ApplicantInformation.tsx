@@ -13,7 +13,7 @@ export function ApplicantInformationFormStaff({ applicantInfo, setInformationMod
   const { register, handleSubmit } = useForm<{ application_code: string }>();
 
   const applicantOwnership = [
-    { value: applicantInfo?.formOwnership, inputType: "text", ownerShipType: "Form Of Ownership" },
+    // { value: applicantInfo?.formOwnership, inputType: "text", ownerShipType: "Form Of Ownership" },
     { value: applicantInfo?.constructOwnbyEnterprise, inputType: "text", ownerShipType: "For Construction Owned By Enterprise" },
   ]
 
@@ -85,7 +85,7 @@ export function ApplicantInformationFormStaff({ applicantInfo, setInformationMod
             <div className="flex gap-2">
               <input 
                 type="text"
-                maxLength={8}
+                maxLength={5}
                 className={classNames(
                   isPending ? "hover:cursor-not-allowed": "",
                   "bg-gray-400 placeholder-black font-semibold rounded-md p-2 focus:outline-orange-500"
@@ -110,7 +110,7 @@ export function ApplicantInformationFormStaff({ applicantInfo, setInformationMod
 
         <div className="flex gap-5">
           {applicantOwnership.map((data) => (
-            <div className="flex flex-col justify-center" key={data.ownerShipType}>
+            <div className="w-full flex flex-col justify-center" key={data.ownerShipType}>
               <label className="font-semibold">{data.ownerShipType}</label>
               <input 
                 type={data.inputType} 

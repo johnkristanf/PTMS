@@ -40,8 +40,13 @@ export function LetterBody({applicationLetterInfo}: {
 
                     <View style={{flexDirection: 'row', width: '90%', alignItems: 'flex-end', gap: 6 }}>
                         <Text style={styles.body_font_size}>would like to apply for</Text>
-                        <View style={{ width: '60%', height: 1, backgroundColor: 'black'}}></View>
+                        <View style={{flexDirection: 'column', width: '60%'}}>
+                            <Text style={[styles.body_font_size, {marginLeft: '30px'}]}>{ applicationLetterInfo.permit_type } Permit</Text>
+                            <View style={{ width: '100%', height: 1, backgroundColor: 'black'}}></View>
+                        </View>
+                        
                     </View>
+                    
 
                     <View style={{flexDirection: 'row', width: '80%', alignItems: 'flex-end', gap: 6 }}>
                         <Text style={styles.body_font_size}>for my</Text>

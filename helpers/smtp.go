@@ -179,7 +179,7 @@ func SendDisapprovalEmail(to string, disApprovalMessage string) error {
 }
 
 
-func SendReleaseDateEmail(to string, disApprovalMessage string) error {
+func SendReleaseDateEmail(to string, releaseMessage string) error {
 
 	client, err := Connection();
 	if err != nil {
@@ -188,7 +188,7 @@ func SendReleaseDateEmail(to string, disApprovalMessage string) error {
 
     defer Disconnection(client)
 
-	body := disApprovalMessage
+	body := releaseMessage
 
 	headers := map[string]string{
 		"From":		from,

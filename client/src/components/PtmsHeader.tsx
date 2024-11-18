@@ -2,7 +2,7 @@
 
 export function PTMSHeader(){
     return(
-        <div className="fixed top-0 w-full bg-orange-400 h-[12vh] flex items-center justify-center gap-2">
+        <div className="fixed top-0 w-full bg-orange-400 h-[12vh] flex items-center justify-center gap-2 z-[999]">
             <img src="/img/PTMS_LOGO.jpg" width={50} height={50} className="rounded-full" />
 
             <h1 className="text-white text-xl font-semibold">

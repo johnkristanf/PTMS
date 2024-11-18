@@ -126,9 +126,10 @@ export type AssessmentApplicationData = {
 }
 
 export type ApplicationLetterInfoTypes = {
-    firstName: string;
-    middleName: string;
-    familyName: string;
+    firstName:   string;
+    middleName:  string;
+    familyName:  string;
+    permit_type: string;
 }
 
 export type UpdateApplicationCodeTypes = {

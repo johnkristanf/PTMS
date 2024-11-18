@@ -42,7 +42,10 @@ import DisapprovedElectricalPage from "../pages/admin/electrical/DisapprovedElec
 import StaffAccountsElectricalPage from "../pages/admin/electrical/StaffAccountElectrical"
 import DisapprovedReleaserPage from "../pages/staff/releaser/DisapprovedReleaser"
 import ApplicationReleaserPage from "../pages/staff/releaser/ApplicationReleaser"
-import RetiredApplicationPage from "../pages/staff/receiver/RetiredApplication"
+import TrashApplicationReceiverPage from "../pages/staff/receiver/TrashApplicationReceiver"
+import TrashApplicationArhictecturalPage from "../pages/admin/architectural/TrashApplicationArchitectural"
+import TrashApplicationElectricalPage from "../pages/admin/electrical/TrashApplicationElectrical"
+import TrashApplicationCivilPage from "../pages/admin/civil/TrashApplicationCivil"
 
 
 
@@ -124,6 +127,7 @@ export const paidArchitecturalPath = {
     ),
 }
 
+
 export const approvedArchitecturalPath = {
     path: "/architectural/approved/applications",
     element:(
@@ -142,6 +146,16 @@ export const disapprovedArchitecturalPath = {
         </QueryProviderWrapper>
     ),
 }
+
+export const trashApplicationArchitecturalPath = {
+    path: "/architectural/trash/applications",
+    element:(
+        <QueryProviderWrapper>
+            <TrashApplicationArhictecturalPage />
+        </QueryProviderWrapper>
+    ),
+}
+
 
 export const staffAccountArchitecturalPath = {
     path: "/architectural/staff/accounts",
@@ -190,6 +204,15 @@ export const disapprovedCivilPath = {
     ),
 }
 
+export const trashApplicationCivilPath = {
+    path: "/civil/trash/applications",
+    element:(
+        <QueryProviderWrapper>
+            <TrashApplicationCivilPage />
+        </QueryProviderWrapper>
+    ),
+}
+
 export const staffAccountCivilPath = {
     path: "/civil/staff/accounts",
     element:(
@@ -232,6 +255,15 @@ export const disapprovedElectricalPath = {
     element:(
         <QueryProviderWrapper>
             <DisapprovedElectricalPage />
+        </QueryProviderWrapper>
+    ),
+}
+
+export const trashApplicationElectricalPath = {
+    path: "/electrical/trash/applications",
+    element:(
+        <QueryProviderWrapper>
+            <TrashApplicationElectricalPage />
         </QueryProviderWrapper>
     ),
 }
@@ -287,11 +319,11 @@ export const pendingApplicationPath = {
     ),
 }
 
-export const retiredApplicationPath = {
-    path: "/receiver/retired/applications",
+export const trashApplicationReceiverPath = {
+    path: "/receiver/trash/applications",
     element:(
         <QueryProviderWrapper>
-            <RetiredApplicationPage />
+            <TrashApplicationReceiverPage />
         </QueryProviderWrapper>
     ),
 }

@@ -42,9 +42,9 @@ function PlumbingPDF({ permitInfo, setPermitsInfo }: {
     <>
       <div className="fixed top-0 w-full h-full bg-gray-800 opacity-75"></div>
 
-      <div className="flex justify-center w-full h-full fixed top-0">
+      <div className="flex justify-center w-full h-full fixed top-20">
 
-        <div className="flex flex-col mt-3 items-center h-[95%] py-4 w-[55%] bg-white rounded-md">
+        <div className="flex flex-col mt-3 items-center h-[83%] py-4 w-[55%] bg-white rounded-md">
 
           <h1 className='font-bold text-3xl mb-3'>Plumbing Permit Application</h1>
 

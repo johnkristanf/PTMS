@@ -1,12 +1,14 @@
 package database
 
 import (
+	"errors"
 	"fmt"
 	"strings"
 	"time"
 
 	"github.com/johnkristanf/TMS-IPAS/helpers"
 	"github.com/johnkristanf/TMS-IPAS/types"
+	"gorm.io/gorm"
 )
 
 
@@ -192,6 +194,9 @@ type Inbox struct {
 
 type APPLICATION_DB_METHOD interface {
 	AddApplication(applicantInfo *types.ApplicantInfo) error
+
+	IsApplicationExists(string, string, string) (bool, error)
+
 	FetchApplication(string, string, string) ([]*types.ApplicantInfoFetching, error)
 	FetchAppliedServices(int64) ([]*types.AppliedServicesFetching, error)
 	FetchRequirements(int64) (*types.FirstStepRequirementsFetching, error)
@@ -941,9 +946,45 @@ func (sql *SQL) AddApplication(applicantInfo *types.ApplicantInfo) error {
 }
 
 
+func (sql *SQL) IsApplicationExists(firstName string, lastName string, permitType string) (bool, error) {
+	var result types.IsApplicationExits
+
+	query := sql.DB.Table("applications").
+		Select("id").
+		Where("first_name = ?", firstName).
+		Where("last_name = ?", lastName).
+		Where("permit_type = ?", permitType)
+
+	if err := query.First(&result).Error; err != nil {
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			return false, nil
+		}
+		return false, err
+	}
+
+	return true, nil
+}
+
+
 func (sql *SQL) FetchApplication(status string, searchName string, selectedMonth string) ([]*types.ApplicantInfoFetching, error) {
 
 	var results []*types.ApplicantInfoFetching
+
+	tx := sql.DB.Begin()
+
+	// Update applications older than a year to "Trash"
+	if err := tx.Model(&Application{}).
+		Where("created_at < NOW() - INTERVAL '1 year'").
+		Where("status != ?", "Trash").
+		Update("status", "Trash").Error; err != nil {
+		tx.Rollback()
+		return nil, err
+	}
+
+	// Commit the transaction if the update is successful
+	if err := tx.Commit().Error; err != nil {
+		return nil, err
+	}
 
 
 	query := sql.DB.Table("applications").
@@ -966,26 +1007,10 @@ func (sql *SQL) FetchApplication(status string, searchName string, selectedMonth
 		query = query.Where("TO_CHAR(applications.created_at, 'FMMonth') = ?", selectedMonth)
 	}
 
-	// if selectedWeek != "" {
-	// 	weeksAgo, err := parseWeeksAgo(selectedWeek)
-	// 	if err == nil {
-	// 		endDate := time.Now().AddDate(0, 0, -7*weeksAgo)
-	// 		endDate = time.Date(endDate.Year(), endDate.Month(), endDate.Day(), 23, 59, 59, 999999999, endDate.Location())
-	// 		startDate := endDate.AddDate(0, 0, -6) // Cover the full 7 days
-	// 		startDate = time.Date(startDate.Year(), startDate.Month(), startDate.Day(), 0, 0, 0, 0, startDate.Location())
-	// 		query = query.Where("applications.created_at BETWEEN ? AND ?", startDate, endDate)
-	// 	}
-	// }
 
 	if err := query.Find(&results).Error; err != nil {
 		return nil, err
 	}
-
-	// go func() {
-	// 	if err := sql.AllAdminsApplicationApproval(results); err != nil {
-	// 		fmt.Printf("Error updating admin approvals: %v\n", err)
-	// 	}
-	// }()
 
 
 	return results, nil

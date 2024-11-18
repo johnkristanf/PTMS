@@ -72,9 +72,9 @@ const CivilRequirements = ({ applicationID, setRequirementsModal, setAllRequirem
         <>
             <div className="fixed top-0 left-0 w-full h-full bg-gray-800 opacity-75"></div>
 
-            <div className="w-full fixed top-3 left-0 h-screen flex justify-center ">
+            <div className="w-full fixed top-24 left-0 h-screen flex justify-center ">
 
-                <div className="flex flex-col items-center h-[95%] py-4 w-[55%] bg-white rounded-md">
+                <div className="flex flex-col items-center h-[80%] py-4 w-[55%] bg-white rounded-md ">
                     <h1 className='font-bold text-3xl mb-5'>Civil Requirements</h1>
                     <h1 className='font-semibold mb-8'>
                         Requirement Status: 

@@ -1,5 +1,5 @@
 import { createBrowserRouter } from "react-router-dom";
-import { loginPath, root, adminPagePath, applyNewServicesPath, pendingApplicationPath, approvedArchitecturalPath, staffApprovedApplicationPath, disapprovedArchitecturalPath, servicesPath, staffAccountArchitecturalPath, unauthorizedPath, paidArchitecturalPath, inboxPath, applyPath, staffPagePath, scannerApprovedPath, scannerReportPath, releasePath, editReceiverAccountPath, editReleaserAccountPath, editScannerAccountPath, paidCivilPath, disapprovedCivilPath, staffAccountCivilPath, approvedCivilPath, paidElectricalPath, disapprovedElectricalPath, staffAccountElectricalPath, approvedElectricalPath, releaserDisapprovedPath, applicationReleaserPath, retiredApplicationPath } from "./paths";
+import { loginPath, root, adminPagePath, applyNewServicesPath, pendingApplicationPath, approvedArchitecturalPath, staffApprovedApplicationPath, disapprovedArchitecturalPath, servicesPath, staffAccountArchitecturalPath, unauthorizedPath, paidArchitecturalPath, inboxPath, applyPath, staffPagePath, scannerApprovedPath, scannerReportPath, releasePath, editReceiverAccountPath, editReleaserAccountPath, editScannerAccountPath, paidCivilPath, disapprovedCivilPath, staffAccountCivilPath, approvedCivilPath, paidElectricalPath, disapprovedElectricalPath, staffAccountElectricalPath, approvedElectricalPath, releaserDisapprovedPath, applicationReleaserPath, trashApplicationArchitecturalPath, trashApplicationElectricalPath, trashApplicationReceiverPath, trashApplicationCivilPath } from "./paths";
 
 const routes = [
     root,
@@ -9,6 +9,7 @@ const routes = [
     adminPagePath,
 
     paidArchitecturalPath,
+    trashApplicationArchitecturalPath,
     disapprovedArchitecturalPath,
     approvedArchitecturalPath,
     staffAccountArchitecturalPath,
@@ -16,6 +17,7 @@ const routes = [
 
     paidCivilPath,
     disapprovedCivilPath,
+    trashApplicationCivilPath,
     approvedCivilPath,
     staffAccountCivilPath,
 
@@ -23,6 +25,7 @@ const routes = [
     paidElectricalPath,
     disapprovedElectricalPath,
     approvedElectricalPath,
+    trashApplicationElectricalPath,
     staffAccountElectricalPath,
 
 
@@ -39,7 +42,7 @@ const routes = [
     releasePath,
     releaserDisapprovedPath,
     applicationReleaserPath,
-    retiredApplicationPath,
+    trashApplicationReceiverPath,
 
     editReceiverAccountPath,
     editReleaserAccountPath,
