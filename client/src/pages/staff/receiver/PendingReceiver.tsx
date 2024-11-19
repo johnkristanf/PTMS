@@ -3,9 +3,9 @@ import { PendingTable } from "../../../components/staff/PendingTable";
 import { SideBar } from "../../../components/SideBar";
 import { PTMSHeader } from "../../../components/PtmsHeader";
 import { DropdownDate } from "../../../components/DropdownDate";
-import AdminRequestAccessModal from "../../../components/admin/AdminRequestAccessModal";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faBell } from "@fortawesome/free-solid-svg-icons";
+import StaffRequestAccessModal from "../../../components/modal/staff/StaffAccessRequest";
 
 function ReceiverPage() {
   const [searchTerm, setSearchTerm] = useState<string>("");
@@ -25,7 +25,7 @@ function ReceiverPage() {
 
     <>
             {
-                isNotificationModalOpen && (<AdminRequestAccessModal />)
+                isNotificationModalOpen && (<StaffRequestAccessModal />)
             }
 
       <div className="flex justify-between items-center h-[110vh] bg-white">

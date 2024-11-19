@@ -202,8 +202,8 @@ function RequirementsModalStaff({ applicationID, setShowRequirements }: {
     return (
         <>
             <div className="fixed top-0 left-0 w-full h-full bg-gray-800 opacity-75"></div>
-            <div className="w-full fixed top-3 left-0 h-screen flex justify-center">
-                <div className="flex flex-col items-center h-[95%] py-4 w-[55%] bg-white rounded-md p-5 overflow-auto custom-scrollbar">
+            <div className="w-full fixed top-24 left-0 h-screen flex justify-center">
+                <div className="flex flex-col items-center h-[80%] py-4 w-[55%] bg-white rounded-md p-5 overflow-auto custom-scrollbar">
                     <h1 className='text-black text-2xl font-bold my-3'>FIRST STEP REQUIREMENTS</h1>
                     <h1 className='font-semibold mb-8'>
                         Requirement Status: 
@@ -223,8 +223,10 @@ function RequirementsModalStaff({ applicationID, setShowRequirements }: {
                         {!disableIfallRequirementsChecked && (
                             <button
                                 type="submit"
+                                disabled={!allRequirementsChecked}
                                 className={classNames(
-                                    "bg-orange-500 text-white font-bold rounded-md p-2 mt-4 w-full hover:opacity-75"
+                                    "text-white font-bold rounded-md p-2 mt-4 w-full hover:opacity-75",
+                                    !allRequirementsChecked ? "bg-gray-600 cursor-not-allowed" : "bg-orange-500"
                                 )}
                             >
                                 Submit

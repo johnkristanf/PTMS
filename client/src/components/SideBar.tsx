@@ -101,20 +101,28 @@ function NavLinks({ role }: { role: string }) {
     iconSrc: string
   }
 
-  type SwitchRoleNavigation = {
+  type StaffSwitchRoleNavigation = {
     name: string,
     role: string,
     iconSrc: string
   }
 
+  type AdminSwitchRoleNavigation = {
+    name: string,
+    admin_type: string,
+    iconSrc: string
+  }
+
+
 
   const location = useLocation();
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const navLinks: NavigationTypes[] = [];
-  const admins: NavigationTypes[] = [];
-  const accessStaffs: SwitchRoleNavigation[] = [];
+  const admins: AdminSwitchRoleNavigation[] = [];
+  const accessStaffs: StaffSwitchRoleNavigation[] = [];
 
   const [isAdminModalVisible, setIsAdminModalVisible] = useState(false); 
+  const [toAccessRole, setToAccessRole] = useState<string>();
   const toggleAdminModal = () => setIsAdminModalVisible((prevState) => !prevState);
 
   const adminTypes = [
@@ -138,7 +146,7 @@ function NavLinks({ role }: { role: string }) {
           position: "top-end",
           icon: "success",
           title: "Access Request Sent Successfully",
-          text: "Please wait for the admins approval",
+          text: toAccessRole === "staff" ? "Please wait for the admins approval" : `Please wait for the ${role} approval`,
         });
 
     },
@@ -149,12 +157,13 @@ function NavLinks({ role }: { role: string }) {
   });
   
 
-  const staffRequestAccessRole = (role: string, user_id: number, access_role: string) => {
+  const handleRequestAccessRole = (role: string, user_id: number, access_role: string, isAdmin: boolean) => {
     toggleAdminModal();
     const accessRole: AccessRoleTypes = {
       role,
       user_id, 
-      access_role
+      access_role,
+      isAdmin
     }
 
     console.log("role data: ", accessRole);
@@ -180,8 +189,8 @@ function NavLinks({ role }: { role: string }) {
     navLinks.push({ name: "Disapproved", to: "/architectural/disapproved/applications", iconSrc: "/img/icons/disapproved.png" });
     navLinks.push({ name: "Trash", to: "/architectural/trash/applications", iconSrc: "/img/icons/trash.png" });
 
-    admins.push({ name: "Electrical", to: "/electrical/paid/applications", iconSrc: "/img/icons/applicants.png" });
-    admins.push({ name: "Civil/Structural", to: "/civil/paid/applications", iconSrc: "/img/icons/applicants.png" });
+    admins.push({ name: "Electrical", admin_type: "electrical", iconSrc: "/img/icons/applicants.png" });
+    admins.push({ name: "Civil/Structural", admin_type: "civil", iconSrc: "/img/icons/applicants.png" });
 
     navLinks.push({ name: "Staff Accounts", to: "/architectural/staff/accounts", iconSrc: "/img/icons/staff_accounts.png" });
   }
@@ -193,8 +202,8 @@ function NavLinks({ role }: { role: string }) {
     navLinks.push({ name: "Disapproved", to: "/civil/disapproved/applications", iconSrc: "/img/icons/disapproved.png" });
     navLinks.push({ name: "Trash", to: "/civil/trash/applications", iconSrc: "/img/icons/trash.png" });
 
-    admins.push({ name: "Architectural", to: "/architectural/paid/applications", iconSrc: "/img/icons/applicants.png" });
-    admins.push({ name: "Electrical", to: "/electrical/paid/applications", iconSrc: "/img/icons/applicants.png" });
+    admins.push({ name: "Architectural", admin_type: "architectural", iconSrc: "/img/icons/applicants.png" });
+    admins.push({ name: "Electrical", admin_type: "electrical", iconSrc: "/img/icons/applicants.png" });
 
     navLinks.push({ name: "Staff Accounts", to: "/civil/staff/accounts", iconSrc: "/img/icons/staff_accounts.png" });
   }
@@ -205,8 +214,8 @@ function NavLinks({ role }: { role: string }) {
     navLinks.push({ name: "Disapproved", to: "/electrical/disapproved/applications", iconSrc: "/img/icons/disapproved.png" });
     navLinks.push({ name: "Trash", to: "/electrical/trash/applications", iconSrc: "/img/icons/trash.png" });
     
-    admins.push({ name: "Architectural", to: "/architectural/paid/applications", iconSrc: "/img/icons/applicants.png" });
-    admins.push({ name: "Civil/Structural", to: "/civil/paid/applications", iconSrc: "/img/icons/applicants.png" });
+    admins.push({ name: "Architectural", admin_type: "architectural", iconSrc: "/img/icons/applicants.png" });
+    admins.push({ name: "Civil/Structural", admin_type: "civil", iconSrc: "/img/icons/applicants.png" });
 
     navLinks.push({ name: "Staff Accounts", to: "/electrical/staff/accounts", iconSrc: "/img/icons/staff_accounts.png" });
   }
@@ -226,7 +235,6 @@ function NavLinks({ role }: { role: string }) {
 
   if (role === "scanner") {
     navLinks.push({ name: "Approved", to: "/scanner/approved", iconSrc: "/img/icons/approved.png" });
-    navLinks.push({ name: "Report", to: "/scanner/report", iconSrc: "/img/icons/approved.png" });
 
     accessStaffs.push({ name: "Receiver", role: "RECEIVER", iconSrc: "/img/icons/receiver_icon.png" });
     accessStaffs.push({ name: "Releaser", role: "RELEASER", iconSrc: "/img/icons/releaser_icon.png" });
@@ -238,6 +246,7 @@ function NavLinks({ role }: { role: string }) {
     // navLinks.push({ name: "Applications", to: "/releaser/application", iconSrc: "/img/icons/approved.png" });
     navLinks.push({ name: "Approved", to: "/releaser/approved", iconSrc: "/img/icons/approved.png" });
     navLinks.push({ name: "Disapproved", to: "/releaser/disapproved", iconSrc: "/img/icons/approved.png" });
+    navLinks.push({ name: "Report", to: "/releaser/report", iconSrc: "/img/icons/approved.png" });
 
     accessStaffs.push({ name: "Receiver", role: "RELEASER", iconSrc: "/img/icons/receiver_icon.png" });
     accessStaffs.push({ name: "Scanner", role: "SCANNER", iconSrc: "/img/icons/scanner_icon.png" });
@@ -312,20 +321,20 @@ function NavLinks({ role }: { role: string }) {
             {isAdminModalVisible && (
                 <div className="absolute right-[-200px] top-[-20px] bg-gray-400 text-white p-2 rounded-md w-[180px] h-[100px] shadow-lg">
                   {admins.map((item) => (
-                    <Link
+                    <button
                       key={item.name}
-                      to={item.to}
-                      replace={true}
                       onClick={() => {
-                        setActiveLink(item.to);
+                        setActiveLink(item.admin_type);
                         toggleAdminModal(); 
+                        handleRequestAccessRole(loginAccount.adminType || "", loginAccount.id, item.admin_type, true)
+                        setToAccessRole(item.admin_type)
                       }}
                       className={classNames(
                         "font-bold text-lg p-2 rounded-md w-full text-center flex items-center justify-center gap-1 hover:text-black"
                       )}
                     >
                       {item.name}
-                    </Link>
+                    </button>
                   ))}
                 </div>
             )}
@@ -363,7 +372,8 @@ function NavLinks({ role }: { role: string }) {
                       onClick={() => {
                         setActiveLink(item.role);
                         toggleAdminModal(); 
-                        staffRequestAccessRole(loginAccount.role, loginAccount.id, item.role)
+                        handleRequestAccessRole(loginAccount.role, loginAccount.id, item.role, false)
+                        setToAccessRole("staff")
                       }}
                       className={classNames(
                         "font-bold text-lg p-2 rounded-md w-full text-center flex items-center justify-center gap-1 hover:text-black"

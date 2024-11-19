@@ -1,20 +1,32 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { FetchPendingAccessRequest } from "../../http/get/access";
+import { FetchAdminAccessRequest } from "../../http/get/access";
 import { FetchPendingAccessRequestTypes, UpdateRequestAccessStatusTypes } from "../../types/access";
 import { UpdateRequestAccessStatus } from "../../http/put/access";
 import Swal from "sweetalert2";
 import { useState } from "react";
+import { FetchLoginAccount } from "../../http/get/auth";
+import { LoginAccount } from "../../types/auth";
+import { DeleteStaffAccessRequest } from "../../http/delete/access";
+import { OpenGrantedPage } from "../../http/post/access";
 
 
 const AdminRequestAccessModal = () => {
+
+    
+    const { data: response } = useQuery({
+        queryKey: ["login_account"],
+        queryFn: FetchLoginAccount,
+    });
+
+    const loginAccount: LoginAccount = response?.data; 
 
     const queryClient = useQueryClient();
     const [accessStatus, setAccessStatus] = useState<string>();
 
     const { data: pendingAccessRequestResponse } = useQuery({
-        queryKey: ["pending_access_request"],
+        queryKey: ["admin_access_request", loginAccount.adminType, loginAccount.id],
         queryFn: async () => {
-            const data = await FetchPendingAccessRequest();
+            const data = await FetchAdminAccessRequest(loginAccount.adminType || "", loginAccount.id);
             return data;
         },
     });
@@ -23,7 +35,7 @@ const AdminRequestAccessModal = () => {
         mutationFn: UpdateRequestAccessStatus,
         onSuccess: () => {
             
-            queryClient.invalidateQueries({ queryKey: ['pending_access_request'] })
+            queryClient.invalidateQueries({ queryKey: ['admin_access_request'] })
             Swal.fire({
               position: "top-end",
               icon: "success",
@@ -38,6 +50,9 @@ const AdminRequestAccessModal = () => {
     });
 
     const pendingAccessReqest: FetchPendingAccessRequestTypes[] = pendingAccessRequestResponse?.data || [];
+
+    console.log("pendingAccessReqest: ", pendingAccessReqest);
+    
 
     const handleUpdateRequestAccessStatus = (id: number, status: string) => {
 
@@ -54,9 +69,67 @@ const AdminRequestAccessModal = () => {
     }
 
 
+    const deleteRequestMutation = useMutation({
+        mutationFn: DeleteStaffAccessRequest,
+        onSuccess: () => {
+            
+            queryClient.invalidateQueries({ queryKey: ['admin_access_request'] })
+            Swal.fire({
+              position: "top-end",
+              icon: "success",
+              title: `Request Deleted Successfully`,
+            });
+    
+        },
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        onError: (error: any) => {
+            console.error("Delete Request Access error:", error);
+        },
+    });
+
+
+    const handleDeleteAccessRequest = (request_id: number) => {
+        deleteRequestMutation.mutate(request_id)
+    }
+
+
+    const grantedPageMutation = useMutation({
+        mutationFn: OpenGrantedPage,
+        onSuccess: (data) => {
+
+            console.log("response from open page: ", data);
+
+            switch (data.data) {
+                case "architectural":
+                    window.location.href = "/architectural/paid/applications";
+                    break;
+                case "electrical":
+                    window.location.href = "/electrical/paid/applications";
+                    break;
+                case "civil":
+                    window.location.href = "/civil/paid/applications";
+                    break;
+                    
+                default:
+                    window.location.href = "/";
+                    break;
+            }            
+        },
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        onError: (error: any) => {
+            console.error("Open Granted Page Access Error:", error);
+        },
+    });
+
+
+    const handleOpenGrantedAdminPage = (access_role: string) => {
+        grantedPageMutation.mutate(access_role)
+    }
+
+
     return (
-        <div className="absolute top-[12rem] right-[25rem] bg-gray-100 w-[45%] h-[200px] z-10 flex flex-col gap-5 items-center p-2 rounded-md font-semibold"> {/* Positioning the modal below */}
-            <h1 className="text-orange-600 text-xl">Pending Access Request</h1>
+        <div className="absolute top-[12rem] right-[25rem] bg-gray-100 w-[45%] h-[220px] z-10 flex flex-col gap-5 items-center p-2 rounded-md font-semibold overflow-auto">
+            <h1 className="text-orange-600 text-xl">Admin Access Request</h1>
 
                 { 
                     pendingAccessReqest.length === 0 ? (
@@ -65,28 +138,90 @@ const AdminRequestAccessModal = () => {
                         pendingAccessReqest.map((request) => (
                             <div 
                                 key={request.id} 
-                                className="flex justify-between items-center gap-5 font-semibold"
+                                className="flex justify-between items-center gap-5 font-semibold border border-gray-400 rounded-md p-2"
                             >
-                                <h1 className="text-gray-600">{request.role} want to access the {request.access_role} Page</h1>
+                                <h1 className="text-gray-600">
+                                    {/* access_role + loginAccount.adminType = you are the receiver of the access request */}
+
+                                    {/* user_id + loginAccount.id = you are the sender of the access request */}
+
+
+                                    {
+                                        request.access_role === loginAccount.adminType && request.status === "PENDING"
+                                            && (`${request.role} admin want to access your Page`)
+                                    }
+
+                                    {
+                                        request.user_id === loginAccount.id && request.status === "PENDING"
+                                            && `Please Wait for the approval of ${request.access_role} admin`
+                                    }
+
+
+                                    {
+                                        request.access_role === loginAccount.adminType && request.status === "GRANTED"
+                                            && (`You have granted ${request.role} admin to access your page`)
+                                    }
+
+                                    {
+                                        request.user_id === loginAccount.id && request.status === "GRANTED"
+                                            && (`The request to access ${request.access_role} admin has been granted`)
+                                    }
+                                    
+                                </h1>
+
+                                {
+                                    request.access_role === loginAccount.adminType && request.status === "PENDING" && (
+                                        <>
+                                            <button 
+                                                className="bg-orange-400 rounded-md p-3 text-white text-sm hover:opacity-75"
+                                                onClick={() => handleUpdateRequestAccessStatus(request.id, "GRANTED")}
+                                            >
+                                                Accept
+                                            </button>
+            
+                                            <button 
+                                                className="bg-red-600 rounded-md p-3 text-white text-sm hover:opacity-75"
+                                                onClick={() => handleUpdateRequestAccessStatus(request.id, "DENIED")}
+                                            >
+                                                Deny
+                                            </button>
+
+                                        </>
+                                    )
+                                }
+
+                            {
+                                request.status === "GRANTED" && request.user_id === loginAccount.id && (
+                                    <>
+                                        <button 
+                                            onClick={() => handleOpenGrantedAdminPage(request.access_role)}
+                                            className="bg-orange-400 rounded-md p-3 text-white text-sm hover:opacity-75"
+                                        >
+                                            Open
+                                        </button>
+
+                                        <button 
+                                            onClick={() => handleDeleteAccessRequest(request.id)}
+                                            className="bg-red-600 rounded-md p-3 text-white text-sm hover:opacity-75"
+                                            >
+                                            Delete
+                                        </button>
+                                    </>
+                                )
+                            }
+    
+                            
         
-                                <button 
-                                    className="bg-green-600 rounded-md p-3 text-white text-sm hover:opacity-75"
-                                    onClick={() => handleUpdateRequestAccessStatus(request.id, "GRANTED")}
-                                >
-                                    Accept
-                                </button>
-        
-                                <button 
-                                    className="bg-red-800 rounded-md p-3 text-white text-sm hover:opacity-75"
-                                    onClick={() => handleUpdateRequestAccessStatus(request.id, "DENIED")}
-                                >
-                                    Deny
-                                </button>
+                                
                             </div>
                         ))
                     )
                 
                 }
+
+                <div className="mt-auto text-gray-600 text-sm text-center pb-2">
+                    * Note: After accepting they will have 1 day permission to access the specified role
+                </div>
         </div>
     );
 };

@@ -3,7 +3,7 @@ import { SideBar } from "../../../components/SideBar"
 import { PaidTable } from "../../../components/admin/PaidTable"
 import { DropdownDate } from "../../../components/DropdownDate"
 import { PTMSHeader } from "../../../components/PtmsHeader";
-import AdminRequestAccessModal from "../../../components/admin/AdminRequestAccessModal";
+import AdminRequestAccessModal from "../../../components/admin/StaffRequestAccessModal";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faBell } from "@fortawesome/free-solid-svg-icons";
 

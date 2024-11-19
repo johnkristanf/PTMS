@@ -3,11 +3,11 @@ import { SideBar } from "../../../components/SideBar";
 import { ApproveTable } from "../../../components/staff/ApprovedTable";
 import { DropdownDate } from "../../../components/DropdownDate";
 import { PTMSHeader } from "../../../components/PtmsHeader";
-import AdminRequestAccessModal from "../../../components/admin/AdminRequestAccessModal";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faBell } from "@fortawesome/free-solid-svg-icons";
+import StaffRequestAccessModal from "../../../components/modal/staff/StaffAccessRequest";
 
-function ScannerReportPage() {
+function ReleaserReportPage() {
 
   const [searchTerm, setSearchTerm] = useState<string>("");
   const [selectedMonth, setSelectedMonth] = useState<string>(""); 
@@ -20,11 +20,11 @@ function ScannerReportPage() {
 
     <>
             {
-                isNotificationModalOpen && (<AdminRequestAccessModal />)
+                isNotificationModalOpen && (<StaffRequestAccessModal />)
             }
             
       <div className="flex justify-between items-center h-[110vh] bg-white">
-        <SideBar role={"scanner"} />
+        <SideBar role={"releaser"} />
 
         <div className="w-[80%] h-full flex justify-center items-center mr-1">
 
@@ -68,4 +68,4 @@ function ScannerReportPage() {
   );
 }
 
-export default ScannerReportPage;
+export default ReleaserReportPage;

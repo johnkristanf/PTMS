@@ -3,9 +3,9 @@ import { SideBar } from "../../../components/SideBar";
 import { ApproveTable } from "../../../components/staff/ApprovedTable";
 import { DropdownDate } from "../../../components/DropdownDate";
 import { PTMSHeader } from "../../../components/PtmsHeader";
-import AdminRequestAccessModal from "../../../components/admin/AdminRequestAccessModal";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faBell } from "@fortawesome/free-solid-svg-icons";
+import StaffRequestAccessModal from "../../../components/modal/staff/StaffAccessRequest";
 
 function ScannerPage() {
 
@@ -20,7 +20,7 @@ function ScannerPage() {
 
     <>
       {
-          isNotificationModalOpen && (<AdminRequestAccessModal />)
+          isNotificationModalOpen && (<StaffRequestAccessModal />)
       }
 
       <div className="flex justify-between items-center h-[120vh] bg-white">

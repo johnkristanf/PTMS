@@ -396,9 +396,10 @@ export const ServiceModalForm = ({ selectedService, setServiceModalOpen }: {
 }
 
 const applicantName = [
-    { registerName: "lastName", placeHolder: "Last Name", inputType: "text" },
     { registerName: "firstName", placeHolder: "First Name", inputType: "text" },
-    { registerName: "middleInitial", placeHolder: "Middle Initial", inputType: "text" }
+    { registerName: "middleInitial", placeHolder: "Middle Initial", inputType: "text" },
+    { registerName: "lastName", placeHolder: "Last Name", inputType: "text" }
+
 ];
 
 const applicantOwnership = [

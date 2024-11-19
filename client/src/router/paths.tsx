@@ -9,14 +9,10 @@ import ServicesPage from "../pages/applicant/AppliedServicesTable"
 import ApplyServicesPage from "../pages/applicant/ApplyServices"
 
 import ApprovedApplicationPage from "../pages/staff/receiver/Approved"
-import DisapprovedApplicationPage from "../pages/admin/architectural/DisapprovedArchitectural"
 
 
-import PaidApplicationsPage from "../pages/admin/architectural/PaidArchitectural"
-import StaffAccountPage from "../pages/admin/architectural/StaffAccountArchitectural"
 import UnauthorizedPage from "../pages/Unauthorized"
 import AdminTypesPage from "../pages/admin/AdminTypes"
-import AdminApprovedApplicationPage from "../pages/admin/architectural/ApprovedArchitectural"
 import InboxPage from "../pages/applicant/Inbox"
 import ApplyButtonPage from "../pages/applicant/Apply"
 import StaffTypesPage from "../pages/staff/StaffTypes"
@@ -27,7 +23,6 @@ import ReceiverPage from "../pages/staff/receiver/PendingReceiver"
 import EditReleaserAccountPage from "../pages/staff/releaser/EditReleaser"
 import EditReceiverAccountPage from "../pages/staff/receiver/EditReceiver"
 import EditScannerAccountPage from "../pages/staff/scanner/EditScanner"
-import ScannerReportPage from "../pages/staff/scanner/Report"
 import PaidArchitecturalPage from "../pages/admin/architectural/PaidArchitectural"
 import ApprovedArchitecturalPage from "../pages/admin/architectural/ApprovedArchitectural"
 import DisapprovedArchitecturalPage from "../pages/admin/architectural/DisapprovedArchitectural"
@@ -46,6 +41,7 @@ import TrashApplicationReceiverPage from "../pages/staff/receiver/TrashApplicati
 import TrashApplicationArhictecturalPage from "../pages/admin/architectural/TrashApplicationArchitectural"
 import TrashApplicationElectricalPage from "../pages/admin/electrical/TrashApplicationElectrical"
 import TrashApplicationCivilPage from "../pages/admin/civil/TrashApplicationCivil"
+import ReleaserReportPage from "../pages/staff/releaser/ReleaserReport"
 
 
 
@@ -352,14 +348,6 @@ export const scannerApprovedPath = {
     ),
 }
 
-export const scannerReportPath = {
-    path: "/scanner/report",
-    element:(
-        <QueryProviderWrapper>
-            <ScannerReportPage />
-        </QueryProviderWrapper>
-    ),
-}
 
 export const editScannerAccountPath = {
     path: "/edit/scanner",
@@ -390,6 +378,16 @@ export const releaserDisapprovedPath = {
         </QueryProviderWrapper>
     ),
 }
+
+export const releaserReportPath = {
+    path: "/releaser/report",
+    element:(
+        <QueryProviderWrapper>
+            <ReleaserReportPage />
+        </QueryProviderWrapper>
+    ),
+}
+
 
 
 export const applicationReleaserPath = {

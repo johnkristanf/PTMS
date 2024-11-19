@@ -3,9 +3,9 @@ import { DropdownDate } from "../../../components/DropdownDate";
 import { TrashTable } from "../../../components/staff/TrashTable";
 import { PTMSHeader } from "../../../components/PtmsHeader";
 import { useState } from "react";
-import AdminRequestAccessModal from "../../../components/admin/AdminRequestAccessModal";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faBell } from "@fortawesome/free-solid-svg-icons";
+import StaffRequestAccessModal from "../../../components/modal/staff/StaffAccessRequest";
 
 function TrashApplicationReceiverPage() {
   const [searchTerm, setSearchTerm] = useState<string>("");
@@ -19,7 +19,7 @@ function TrashApplicationReceiverPage() {
 
     <>
             {
-                isNotificationModalOpen && (<AdminRequestAccessModal />)
+                isNotificationModalOpen && (<StaffRequestAccessModal />)
             }
       <div className="flex justify-between items-center h-[110vh] bg-white">
         <SideBar role={"receiver"} />

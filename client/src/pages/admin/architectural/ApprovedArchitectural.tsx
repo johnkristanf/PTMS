@@ -5,7 +5,7 @@ import { SideBar } from "../../../components/SideBar";
 import { ApproveTable } from "../../../components/staff/ApprovedTable";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faBell } from "@fortawesome/free-solid-svg-icons";
-import AdminRequestAccessModal from "../../../components/admin/AdminRequestAccessModal";
+import AdminRequestAccessModal from "../../../components/admin/StaffRequestAccessModal";
 
 function ApprovedArchitecturalPage(){
 

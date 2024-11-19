@@ -156,7 +156,7 @@ export function PendingTable({ searchTerm, selectedMonth }: dropDownSelectType) 
 
                                                         <button
                                                             onClick={() => openAssessments(data)}
-                                                            className="bg-gray-500 rounded-md p-3 text-white font-bold hover:opacity-75"
+                                                            className="bg-green-700 rounded-md p-3 text-white font-bold hover:opacity-75"
                                                         >
                                                             Assessments
                                                         </button>

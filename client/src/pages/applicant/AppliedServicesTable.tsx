@@ -42,7 +42,7 @@ function ServicesPage(){
     if(isLoading) return <div className="text-white font-bold text-3xl">Fetching Staff Accounts.......</div>
 
     return(
-        <div className="flex justify-between items-center h-screen w-full bg-white">
+        <div className="flex justify-between items-center h-[120vh] w-full bg-white">
 
             <SideBar role={"applicant"}/>
 

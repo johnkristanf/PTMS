@@ -5,7 +5,7 @@ import { DropdownDate } from "../../../components/DropdownDate";
 import { PTMSHeader } from "../../../components/PtmsHeader";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faBell } from "@fortawesome/free-solid-svg-icons";
-import AdminRequestAccessModal from "../../../components/admin/AdminRequestAccessModal";
+import StaffRequestAccessModal from "../../../components/modal/staff/StaffAccessRequest";
 
 function ReleaserPage() {
 
@@ -25,7 +25,7 @@ function ReleaserPage() {
 
     <>
             {
-                isNotificationModalOpen && (<AdminRequestAccessModal />)
+                isNotificationModalOpen && (<StaffRequestAccessModal />)
             }
 
       <div className="flex justify-between items-center h-[125vh] bg-white">

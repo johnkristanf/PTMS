@@ -3,9 +3,9 @@ import { SideBar } from "../../../components/SideBar";
 import { DropdownDate } from "../../../components/DropdownDate";
 import { DisapprovedTable } from "../../../components/staff/DisapprovedTable";
 import { PTMSHeader } from "../../../components/PtmsHeader";
-import AdminRequestAccessModal from "../../../components/admin/AdminRequestAccessModal";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faBell } from "@fortawesome/free-solid-svg-icons";
+import StaffRequestAccessModal from "../../../components/modal/staff/StaffAccessRequest";
 
 function DisapprovedReleaserPage() {
 
@@ -25,7 +25,7 @@ function DisapprovedReleaserPage() {
 
     <>
             {
-                isNotificationModalOpen && (<AdminRequestAccessModal />)
+                isNotificationModalOpen && (<StaffRequestAccessModal />)
             }
 
 
