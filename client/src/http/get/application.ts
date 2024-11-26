@@ -100,7 +100,7 @@ export const FetchReportApplication = async (searchTerm: string, selectedMonth: 
 
 
 export const FetchAppliedServices = async () => {
-    return axios.get("http://localhost:4040/application/get/applied", {
+    return axios.get(`${DOMAIN_NAME}/application/get/applied`, {
             withCredentials: true
     });
 }
