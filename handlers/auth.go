@@ -26,7 +26,7 @@ var (
 
 func getGoogleOauthConfig() *oauth2.Config {
     return &oauth2.Config{
-        RedirectURL:  os.Getenv("REDIRECT_URL"),
+        RedirectURL:  "https://web-ptms.com/auth/google/callback",
         ClientID:     os.Getenv("GOOGLE_CLIENT_ID"),
         ClientSecret: os.Getenv("GOOGLE_CLIENT_SECRET"),
         Scopes: []string{
