@@ -98,7 +98,7 @@ function MyPDFDocument({ permitInfo }: {
 
             <Page size="A4" style={styles.page}>
                 <View style={styles.pageContainer}>
-                    <PermitBodyBox10 permitInfo={permitInfo} />
+                    <PermitBodyBox10 />
                     <PermitBodyBox11 permitInfo={permitInfo} />
                 </View>
             </Page>
