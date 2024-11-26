@@ -12,7 +12,6 @@ const StaffAccountsTable: React.FC<StaffAccountCardProps> = ({ setStaffData }) =
         mutationFn: DeleteStaffAccount,
         onSuccess: () => {
             Swal.fire({
-                position: "top-end",
                 icon: "success",
                 title: "Staff Account Deleted!",
                 showConfirmButton: false,
@@ -20,6 +19,7 @@ const StaffAccountsTable: React.FC<StaffAccountCardProps> = ({ setStaffData }) =
             });
             queryClient.invalidateQueries({ queryKey: ["staff_accounts"] });
         },
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         onError: (error: any) => {
             console.error("Signup error:", error);
         },
@@ -59,7 +59,7 @@ const StaffAccountsTable: React.FC<StaffAccountCardProps> = ({ setStaffData }) =
                     <div className="inline-block min-w-full py-2 sm:px-6 lg:px-8">
                         <div className="overflow-hidden">
                             <table className="min-w-full text-left text-sm font-light">
-                                <thead className="border-b font-medium dark:border-neutral-500">
+                                <thead className="border-b font-medium border-neutral-500">
                                     <tr>
                                         <th scope="col" className="px-6 py-4">Name</th>
                                         <th scope="col" className="px-6 py-4">Email</th>
@@ -68,7 +68,10 @@ const StaffAccountsTable: React.FC<StaffAccountCardProps> = ({ setStaffData }) =
                                 </thead>
                                 <tbody>
                                     {staffAccounts.map((data) => (
-                                        <tr className="border-b transition duration-300 ease-in-out hover:bg-neutral-100 dark:border-neutral-500 dark:hover:bg-neutral-600" key={data.id}>
+                                        <tr 
+                                            className="border-b border-neutral-50transition duration-300 ease-in-out hover:bg-neutral-100" 
+                                            key={data.id}
+                                        >
                                             <td className="whitespace-nowrap pl-6 py-4 font-medium">{data.name}</td>
                                             <td className="whitespace-nowrap pl-6 py-4">{data.email}</td>
                                             <td className="flex gap-3 whitespace-nowrap pl-6 py-4">

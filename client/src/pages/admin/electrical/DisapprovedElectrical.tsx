@@ -3,25 +3,41 @@ import { DropdownDate } from "../../../components/DropdownDate";
 import { PTMSHeader } from "../../../components/PtmsHeader";
 import { SideBar } from "../../../components/SideBar";
 import { DisapprovedTable } from "../../../components/staff/DisapprovedTable";
-import AdminRequestAccessModal from "../../../components/admin/StaffRequestAccessModal";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faBell } from "@fortawesome/free-solid-svg-icons";
+import AdminRequestAccessModal from "../../../components/admin/AdminRequestAccessModal";
+import StaffRequestAccessModal from "../../../components/admin/StaffRequestAccessModal";
+import { useFetchStaffPendingAR } from "../../../hook/useFetchStaffPendingAR";
+import AdminArNotifButton from "../../../components/admin/AdminARNotifButton";
 
 function DisapprovedElectricalPage(){
 
     const [searchTerm, setSearchTerm] = useState<string>("");
     const [selectedMonth, setSelectedMonth] = useState<string>(""); 
 
-    const [isNotificationModalOpen, setIsNotificationModalOpen] = useState<boolean>(false);
+    const [openStaffAccessModal, setOpenStaffAccessModal] = useState<boolean>(false);
+    const [openAdminAccessModal, setOpenAdminAccessModal] = useState<boolean>(false);
    
-    const toggleNotificationModal = () => setIsNotificationModalOpen((prevState) => !prevState);
+    const toggleStaffAccessModal = () => {
+        setOpenStaffAccessModal((prevState) => {
+            if (!prevState) setOpenAdminAccessModal(false);
+            return !prevState;
+        });
+    };
+
+    const toggleAdminAccessModal = () => {
+        setOpenAdminAccessModal((prevState) => {
+            if (!prevState) setOpenStaffAccessModal(false); 
+            return !prevState;
+        });
+    };
+
+    const { pendingAccessReqest } = useFetchStaffPendingAR();
+
 
     return(
 
         <>
-            {
-                isNotificationModalOpen && (<AdminRequestAccessModal />)
-            }
+            { openStaffAccessModal && (<StaffRequestAccessModal />) }
+            { openAdminAccessModal && (<AdminRequestAccessModal />) }
 
             <div className="flex justify-between items-center h-[125vh] w-full bg-white">
 
@@ -37,17 +53,28 @@ function DisapprovedElectricalPage(){
                             <h1 className="text-orange-500 text-4xl font-bold">Disapproved Applications</h1>
                             <div className="flex items-center gap-3">
 
-                                <FontAwesomeIcon 
-                                    icon={faBell}
-                                    className="text-2xl hover:opacity-75 hover:cursor-pointer"
-                                    onClick={toggleNotificationModal}
-                                />
+                                <div className="flex gap-1">
+                                    {pendingAccessReqest && pendingAccessReqest.length > 0 && (
+                                        <div className="flex items-center justify-center text-white bg-red-500 rounded-full w-4 h-4 text-sm">
+                                            {pendingAccessReqest.length}
+                                        </div>
+                                    )}
 
+                                    <button 
+                                        className="text-2xl hover:opacity-75 hover:cursor-pointer text-sm bg-gray-500 text-white rounded-md p-2"
+                                        onClick={toggleStaffAccessModal}
+                                    >
+                                        Staff AR 
+                                    </button>
+                                </div>
+
+                                <AdminArNotifButton toggleAdminAccessModal={toggleAdminAccessModal}/>
+                                
                                 <DropdownDate
-                                searchTerm={searchTerm}
-                                selectedMonth={selectedMonth}
-                                setSearchTerm={setSearchTerm}
-                                setSelectedMonth={setSelectedMonth}
+                                    searchTerm={searchTerm}
+                                    selectedMonth={selectedMonth}
+                                    setSearchTerm={setSearchTerm}
+                                    setSelectedMonth={setSelectedMonth}
                                 />
                             </div>
                         </div>

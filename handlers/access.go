@@ -68,7 +68,7 @@ func (h *AccessHandler) OpenGrantedStaffHandler(c echo.Context) error {
 		Secure:   false,
 	})
 
-	admins := [3]string{"electrical", "electrical", "civil"}
+	admins := [3]string{"architectural", "electrical", "civil"}
 	
 	var userInfo *types.UserInfo 
     var findUserErr error

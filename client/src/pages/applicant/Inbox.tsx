@@ -9,6 +9,7 @@ import { FetchInboxes } from '../../http/get/inbox';
 import InboxModal from '../../components/modal/applicant/InboxModal';
 import { Inboxes } from '../../types/inbox';
 import { UpdateInboxStatus } from '../../http/put/inbox';
+import { PTMSHeader } from '../../components/PtmsHeader';
 
 type FilterType = 'all' | 'latest' | 'unread';
 
@@ -19,9 +20,9 @@ const filterBtn = [
 ];
 
 const filterText: Record<FilterType, string> = {
-    all: "All Inboxes",
-    latest: "Latest Inboxes",
-    unread: "Unread Inboxes"
+    all: "All Notification",
+    latest: "Latest Notification",
+    unread: "Unread Notification"
 };
 
 function InboxPage() {
@@ -74,16 +75,19 @@ function InboxPage() {
     console.log("inbox: ", inboxes)
 
     return (
-        <div className='flex justify-between items-center h-screen w-full bg-white'>
+        <div className='flex justify-between items-start h-[120vh] w-full bg-white'>
             <SideBar role='applicant' />
 
             {
                 inboxInfo && openInbox && <InboxModal setOpenInbox={setOpenInbox} inboxInfo={inboxInfo} />
             }
 
-            <div className="flex-col flex items-center w-[60%] h-full rounded-md p-8 mr-36">  
+            <div className="flex-col flex items-center w-[60%] rounded-md p-8 mr-36">  
 
-                <div className="flex flex-col justify-center items-center gap-5 w-full mt-5 overflow-hidden">
+                <PTMSHeader />
+
+
+                <div className="flex flex-col justify-center items-center gap-5 w-full mt-14 overflow-hidden mt-28">
                     <h1 className='text-center font-bold text-4xl mb-2'>{filterText[selectedFilter]}</h1>
 
                     <div className="flex justify-center items-center gap-3 w-full">
@@ -134,7 +138,7 @@ function InboxPage() {
                                 ))
                             ) : (
                                 <div className="text-gray-500 text-center font-bold text-2xl mt-5">
-                                    No inbox messages available.
+                                    No notification messages available.
                                 </div>
                             )
                         }

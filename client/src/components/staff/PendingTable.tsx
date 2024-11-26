@@ -148,7 +148,7 @@ export function PendingTable({ searchTerm, selectedMonth }: dropDownSelectType) 
 
                                                         <button
                                                             onClick={() => openFirstStepRequirements(data.application_id)}
-                                                            className="bg-green-700 text-white font-bold p-3 rounded-md hover:opacity-75"
+                                                            className="bg-sky-600 text-white font-bold p-3 rounded-md hover:opacity-75"
                                                         >
                                                             Requirements
                                                         </button>

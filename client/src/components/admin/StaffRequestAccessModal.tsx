@@ -1,9 +1,9 @@
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { FetchPendingAccessRequest } from "../../http/get/access";
-import { FetchPendingAccessRequestTypes, UpdateRequestAccessStatusTypes } from "../../types/access";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { UpdateRequestAccessStatusTypes } from "../../types/access";
 import { UpdateRequestAccessStatus } from "../../http/put/access";
 import Swal from "sweetalert2";
 import { useState } from "react";
+import { useFetchStaffPendingAR } from "../../hook/useFetchStaffPendingAR";
 
 
 const StaffRequestAccessModal = () => {
@@ -11,19 +11,13 @@ const StaffRequestAccessModal = () => {
     const queryClient = useQueryClient();
     const [accessStatus, setAccessStatus] = useState<string>();
 
-    const { data: pendingAccessRequestResponse } = useQuery({
-        queryKey: ["pending_access_request"],
-        queryFn: async () => {
-            const data = await FetchPendingAccessRequest();
-            return data;
-        },
-    });
+    const { pendingAccessReqest } = useFetchStaffPendingAR();
 
     const mutation = useMutation({
         mutationFn: UpdateRequestAccessStatus,
         onSuccess: () => {
             
-            queryClient.invalidateQueries({ queryKey: ['pending_access_request'] })
+            queryClient.invalidateQueries({ queryKey: ['staff_pending_access_request'] })
             Swal.fire({
               position: "top-end",
               icon: "success",
@@ -37,8 +31,6 @@ const StaffRequestAccessModal = () => {
             console.error("Request Access error:", error);
         },
     });
-
-    const pendingAccessReqest: FetchPendingAccessRequestTypes[] = pendingAccessRequestResponse?.data || [];
 
     const handleUpdateRequestAccessStatus = (id: number, status: string) => {
 

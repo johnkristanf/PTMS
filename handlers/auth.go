@@ -78,7 +78,7 @@ func (h *AuthHandler) LoginHandler(c echo.Context) error {
 	select {
 
 	case <-ctx.Done():
-		return c.JSON(http.StatusRequestTimeout, "Request Timeout: ClamScanner took too long to respond")
+		return c.JSON(http.StatusRequestTimeout, "Request Timeout: took too long to respond")
 
 	case response := <-loginResponseChan:
 

@@ -60,6 +60,31 @@ export type Application = {
 }
 
 
+export type ReportApplication = {
+    application_id: number
+    applicationCode: string
+
+    firstname: string
+    middleInitial: string
+    lastName: string
+
+    addressNo: string,
+    barangay: string,
+    street: string,
+    municipality: string,
+    zipCode: string,
+    
+    permit_type: string
+    application_status: string
+
+    email: string
+    user_id: number
+
+    release_date?: string
+    admin_approved?: string
+    
+}
+
 export type DisapprovalData = {
     application_id: number
 
@@ -83,6 +108,7 @@ export type ReleaseDateData = {
 
     email: string
     user_id: number
+    status?: string
 
 }
 

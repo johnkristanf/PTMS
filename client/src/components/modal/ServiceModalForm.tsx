@@ -25,7 +25,7 @@ export const ServiceModalForm = ({ selectedService, setServiceModalOpen }: {
 
     // const [value, setValue] = useState('');
 
-    const [serviceType, setServiceType] = useState<string>("NEW");
+    const [serviceType, setServiceType] = useState<string>("RENEWAL");
     const [scopeTypes, setScopeTypes] = useState<string[]>([]);
     const [occupancyTypes, setOccupancyTypes] = useState<string[]>([]);
     const [isFormValid, setIsFormValid] = useState<boolean>(false); 

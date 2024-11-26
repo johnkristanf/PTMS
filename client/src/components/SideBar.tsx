@@ -1,21 +1,23 @@
 import { Link, useLocation } from "react-router-dom";
 import { classNames } from "../helpers/classNames";
 import { SignOut } from "../http/post/auth";
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { FetchLoginAccount } from "../http/get/auth";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faChevronRight, faSignOut } from "@fortawesome/free-solid-svg-icons";
+import { faChevronRight, faEdit, faSignOut } from "@fortawesome/free-solid-svg-icons";
 import { LoginAccount } from "../types/auth";
 import Swal from "sweetalert2";
 import { RequestAccessRole } from "../http/post/access";
 import { AccessRoleTypes } from "../types/access";
+import { UploadProfilePicture } from "../http/post/document";
+import { GetProfilePicture } from "../http/get/document";
 
 export function SideBar({role}: {
   role: string
 }){
     return(
-        <div className="flex flex-col  gap-2 p-8 bg-gray-200 h-[130vh] w-[19%] z-[9999]">
+        <div className="flex flex-col  gap-2 p-8 bg-gray-200 h-[140vh] w-[19%] z-[9999] ">
           <img src="/img/ENGINEER_LOGO.png" alt="City Engineering Logo" width={90} className="mt-8" />
 
           <UserInfo />
@@ -46,12 +48,88 @@ export function SideBar({role}: {
 
 function UserInfo() {
 
-  const { data: response, isLoading } = useQuery({
+  const { data: loginAccountResponse, isLoading } = useQuery({
     queryKey: ["login_account"],
     queryFn: FetchLoginAccount,
   });
 
-  const loginAccount: LoginAccount = response?.data;
+  const loginAccount: LoginAccount  = loginAccountResponse?.data;  
+
+
+  const { data: profilePictureResponse } = useQuery({
+    queryKey: ["profile_picture", loginAccount && loginAccount.id],
+    queryFn: async () => {
+      const data = await GetProfilePicture(loginAccount.id);
+      return data;
+    },
+
+    enabled: loginAccount?.role !== "applicant" && !!loginAccount,
+  });
+
+  console.log("profilePictureResponse: ", profilePictureResponse);
+  
+ 
+
+  const fileInputRef = useRef<HTMLInputElement | null>(null);
+  const queryClient = useQueryClient();
+
+  const uploadProfileMutation = useMutation({
+    mutationFn: UploadProfilePicture,
+    onSuccess: () => {
+        queryClient.invalidateQueries({ queryKey: ["profile_picture"] });
+
+        Swal.fire({
+            position: "top-end",
+            icon: "success",
+            title: "Profile Uploaded Successfully",
+            showConfirmButton: false,
+            timer: 1500,
+        });
+    },
+
+    onMutate: () => {
+        Swal.fire({
+            title: 'Please wait...',
+            text: 'Uploading your profile picture',
+            allowOutsideClick: false,
+            showConfirmButton: false,
+            willOpen: () => {
+                Swal.showLoading();
+            },
+        });
+    },
+
+    onError: (error: unknown) => {
+        console.error("Document Upload Error:", error);
+    },
+});
+
+
+  const handleChangeProfile = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    console.log("filename: ", file?.name);
+    if (file) handleUploadProfileImage(file); 
+  };
+
+  const handleUploadProfileImage = async (file : File) => {
+
+    try {
+        const formData = new FormData();
+        formData.append("userID", loginAccount.id.toString());
+        formData.append("image", file);
+
+        uploadProfileMutation.mutate(formData)
+        
+    } catch (error) {
+        console.error("File upload failed", error);
+        alert("File upload failed");
+    }
+  }
+
+  const triggerFileInput = () => {
+    fileInputRef.current?.click();
+  };
+
 
   if (isLoading) return <div className="text-white font-bold text-xl">Fetching Login Account...</div>;
 
@@ -65,19 +143,52 @@ function UserInfo() {
         </h1>
 
         <div className="flex items-center gap-2 mb-1">
-          <img 
-            src={
-              
-              loginAccount.picture == "" 
-              ? "/img/icons/staff_picture.png" 
-              : loginAccount.picture
-            } 
-            
-            className="rounded-full" 
-            width={40} 
-            height={20} 
-          />
 
+          {
+            loginAccount.role !== "applicant" && (
+              <FontAwesomeIcon 
+                icon={faEdit} 
+                className="absolute mt-7 text-md bg-white rounded-full p-2 left-[12px] hover:cursor-pointer hover:opacity-75"
+                onClick={() => triggerFileInput()}
+              />
+            )
+          }
+
+          
+
+          {
+            loginAccount.role === "applicant" ? (
+
+              <img 
+                src={
+                  
+                  loginAccount.picture == "" 
+                  ? "/img/icons/staff_picture.png" 
+                  : loginAccount.picture
+                } 
+                
+                className="rounded-full" 
+                width={40} 
+                height={20} 
+              />
+  
+  
+            ): (
+                <img 
+                  src={
+                    profilePictureResponse?.data != "No_Profile"
+                      ? profilePictureResponse?.data.profile_src 
+                      : "/img/icons/staff_picture.png" 
+                  } 
+                    
+                  className="rounded-full" 
+                  width={60} 
+                  height={20} 
+                />
+            )
+          }
+
+          
           <div className=" font-bold text-xl overflow-hidden whitespace-nowrap text-ellipsis w-full text-center">
             {loginAccount.name}
           </div>
@@ -86,6 +197,13 @@ function UserInfo() {
 
         <h1 className="font-bold text-orange-400">{loginAccount.role.toLocaleUpperCase()}</h1>
 
+        <input
+          ref={fileInputRef} 
+          type="file" 
+          accept="image/*" 
+          className="hidden" 
+          onChange={handleChangeProfile} 
+        />
 
       </div>
       
@@ -124,6 +242,7 @@ function NavLinks({ role }: { role: string }) {
   const [isAdminModalVisible, setIsAdminModalVisible] = useState(false); 
   const [toAccessRole, setToAccessRole] = useState<string>();
   const toggleAdminModal = () => setIsAdminModalVisible((prevState) => !prevState);
+  const queryClient = useQueryClient();
 
   const adminTypes = [
     "architectural",
@@ -142,11 +261,12 @@ function NavLinks({ role }: { role: string }) {
     mutationFn: RequestAccessRole,
     onSuccess: () => {
 
+        queryClient.invalidateQueries({queryKey: ['admin_access_request']})
         Swal.fire({
           position: "top-end",
           icon: "success",
           title: "Access Request Sent Successfully",
-          text: toAccessRole === "staff" ? "Please wait for the admins approval" : `Please wait for the ${role} approval`,
+          text: toAccessRole === "staff" ? "Please wait for the admins approval" : `Please wait for the ${role} admin approval`,
         });
 
     },
@@ -245,10 +365,10 @@ function NavLinks({ role }: { role: string }) {
   if (role === "releaser") {
     // navLinks.push({ name: "Applications", to: "/releaser/application", iconSrc: "/img/icons/approved.png" });
     navLinks.push({ name: "Approved", to: "/releaser/approved", iconSrc: "/img/icons/approved.png" });
-    navLinks.push({ name: "Disapproved", to: "/releaser/disapproved", iconSrc: "/img/icons/approved.png" });
+    navLinks.push({ name: "Disapproved", to: "/releaser/disapproved", iconSrc: "/img/icons/disapproved.png" });
     navLinks.push({ name: "Report", to: "/releaser/report", iconSrc: "/img/icons/approved.png" });
 
-    accessStaffs.push({ name: "Receiver", role: "RELEASER", iconSrc: "/img/icons/receiver_icon.png" });
+    accessStaffs.push({ name: "Receiver", role: "RECEIVER", iconSrc: "/img/icons/receiver_icon.png" });
     accessStaffs.push({ name: "Scanner", role: "SCANNER", iconSrc: "/img/icons/scanner_icon.png" });
 
     navLinks.push({ name: "Edit Account", to: "/edit/releaser", iconSrc: "/img/icons/edit_account.png" });
@@ -260,7 +380,7 @@ function NavLinks({ role }: { role: string }) {
   if (role === "applicant") {
     navLinks.push({ name: "Services Options", to: "/services/option", iconSrc: "/img/icons/services_option.png" });
     navLinks.push({ name: "Applied Services", to: "/applied/services", iconSrc: "/img/icons/applied_services.png" });
-    navLinks.push({ name: "Inbox", to: "/inbox", iconSrc: "/img/icons/inbox.png" });
+    navLinks.push({ name: "Notification", to: "/inbox", iconSrc: "/img/icons/inbox.png" });
   }
 
   const defaultLink = navLinks[0]?.to;

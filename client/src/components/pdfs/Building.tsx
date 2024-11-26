@@ -15,12 +15,19 @@ import { saveAs } from 'file-saver';
 import '../../assets/scrollStyle.css'
 import { PlumbingPermitComponent } from './plumbing/PlumbingPermitComponent';
 import { ApplicationLetter } from './application_letter/ApplicationLetter';
+import { ElectronicsPermitComponent } from './Electronics';
+import { ElectricalComponentPermit } from './Electrical';
+import { MechanicalPermitComponent } from './Mechanical';
+import { FencingPermitComponent } from './Fencing';
 
 function BuildingPDF({ permitInfo, setPermitsInfo }: { 
   permitInfo: AppliedServices,
   setPermitsInfo: React.Dispatch<React.SetStateAction<AppliedServices | undefined>>
 
 }) {
+
+  console.log("permitInfo in building pdf: ", permitInfo);
+  
 
   const downloadPDF = async () => {
     const doc = (
@@ -52,7 +59,7 @@ function BuildingPDF({ permitInfo, setPermitsInfo }: {
 
       <div className="flex justify-center w-full h-full fixed top-20">
 
-        <div className="flex flex-col mt-3 items-center h-[83%] py-4 w-[55%] bg-white rounded-md">
+        <div className="flex flex-col mt-3 items-center h-[80%] py-4 w-[55%] bg-white rounded-md">
 
           <h1 className='font-bold text-3xl mb-3'>Building Permit Application</h1>
 
@@ -63,12 +70,11 @@ function BuildingPDF({ permitInfo, setPermitsInfo }: {
                 <ApplicationLetter applicationLetterInfo={applicationLetterInfo}/>
                 <BuildingPermit permitInfo={permitInfo} />
                 <PlumbingPermitComponent permitInfo={permitInfo} />
+                <ElectronicsPermitComponent permitInfo={permitInfo} />
+                <ElectricalComponentPermit permitInfo={permitInfo} />
+                <MechanicalPermitComponent permitInfo={permitInfo} />
+                <FencingPermitComponent permitInfo={permitInfo} />
                 
-                {/* 
-                  DIRI I ADD ANG MGA EXTRA PDFS NA DALA SA 
-                  BUILDING PERMIT LIKE ELECTRICAL ETC.. 
-                */}
-
               </Document>
             </PDFViewer>
 

@@ -63,7 +63,6 @@ export const AssessmentCheckListModal = ({ applicationID, setAssessmentChecklist
             queryClient.invalidateQueries({ queryKey: ["pending_applications"] });
 
             Swal.fire({
-                position: "top-end",
                 icon: "success",
                 title: "Assessment Paid Successfully!",
                 showConfirmButton: true,

@@ -63,7 +63,7 @@ func (h *DocumentHandler) UploadDocumentHandler(c echo.Context) error {
     defer src.Close()
 
 
-	err = s3UploadDocument(src, applicationCode, file.Filename)
+	err = s3ObjectUpload(src, "document", applicationCode, file.Filename)
     if err != nil {
         return c.String(http.StatusInternalServerError, fmt.Sprintf("Failed to upload file to S3: %v", err))
     }
@@ -72,9 +72,48 @@ func (h *DocumentHandler) UploadDocumentHandler(c echo.Context) error {
 }
 
 
-func s3UploadDocument(file multipart.File, applicationCode string, filename string) error {
+func (h *DocumentHandler) UploadProfileHandler(c echo.Context) error {
 
-	s3key := path.Join("document", applicationCode, filename)
+	userID := c.FormValue("userID")
+    if userID == "" {
+        return c.String(http.StatusBadRequest, "userID is required")
+    }
+
+	fmt.Println("userID: ", userID)
+
+	file, err := c.FormFile("image")
+    if err != nil {
+        return c.String(http.StatusBadRequest, fmt.Sprintf("Failed to retrieve file: %v", err))
+    }
+   
+	src, err := file.Open()
+    if err != nil {
+        return err
+    }
+    defer src.Close()
+
+
+	// himoa nig go routine unya and duha ka s3 operations para efficient ang performance
+
+	oldProfileKey := path.Join("profile_picture", userID)
+	err = deleteOldProfileImage(oldProfileKey)
+    if err != nil {
+        return c.String(http.StatusInternalServerError, fmt.Sprintf("Failed to delete odl profile to S3: %v", err))
+    }
+
+	err = s3ObjectUpload(src, "profile_picture", userID, file.Filename)
+    if err != nil {
+        return c.String(http.StatusInternalServerError, fmt.Sprintf("Failed to upload profile picture to S3: %v", err))
+    }
+
+	return c.JSON(http.StatusOK, "Document uploaded successfully")
+}
+
+
+
+func s3ObjectUpload(file multipart.File, root string, sub string, filename string) error {
+
+	s3key := path.Join(root, sub, filename)
 
 	fmt.Println("s3key:", s3key)
 
@@ -90,6 +129,33 @@ func s3UploadDocument(file multipart.File, applicationCode string, filename stri
 
 	return nil
 }
+
+func deleteOldProfileImage(oldProfilePrefix string) error {
+
+	listInput := &s3.ListObjectsV2Input{
+		Bucket: aws.String(bucketName),
+		Prefix: aws.String(oldProfilePrefix),
+	}
+
+	results, err := s3Client.ListObjectsV2(context.TODO(), listInput)
+	if err != nil {
+		return err
+	}
+
+	for _, item := range results.Contents {
+		_, deleteObjErr := s3Client.DeleteObject(context.TODO(), &s3.DeleteObjectInput{
+			Bucket: aws.String(bucketName),
+			Key:    aws.String(*item.Key),
+		})
+	
+		if deleteObjErr != nil {
+			return deleteObjErr
+		}
+	}
+
+	return nil
+}
+
 
 
 func (h *DocumentHandler) GetDocumentHandler(c echo.Context) error {
@@ -133,6 +199,49 @@ func (h *DocumentHandler) GetDocumentHandler(c echo.Context) error {
 	return c.JSON(http.StatusOK, map[string]interface{}{
 		"prefix": prefix,
 		"urls":   presignedURLSlice,
+	})
+
+}
+
+
+func (h *DocumentHandler) GetProfilePictureHandler(c echo.Context) error {
+
+	userID := c.Param("userID")
+	prefix := path.Join("profile_picture", userID)
+
+	listInput := &s3.ListObjectsV2Input{
+		Bucket: aws.String(bucketName),
+		Prefix: aws.String(prefix),
+	}
+
+
+	result, err := s3Client.ListObjectsV2(context.TODO(), listInput)
+	if err != nil {
+		return c.JSON(http.StatusInternalServerError, fmt.Sprintf("Failed to list files for prefix %s: %v", prefix, err))
+	}
+
+	if len(result.Contents) == 0 {
+        return c.JSON(http.StatusOK, "No_Profile")
+    }
+
+	objectKey := *result.Contents[0].Key
+	fmt.Println("Found object:", objectKey)
+	
+	expires := s3.WithPresignExpires(1 * time.Hour)
+
+	presignInput := &s3.GetObjectInput{
+		Bucket: aws.String(bucketName),
+		Key:    aws.String(objectKey),
+	}
+	
+	presignedURLs, err := preSigner.PresignGetObject(context.TODO(), presignInput, expires)
+	if err != nil{
+		return err
+	}
+
+	return c.JSON(http.StatusOK, map[string]interface{}{
+		"prefix": prefix,
+		"profile_src":   presignedURLs.URL,
 	})
 
 }

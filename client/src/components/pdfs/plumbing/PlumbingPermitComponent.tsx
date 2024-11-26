@@ -1,5 +1,5 @@
 import { Page, StyleSheet, View } from "@react-pdf/renderer";
-import { AppliedServices } from "../../../types/application";
+import { ApplicationLetterInfoTypes, AppliedServices } from "../../../types/application";
 import { PermitHeader } from "./header";
 import { PermitBodyBox1 } from "./box1";
 // import { PermitBodyBox2 } from "../plumbing/box2";
@@ -11,6 +11,7 @@ import { PermitBodyBox7 } from "./box7";
 import { PermitBodyBox8 } from "./box8";
 import { PermitBodyBox9 } from "./box9";
 import { PermitBodyBox10 } from "./box10";
+import { ApplicationLetter } from "../application_letter/ApplicationLetter";
 
 export function PlumbingPermitComponent({ permitInfo }: { 
     permitInfo: AppliedServices 
@@ -20,33 +21,47 @@ export function PlumbingPermitComponent({ permitInfo }: {
     const serviceType = permitInfo.serviceType
   
     const applicantName = `${permitInfo.firstname} ${permitInfo.middleInitial} ${permitInfo.lastName} `
+
+    const applicationLetterInfo: ApplicationLetterInfoTypes = {
+      firstName: permitInfo.firstname,
+      middleName: permitInfo.middleInitial,
+      familyName: permitInfo.lastName,
+      permit_type: permitInfo.permit_type
+    }
+
     return (
-      <Page size="A4" style={styles.page}>
-  
-        <PermitHeader serviceType={serviceType} applicationCode={applicationCode} />
-  
-        <View style={styles.body1}>
-          <PermitBodyBox1 permitInfo={permitInfo} />
-        </View>
 
-  
-        <View style={styles.body3}>
-          <PermitBodyBox3 applicantName={applicantName} />
-          <PermitBodyBox4 />
-        </View>
-  
-          <PermitBodyBox5 applicantName={applicantName} />
-  
-          <PermitBodyBox6 />
-  
-          <PermitBodyBox7 />
-  
-          <PermitBodyBox8 />
+      <>
+        <ApplicationLetter applicationLetterInfo={applicationLetterInfo}/>
 
-          <PermitBodyBox9 />
+        <Page size="A4" style={styles.page}>
+  
+          <PermitHeader serviceType={serviceType} applicationCode={applicationCode} />
+    
+          <View style={styles.body1}>
+            <PermitBodyBox1 permitInfo={permitInfo} />
+          </View>
 
-          <PermitBodyBox10 />
-      </Page>
+    
+          <View style={styles.body3}>
+            <PermitBodyBox3 applicantName={applicantName} />
+            <PermitBodyBox4 />
+          </View>
+    
+            <PermitBodyBox5 applicantName={applicantName} />
+    
+            <PermitBodyBox6 />
+    
+            <PermitBodyBox7 />
+    
+            <PermitBodyBox8 />
+
+            <PermitBodyBox9 />
+
+            <PermitBodyBox10 />
+        </Page>
+      </>
+      
     );
   }
   

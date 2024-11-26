@@ -6,6 +6,8 @@ import { PTMSHeader } from "../../../components/PtmsHeader";
 
 import StaffRequestAccessModal from "../../../components/admin/StaffRequestAccessModal";
 import AdminRequestAccessModal from "../../../components/admin/AdminRequestAccessModal";
+import { useFetchStaffPendingAR } from "../../../hook/useFetchStaffPendingAR";
+import AdminArNotifButton from "../../../components/admin/AdminARNotifButton";
 
 
 function PaidArchitecturalPage() {
@@ -16,8 +18,21 @@ function PaidArchitecturalPage() {
     const [openStaffAccessModal, setOpenStaffAccessModal] = useState<boolean>(false);
     const [openAdminAccessModal, setOpenAdminAccessModal] = useState<boolean>(false);
    
-    const toggleStaffAccessModal = () => setOpenStaffAccessModal((prevState) => !prevState);
-    const toggleAdminAccessModal = () => setOpenAdminAccessModal((prevState) => !prevState);
+    const toggleStaffAccessModal = () => {
+        setOpenStaffAccessModal((prevState) => {
+            if (!prevState) setOpenAdminAccessModal(false);
+            return !prevState;
+        });
+    };
+
+    const toggleAdminAccessModal = () => {
+        setOpenAdminAccessModal((prevState) => {
+            if (!prevState) setOpenStaffAccessModal(false); 
+            return !prevState;
+        });
+    };
+
+    const { pendingAccessReqest } = useFetchStaffPendingAR();
     
 
     return (
@@ -44,19 +59,24 @@ function PaidArchitecturalPage() {
                             <h1 className="text-orange-400 text-4xl font-bold">Applicants</h1>
                             <div className="flex items-center gap-3">
 
-                                <button 
-                                    className="text-2xl hover:opacity-75 hover:cursor-pointer text-sm bg-gray-500 text-white rounded-md p-2"
-                                    onClick={toggleStaffAccessModal}
-                                >
-                                    Staff AR 
-                                </button>
+                                <div className="flex gap-1">
+                                    {pendingAccessReqest && pendingAccessReqest.length > 0 && (
+                                        <div className="flex items-center justify-center text-white bg-red-500 rounded-full w-4 h-4 text-sm">
+                                            {pendingAccessReqest.length}
+                                        </div>
+                                    )}
 
-                                <button 
-                                    className="text-2xl hover:opacity-75 hover:cursor-pointer text-sm bg-gray-500 text-white rounded-md p-2"
-                                    onClick={toggleAdminAccessModal}
-                                >
-                                    Admin AR
-                                </button>
+                                    <button 
+                                        className="text-2xl hover:opacity-75 hover:cursor-pointer text-sm bg-gray-500 text-white rounded-md p-2"
+                                        onClick={toggleStaffAccessModal}
+                                    >
+                                        Staff AR 
+                                    </button>
+                                </div>
+
+                                
+
+                                <AdminArNotifButton toggleAdminAccessModal={toggleAdminAccessModal} />
 
 
                                 <DropdownDate

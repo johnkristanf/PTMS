@@ -66,6 +66,56 @@ type ApplicantInfoFetching struct {
 	AdminApproved    			string `json:"admin_approved"`
 }
 
+
+type ApplicantionByProccess struct {
+	ID              		  	int64  `json:"application_id"`
+	ApplicationCode 			string `json:"applicationCode"`
+	ServiceType     		  	string `json:"serviceType"`
+
+	FirstName     				string `json:"firstname"`
+	MiddleInitial 				string `json:"middleInitial"`
+	LastName      				string `json:"lastName"`
+
+	AddressNumber             	string `json:"addressNo"`
+	Barangay                  	string `json:"barangay"`
+	Street                    	string `json:"street"`
+	Municipality              	string `json:"municipality"`
+	ZipCode                   	string `json:"zipCode"`
+	
+	PermitType  				string `json:"permit_type"`
+	Email       				string `json:"email"`
+	UserID       				string `json:"user_id"`
+	ApplicantID 				int64  `json:"applicantID"`
+
+	ReleaseDate					string `json:"release_date"`
+	AdminApproved    			string `json:"admin_approved"`
+}
+
+
+type ApplicationReport struct {
+	ID              		  	int64  `json:"application_id"`
+	ApplicationCode 			string `json:"applicationCode"`
+
+	FirstName     				string `json:"firstname"`
+	MiddleInitial 				string `json:"middleInitial"`
+	LastName      				string `json:"lastName"`
+
+	AddressNumber             	string `json:"addressNo"`
+	Barangay                  	string `json:"barangay"`
+	Street                    	string `json:"street"`
+	Municipality              	string `json:"municipality"`
+	ZipCode                   	string `json:"zipCode"`
+	
+	PermitType  				string `json:"permit_type"`
+	Email       				string `json:"email"`
+	UserID       				string `json:"user_id"`
+	ApplicantID 				int64  `json:"applicantID"`
+	Status      				string `json:"application_status"`
+
+	ReleaseDate					string `json:"release_date"`
+	AdminApproved    			string `json:"admin_approved"`
+}
+
 type AppliedServicesFetching struct {
 	ID              			int64  `json:"application_id"`
 	ApplicationCode 			string `json:"applicationCode"`

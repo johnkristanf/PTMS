@@ -44,7 +44,7 @@ function PlumbingPDF({ permitInfo, setPermitsInfo }: {
 
       <div className="flex justify-center w-full h-full fixed top-20">
 
-        <div className="flex flex-col mt-3 items-center h-[83%] py-4 w-[55%] bg-white rounded-md">
+        <div className="flex flex-col mt-3 items-center h-[80%] py-4 w-[55%] bg-white rounded-md">
 
           <h1 className='font-bold text-3xl mb-3'>Plumbing Permit Application</h1>
 
@@ -92,40 +92,46 @@ function BuildingPermit({ permitInfo }: {
   const serviceType = permitInfo.serviceType
 
   const applicantName = `${permitInfo.firstname} ${permitInfo.middleInitial} ${permitInfo.lastName} `
+
+  
   return (
-    <Page size="A4" style={styles.page}>
+    <>
 
-      <PermitHeader serviceType={serviceType} applicationCode={applicationCode} />
+      <Page size="A4" style={styles.page}>
 
-      <View style={styles.body1}>
-        <PermitBodyBox1 permitInfo={permitInfo} />
-      </View>
+        <PermitHeader serviceType={serviceType} applicationCode={applicationCode} />
 
-      <View style={styles.body2}>
-        <PermitBodyBox2 />
-      </View>
+        <View style={styles.body1}>
+          <PermitBodyBox1 permitInfo={permitInfo} />
+        </View>
 
-      <View style={styles.body3}>
-        <PermitBodyBox3 applicantName={applicantName} />
-        <PermitBodyBox4 />
-      </View>
+        <View style={styles.body2}>
+          <PermitBodyBox2 />
+        </View>
 
-      <View style={styles.body5}>
-        <PermitBodyBox5 applicantName={applicantName} />
-      </View>
+        <View style={styles.body3}>
+          <PermitBodyBox3 applicantName={applicantName} />
+          <PermitBodyBox4 />
+        </View>
 
-      <View style={styles.body6_7}>
-        <PermitBodyBox6 />
-      </View>
+        <View style={styles.body5}>
+          <PermitBodyBox5 applicantName={applicantName} />
+        </View>
 
-      <View style={styles.body6_7}>
-        <PermitBodyBox7 />
-      </View>
+        <View style={styles.body6_7}>
+          <PermitBodyBox6 />
+        </View>
 
-      <View style={styles.body8}>
-        <PermitBodyBox8 />
-      </View>
-    </Page>
+        <View style={styles.body6_7}>
+          <PermitBodyBox7 />
+        </View>
+
+        <View style={styles.body8}>
+          <PermitBodyBox8 />
+        </View>
+      </Page>
+    </>
+    
   );
 }
 

@@ -6,6 +6,8 @@ import Swal from 'sweetalert2';
 import { UpdateFirstStepRequirements } from '../../../http/put/application';
 import { FetchCheckedRequirements } from '../../../http/get/application';
 import { classNames } from '../../../helpers/classNames';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faCheck, faX } from '@fortawesome/free-solid-svg-icons';
 
 type RequirementsWithoutID = Omit<FirstStepRequirements, 'application_id'>;
 
@@ -87,6 +89,7 @@ function RequirementsModalStaff({ applicationID, setShowRequirements }: {
 
     const [checkRequirements, setCheckRequirements] = useState<RequirementsWithoutID>(initialRequirementsState);
     const [disabledRequirements, setDisabledRequirements] = useState<RequirementsWithoutID>(initialRequirementsState);
+    const [selectAll, setSelectAll] = useState<boolean>(false);
 
     const handleCheckboxChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         const key = itemKeyMapping[event.target.name];
@@ -199,6 +202,18 @@ function RequirementsModalStaff({ applicationID, setShowRequirements }: {
     const allRequirementsChecked = Object.values(checkRequirements).every(Boolean);
     const disableIfallRequirementsChecked = Object.values(disabledRequirements).every(Boolean);
 
+
+    const toggleSelectAll = () => {
+        const allChecked = !selectAll; 
+        const updatedRequirements = Object.keys(checkRequirements).reduce((acc, key) => {
+            acc[key as keyof RequirementsWithoutID] = allChecked;
+            return acc;
+        }, {} as RequirementsWithoutID);
+
+        setCheckRequirements(updatedRequirements); 
+        setSelectAll(allChecked);
+    };
+
     return (
         <>
             <div className="fixed top-0 left-0 w-full h-full bg-gray-800 opacity-75"></div>
@@ -211,6 +226,30 @@ function RequirementsModalStaff({ applicationID, setShowRequirements }: {
                             {allRequirementsChecked ? 'Completed': 'Incomplete'}
                         </span> 
                     </h1>
+
+                    <div className="flex justify-end mb-5 w-full">
+                       
+                        <button
+                            type="button"
+                            onClick={toggleSelectAll}
+                            className="bg-orange-400 text-white p-2 rounded-md "
+                        >
+                            {
+                                selectAll 
+                                    ? (
+                                        <>
+                                            <FontAwesomeIcon icon={faX} /> Unselect All
+                                        </>
+
+                                    ) : (
+                                        <>
+                                            <FontAwesomeIcon icon={faCheck} /> Select All  
+                                        </>
+                                    )
+                            }
+                        </button>
+                       
+                    </div>
 
                     <form onSubmit={handleSubmit}>
                         {renderCheckboxes(fullyAccomplished, 'Fully Accomplished Application Form')}

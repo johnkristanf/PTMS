@@ -1,34 +1,35 @@
-import { useState } from "react"
-import { ApplicantInformationModalStaff } from "../modal/staff/ApplicantInformationModalStaff";
+// import { useState } from "react"
+// import { ApplicantInformationModalStaff } from "../modal/staff/ApplicantInformationModalStaff";
 import { useQuery } from "@tanstack/react-query";
 import { FetchPendingApplicantInfo } from "../../http/get/application";
 import { Application } from "../../types/application";
 
 
 
-export function ScannerTable({searchTerm}: {
-    searchTerm: string
+export function ScannerTable({searchTerm, selectedMonth}: {
+    searchTerm: string,
+    selectedMonth: string
 }){
 
 
-    const [informationModal, setInformationModal] = useState<boolean>();
-    const [applicantInfo, setApplicantInfo] = useState<Application>()
+    // const [informationModal, setInformationModal] = useState<boolean>();
+    // const [applicantInfo, setApplicantInfo] = useState<Application>()
 
 
     const { data: response, isLoading } = useQuery({
         queryKey: ["pending_applications", searchTerm],
         queryFn: async () => {
-            const data = await FetchPendingApplicantInfo(searchTerm)
+            const data = await FetchPendingApplicantInfo(searchTerm, selectedMonth)
             return data
         },
     });
 
     const pendingApplications: Application[] = response?.data
 
-    const openApplicationInformationModal = (data: Application) => {
-        setApplicantInfo(data)
-        setInformationModal(true)
-    }
+    // const openApplicationInformationModal = (data: Application) => {
+    //     setApplicantInfo(data)
+    //     setInformationModal(true)
+    // }
 
     
 
@@ -38,10 +39,10 @@ export function ScannerTable({searchTerm}: {
     return(
 
         <>
-
+{/* 
             {
                 (applicantInfo && informationModal) && <ApplicantInformationModalStaff setInformationModal={setInformationModal} applicantInfo={applicantInfo} />
-            }
+            } */}
 
 
             <div className="flex flex-col bg-white w-full h-[70%] rounded-md">
@@ -51,7 +52,7 @@ export function ScannerTable({searchTerm}: {
 
                     <div className="overflow-hidden">
                         <table className="min-w-full text-left text-sm font-light">
-                        <thead className="border-b font-medium dark:border-neutral-500">
+                        <thead className="border-b font-medium border-neutral-500">
                             <tr>
                             <th scope="col" className="px-3 py-3">Name</th>
                             <th scope="col" className="px-3 py-3">Address</th>
@@ -72,19 +73,19 @@ export function ScannerTable({searchTerm}: {
                                         pendingApplications.map((data) => (
                                             <tr
                                                 key={data.application_id}
-                                                className=" font-bold border-b transition duration-300 ease-in-out hover:bg-neutral-100 dark:border-neutral-500 dark:hover:bg-neutral-600">
+                                                className=" font-bold border-b border-neutral-500 transition duration-300 ease-in-out hover:bg-neutral-100 ">
                                                 <td className="whitespace-nowrap px-2 py-2">{data.firstname} {data.middleInitial} {data.lastName} </td>
                                                 <td className="whitespace-nowrap px-2 py-2">{data.addressNo} {data.barangay} {data.street} {data.municipality} {data.zipCode}</td>
                                                 <td className="whitespace-nowrap px-2 py-2">{data.permit_type}</td>
 
                                                 <td className="whitespace-nowrap px-2 py-2">
                                                     <div className="flex gap-5">
-                                                        <button
+                                                        {/* <button
                                                             onClick={() => openApplicationInformationModal(data)}
                                                             className="bg-orange-500 rounded-md p-3 text-white font-bold hover:opacity-75"
                                                         >
                                                             Information
-                                                        </button>
+                                                        </button> */}
 
                                                       
                                                     </div>

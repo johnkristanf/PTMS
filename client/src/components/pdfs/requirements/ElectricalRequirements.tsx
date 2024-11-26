@@ -5,6 +5,8 @@ import Swal from 'sweetalert2';
 import { CheckedElectricalRequirements } from '../../../http/put/application';
 import { FetchElectricalRequirements } from '../../../http/get/application';
 import { ElectricalRequirementFormData } from '../../../types/application';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faCheck, faX } from '@fortawesome/free-solid-svg-icons';
 
 
 
@@ -14,8 +16,10 @@ const ElectricalRequirements = ({ applicationID, setRequirementsModal, setAllReq
     setAllRequirementsChecked: React.Dispatch<React.SetStateAction<boolean>>,
     allRequirementsChecked: boolean
 }) => {
-    const { register, handleSubmit, watch } = useForm<ElectricalRequirementFormData>();
+    const { register, handleSubmit, watch, setValue } = useForm<ElectricalRequirementFormData>();
     const [isChanged, setIsChanged] = useState(false);
+    const [areAllSelected, setAreAllSelected] = useState(false); 
+
 
     const queryClient = useQueryClient();
 
@@ -25,7 +29,6 @@ const ElectricalRequirements = ({ applicationID, setRequirementsModal, setAllReq
             queryClient.invalidateQueries({ queryKey: ["pending_applications"] });
 
             Swal.fire({
-                position: "top-end",
                 icon: "success",
                 title: "Electrical Requirements Checked!",
                 showConfirmButton: true,
@@ -67,6 +70,15 @@ const ElectricalRequirements = ({ applicationID, setRequirementsModal, setAllReq
         return () => subscription.unsubscribe();
     }, [watch]);
 
+    const toggleSelectAll = () => {
+        const fields = Object.keys(response?.data || {}) as Array<keyof ElectricalRequirementFormData>;
+        const newValue = !areAllSelected;
+
+        fields.forEach(field => setValue(field, newValue)); 
+        setAreAllSelected(newValue);
+        setAllRequirementsChecked(prevState => !prevState);
+    };
+
 
     console.log("electrical requirements: ", response?.data);
     
@@ -77,9 +89,9 @@ const ElectricalRequirements = ({ applicationID, setRequirementsModal, setAllReq
         <>
             <div className="fixed top-0 left-0 w-full h-full bg-gray-800 opacity-75"></div>
 
-            <div className="w-full fixed top-3 left-0 h-screen flex justify-center ">
+            <div className="w-full fixed top-24 left-0 h-screen flex justify-center ">
 
-                <div className="flex flex-col items-center h-[95%] py-4 w-[55%] bg-white rounded-md">
+                <div className="flex flex-col items-center h-[80%] py-4 w-[55%] bg-white rounded-md">
                     <h1 className='font-bold text-3xl mb-5'>Electrical Requirements</h1>
                     <h1 className='font-semibold mb-8'>
                         Requirement Status: 
@@ -87,6 +99,31 @@ const ElectricalRequirements = ({ applicationID, setRequirementsModal, setAllReq
                             {allRequirementsChecked ? 'Completed': 'Incomplete'}
                         </span> 
                     </h1>
+
+                    <div className="flex justify-end mb-5 w-full pr-9">
+                       
+                        <button
+                            type="button"
+                            onClick={toggleSelectAll}
+                            className="bg-orange-400 text-white p-2 rounded-md mr-4"
+                        >
+                            {
+                                areAllSelected 
+                                    ? (
+                                        <>
+                                            <FontAwesomeIcon icon={faX} /> Unselect All
+                                        </>
+
+                                    ) : (
+                                        <>
+                                            <FontAwesomeIcon icon={faCheck} /> Select All  
+                                        </>
+                                    )
+                            }
+                        </button>
+                       
+                    </div>
+
 
                     <form onSubmit={handleSubmit(onSubmit)} className="max-w-screen-sm w-full h-full overflow-auto">
                         <div className="grid grid-cols-1 gap-3 p-2">
@@ -177,13 +214,10 @@ const ElectricalRequirements = ({ applicationID, setRequirementsModal, setAllReq
                         </div>
 
                         <div className="flex flex-col items-center w-full gap-4 mt-5">
-                            {
-                                !allRequirementsChecked && (
-                                    <button type="submit" disabled={!isChanged} className={`w-[85%] text-white font-bold py-2 px-4 rounded w-1/2 ${isChanged ? 'bg-orange-500 hover:opacity-75' : 'bg-gray-500 cursor-not-allowed'}`}>
-                                        Save
-                                    </button>
-                                )
-                            }
+                           
+                            <button type="submit" disabled={!isChanged} className={`w-[85%] text-white font-bold py-2 px-4 rounded w-1/2 ${isChanged ? 'bg-orange-500 hover:opacity-75' : 'bg-gray-500 cursor-not-allowed'}`}>
+                                Save
+                            </button>
 
                             <button
                                 onClick={() => setRequirementsModal(false)}

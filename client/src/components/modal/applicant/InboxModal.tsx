@@ -4,6 +4,7 @@ import Swal from 'sweetalert2';
 import { deleteInbox } from "../../../http/delete/inbox";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { faTrash } from "@fortawesome/free-solid-svg-icons";
+import { Inboxes } from "../../../types/inbox";
 
 function InboxModal({ setOpenInbox, inboxInfo }: {
     setOpenInbox: React.Dispatch<React.SetStateAction<boolean>>
@@ -56,9 +57,9 @@ function InboxModal({ setOpenInbox, inboxInfo }: {
     <>
         <div className="fixed top-0 w-full h-full bg-gray-800 opacity-75"></div>
 
-        <div className="w-full fixed top-3 h-screen flex justify-center">
+        <div className="w-full fixed top-24 h-screen flex justify-center">
 
-            <div className="bg-white rounded-md h-[90%] w-1/2 p-8 flex flex-col items-end overflow-y-auto">
+            <div className="bg-white rounded-md h-[80%] w-1/2 p-8 flex flex-col items-end overflow-auto">
 
                 <div className="w-full flex justify-between mb-3">
                     <h1 className="font-bold text-4xl">Inbox</h1>

@@ -43,6 +43,8 @@ type Application struct {
 	ScopeType                   string 		`gorm:"type:text"`
 	CharacterOfOccupancy        string 		`gorm:"type:text"`
 
+	StaffProccessStatus 		string      `gorm:"not null"`
+
 	AdminApproved				string		`gorm:"not null"`
 
 	ReleaseDate					string		`gorm:"not null"`
@@ -198,6 +200,11 @@ type APPLICATION_DB_METHOD interface {
 	IsApplicationExists(string, string, string) (bool, error)
 
 	FetchApplication(string, string, string) ([]*types.ApplicantInfoFetching, error)
+	FetchApplicationByStaffProccessStatus(string, string, string) ([]*types.ApplicantionByProccess, error)
+	FetchDisapprovedReleaser(string, string, string) ([]*types.ApplicantionByProccess, error)
+	FetchReportApplication(string, string) ([]*types.ApplicationReport, error)
+	TrashApplication() error
+
 	FetchAppliedServices(int64) ([]*types.AppliedServicesFetching, error)
 	FetchRequirements(int64) (*types.FirstStepRequirementsFetching, error)
 
@@ -207,8 +214,11 @@ type APPLICATION_DB_METHOD interface {
 
 	UpdateAssessment(*types.AssessmentTypes) error
 	UpdateApplicationCode(int64, string) error
+	IsApplicationCodeExists(string) (bool, error)
+
 	UpdateApplicationApproval(int64, string) error
 	UpdateApplicationDisApproval(int64, string) error
+	SubmitToReleaserApplication(int64) error
 
 	UpdateFirstStepRequirements(*types.FirstStepRequirements) error
 
@@ -223,8 +233,7 @@ type APPLICATION_DB_METHOD interface {
 
 	
 	UpdateApplicationStatus(int64, string) error
-	UpdateReleaseDate(int64, string, string) error
-	// AllAdminsApplicationApproval([]*types.ApplicantInfoFetching) error
+	UpdateReleaseDateAndSubmitToReport(int64, string, string) error
 
 	SetPaidAsssesment(types.AssessmentsPaidFormData) error
 	FetchAssessments(int64) (*types.AssessmentRender, error)
@@ -910,6 +919,8 @@ func (sql *SQL) AddApplication(applicantInfo *types.ApplicantInfo) error {
 		ScopeType:           		applicantInfo.ScopeType,
 		CharacterOfOccupancy: 		applicantInfo.CharacterOfOccupancy,
 
+		StaffProccessStatus: 		"not_set",	
+
 		AdminApproved: "",
 	}
 
@@ -966,26 +977,22 @@ func (sql *SQL) IsApplicationExists(firstName string, lastName string, permitTyp
 }
 
 
-func (sql *SQL) FetchApplication(status string, searchName string, selectedMonth string) ([]*types.ApplicantInfoFetching, error) {
+func (sql *SQL) TrashApplication() error {
 
-	var results []*types.ApplicantInfoFetching
-
-	tx := sql.DB.Begin()
-
-	// Update applications older than a year to "Trash"
-	if err := tx.Model(&Application{}).
+	if err := sql.DB.Model(&Application{}).
 		Where("created_at < NOW() - INTERVAL '1 year'").
 		Where("status != ?", "Trash").
 		Update("status", "Trash").Error; err != nil {
-		tx.Rollback()
-		return nil, err
-	}
+			return err
+		}
 
-	// Commit the transaction if the update is successful
-	if err := tx.Commit().Error; err != nil {
-		return nil, err
-	}
+	return nil
+}
 
+
+func (sql *SQL) FetchApplication(status string, searchName string, selectedMonth string) ([]*types.ApplicantInfoFetching, error) {
+
+	var results []*types.ApplicantInfoFetching
 
 	query := sql.DB.Table("applications").
 		Select(`applications.id, applications.service_type, applications.application_code, applications.first_name, applications.middle_initial, applications.last_name, 
@@ -1017,37 +1024,104 @@ func (sql *SQL) FetchApplication(status string, searchName string, selectedMonth
 }
 
 
+func (sql *SQL) FetchApplicationByStaffProccessStatus(status string, searchName string, selectedMonth string) ([]*types.ApplicantionByProccess, error) {
 
-// func (sql *SQL) AllAdminsApplicationApproval(results []*types.ApplicantInfoFetching) error {
+	var results []*types.ApplicantionByProccess
 
-// 	for _, application := range results {
-// 		approvedAdmins := strings.Split(application.AdminApproved, ",")
-// 		requiredAdmins := []string{"architectural", "civil", "electrical"}
-	
-// 		allApproved := true
-// 		for _, required := range requiredAdmins {
-// 			if !contains(approvedAdmins, required) {
-// 				allApproved = false
-// 				break
-// 			}
-// 		}
-	
-// 		if allApproved {
-// 			approvalResult := sql.DB.Model(&Application{}).Where("id = ?", application.ID).Updates(&Application{
-// 				Status: "Approved",
-// 			})
-	
-// 			if approvalResult.Error != nil {
-// 				return approvalResult.Error
-// 			}
-// 		}
-	
-// 	}
+	query := sql.DB.Table("applications").
+		Select(`applications.id, applications.service_type, applications.application_code, applications.first_name, applications.middle_initial, applications.last_name, 
+		applications.barangay, applications.street, applications.municipality, applications.zip_code, applications.permit_type, 
+		applications.email, applications.admin_approved, applications.user_id`).
 
-// 	return nil
+		Joins("INNER JOIN assessments ON applications.id = assessments.application_id").
+		Where("applications.status = ? AND applications.staff_proccess_status = ?", "Approved", status).
+		Order("applications.created_at DESC")
 
-	
-// }
+
+	if searchName != "" {
+		searchName = "%" + searchName + "%"
+		query = query.Where("CONCAT(applications.first_name, ' ', applications.middle_initial, ' ', applications.last_name) ILIKE ?", searchName)
+	}
+
+	if selectedMonth != "" {
+		query = query.Where("TO_CHAR(applications.created_at, 'FMMonth') = ?", selectedMonth)
+	}
+
+
+	if err := query.Find(&results).Error; err != nil {
+		return nil, err
+	}
+
+
+	return results, nil
+}
+
+func (sql *SQL) FetchDisapprovedReleaser(staffProccessStatus string, searchName string, selectedMonth string) ([]*types.ApplicantionByProccess, error) {
+
+	var results []*types.ApplicantionByProccess
+
+	query := sql.DB.Table("applications").
+		Select(`applications.id, applications.service_type, applications.application_code, applications.first_name, applications.middle_initial, applications.last_name, 
+		applications.barangay, applications.street, applications.municipality, applications.zip_code, applications.permit_type, 
+		applications.email, applications.admin_approved, applications.release_date, applications.user_id`).
+
+		Joins("INNER JOIN assessments ON applications.id = assessments.application_id").
+		Where("applications.status = ? AND applications.staff_proccess_status = ?", "Disapproved", staffProccessStatus).
+		Order("applications.created_at DESC")
+
+
+	if searchName != "" {
+		searchName = "%" + searchName + "%"
+		query = query.Where("CONCAT(applications.first_name, ' ', applications.middle_initial, ' ', applications.last_name) ILIKE ?", searchName)
+	}
+
+	if selectedMonth != "" {
+		query = query.Where("TO_CHAR(applications.created_at, 'FMMonth') = ?", selectedMonth)
+	}
+
+
+	if err := query.Find(&results).Error; err != nil {
+		return nil, err
+	}
+
+
+	return results, nil
+}
+
+
+
+func (sql *SQL) FetchReportApplication(searchName string, selectedMonth string) ([]*types.ApplicationReport, error) {
+
+	var results []*types.ApplicationReport
+
+	query := sql.DB.Table("applications").
+		Select(`applications.id, applications.status, applications.application_code, applications.first_name, applications.middle_initial, applications.last_name, 
+		applications.barangay, applications.street, applications.municipality, applications.zip_code, 
+		applications.permit_type, 
+		applications.email, applications.admin_approved, applications.release_date, applications.user_id`).
+
+		Joins("INNER JOIN assessments ON applications.id = assessments.application_id").
+		Where("applications.staff_proccess_status = ? AND applications.release_date != ?", "reported_application", "").
+		Order("applications.created_at DESC")
+
+
+	if searchName != "" {
+		searchName = "%" + searchName + "%"
+		query = query.Where("CONCAT(applications.first_name, ' ', applications.middle_initial, ' ', applications.last_name) ILIKE ?", searchName)
+	}
+
+	if selectedMonth != "" {
+		query = query.Where("TO_CHAR(applications.created_at, 'FMMonth') = ?", selectedMonth)
+	}
+
+
+	if err := query.Find(&results).Error; err != nil {
+		return nil, err
+	}
+
+
+	return results, nil
+}
 
 
 func (sql *SQL) UpdateApplicationApproval(applicationID int64, adminApproved string) error {
@@ -1177,12 +1251,29 @@ func (sql *SQL) UpdateApplicationCode(applicationID int64, applicationCode strin
 	return nil
 }
 
+func (sql *SQL) IsApplicationCodeExists(applicationCode string) (bool, error) {
+	var count int64
+
+	err := sql.DB.Model(&Application{}).
+		Where("application_code = ?", applicationCode).
+		Count(&count).Error
+
+	if err != nil {
+		return false, err
+	}
+
+	return count > 0, nil
+}
 
 
-func (sql *SQL) UpdateReleaseDate(applicationID int64, dateFrom string, dateTo string) error {
+
+
+func (sql *SQL) UpdateReleaseDateAndSubmitToReport(applicationID int64, dateFrom string, dateTo string) error {
 
 	result := sql.DB.Model(&Application{}).Where("id = ?", applicationID).Updates(&Application{
 		ReleaseDate: fmt.Sprintf("%s-%s", dateFrom, dateTo),
+		StaffProccessStatus: "reported_application",
+
 	})
 
 	if result.Error != nil{
@@ -1192,6 +1283,19 @@ func (sql *SQL) UpdateReleaseDate(applicationID int64, dateFrom string, dateTo s
 	return nil
 }
 
+
+func (sql *SQL) SubmitToReleaserApplication(applicationID int64) error {
+
+	result := sql.DB.Model(&Application{}).Where("id = ?", applicationID).Updates(&Application{
+		StaffProccessStatus: "submitted_application",
+	})
+
+	if result.Error != nil{
+		return result.Error
+	}
+
+	return nil
+}
 
 
 

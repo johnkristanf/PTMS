@@ -1,7 +1,6 @@
-import { Text, StyleSheet, View, Image, Svg, Path } from '@react-pdf/renderer';
+import { Text, StyleSheet, View, Image } from '@react-pdf/renderer';
 
-export function PermitHeader({serviceType, applicationCode}: {
-    serviceType: string, 
+export function PermitHeader({applicationCode}: {
     applicationCode: string | undefined
 }){
     return(
@@ -72,95 +71,95 @@ const styles = StyleSheet.create({
 
 
 
-function HeaderBlueBoxes({ serviceType }: { serviceType: string }) {
-    return (
-        <View style={boxStyle.headerCheckboxContainer}>
-            <View style={boxStyle.headerCheckBoxes}>
+// function HeaderBlueBoxes({ serviceType }: { serviceType: string }) {
+//     return (
+//         <View style={boxStyle.headerCheckboxContainer}>
+//             <View style={boxStyle.headerCheckBoxes}>
 
-                <View style={boxStyle.checkbox}>
-                    {serviceType === 'NEW' && (
+//                 <View style={boxStyle.checkbox}>
+//                     {serviceType === 'NEW' && (
 
-                        <Svg viewBox="0 0 24 24" style={boxStyle.checkIcon}>
-                            <Path
-                                d="M20.285 6.287l-11.314 11.314-5.657-5.657 1.414-1.414 4.243 4.243 9.9-9.9z"
-                                fill="none"
-                                stroke="black"
-                                strokeWidth="4"
-                            />
-                        </Svg>
-                    )}
-                </View>
+//                         <Svg viewBox="0 0 24 24" style={boxStyle.checkIcon}>
+//                             <Path
+//                                 d="M20.285 6.287l-11.314 11.314-5.657-5.657 1.414-1.414 4.243 4.243 9.9-9.9z"
+//                                 fill="none"
+//                                 stroke="black"
+//                                 strokeWidth="4"
+//                             />
+//                         </Svg>
+//                     )}
+//                 </View>
 
-                <Text style={boxStyle.checkboxText}>NEW</Text>
-            </View>
+//                 <Text style={boxStyle.checkboxText}>NEW</Text>
+//             </View>
         
-            <View style={boxStyle.headerCheckBoxes}>
+//             <View style={boxStyle.headerCheckBoxes}>
 
-                <View style={boxStyle.checkbox}>
+//                 <View style={boxStyle.checkbox}>
 
-                    {serviceType === 'RENEWAL' && (
-                        <Svg viewBox="0 0 24 24" style={boxStyle.checkIcon}>
-                            <Path
-                                d="M20.285 6.287l-11.314 11.314-5.657-5.657 1.414-1.414 4.243 4.243 9.9-9.9z"
-                                fill="none"
-                                stroke="black"
-                                strokeWidth="4"
-                            />
-                        </Svg>
+//                     {serviceType === 'RENEWAL' && (
+//                         <Svg viewBox="0 0 24 24" style={boxStyle.checkIcon}>
+//                             <Path
+//                                 d="M20.285 6.287l-11.314 11.314-5.657-5.657 1.414-1.414 4.243 4.243 9.9-9.9z"
+//                                 fill="none"
+//                                 stroke="black"
+//                                 strokeWidth="4"
+//                             />
+//                         </Svg>
 
-                    )}
+//                     )}
 
-                </View>
-                <Text style={boxStyle.checkboxText}>RENEWAL</Text>
+//                 </View>
+//                 <Text style={boxStyle.checkboxText}>RENEWAL</Text>
 
-            </View>
-        </View>
-    );
-}
+//             </View>
+//         </View>
+//     );
+// }
 
 
-const boxStyle = StyleSheet.create({
+// const boxStyle = StyleSheet.create({
 
-    blueCheckbox: {
-        width: 12,
-        height: 12,
-        borderColor: 'blue',
-        borderWidth: 2,
-    },
+//     blueCheckbox: {
+//         width: 12,
+//         height: 12,
+//         borderColor: 'blue',
+//         borderWidth: 2,
+//     },
 
-    checkbox: {
-        width: 12,
-        height: 12,
-        borderColor: 'black',
-        borderWidth: 2,
-        justifyContent: 'center',
-        alignItems: 'center',
-    },
+//     checkbox: {
+//         width: 12,
+//         height: 12,
+//         borderColor: 'black',
+//         borderWidth: 2,
+//         justifyContent: 'center',
+//         alignItems: 'center',
+//     },
 
-    checkIcon: {
-        width: 18,
-        height: 18,
-    },
+//     checkIcon: {
+//         width: 18,
+//         height: 18,
+//     },
 
-    headerCheckboxContainer: {
-        flexDirection: 'row',
-        alignItems: 'center',
-        marginBottom: 5,
-        justifyContent: 'center',
-        gap: 20,
-        width: '100%'
-    },
+//     headerCheckboxContainer: {
+//         flexDirection: 'row',
+//         alignItems: 'center',
+//         marginBottom: 5,
+//         justifyContent: 'center',
+//         gap: 20,
+//         width: '100%'
+//     },
 
-    headerCheckBoxes: {
-        flexDirection: 'row',
-        gap: 5
-    },
+//     headerCheckBoxes: {
+//         flexDirection: 'row',
+//         gap: 5
+//     },
 
-    checkboxText: {
-        fontSize: 11,
-    }
+//     checkboxText: {
+//         fontSize: 11,
+//     }
    
-});
+// });
 
 const HeaderCodes = ({ applicationCode }: { applicationCode: string | undefined }) => {
     console.log("applicationCode", applicationCode)

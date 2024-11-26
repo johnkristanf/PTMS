@@ -1,5 +1,5 @@
-import { Text, StyleSheet, View, Image, Svg, Path } from '@react-pdf/renderer';
-import { AppliedServices, ConstructionLocationTypes, ConstructionOwnership, PermitAddress, PermitName } from '../../../types/application';
+import { Text, StyleSheet, View, Svg, Path } from '@react-pdf/renderer';
+import { AppliedServices, ConstructionOwnership, PermitAddress, PermitName } from '../../../types/application';
 import { PermitBodyBox2 } from './box2';
 
 export function PermitBodyBox1({permitInfo}:{ 
@@ -27,10 +27,10 @@ export function PermitBodyBox1({permitInfo}:{
         formOfOwnership: permitInfo.formOwnership
     }
 
-    const constructionLocation = {
-        location: permitInfo.locationForConstruct_Install,
-        tct_no: permitInfo.tctNo
-    }
+    // const constructionLocation = {
+    //     location: permitInfo.locationForConstruct_Install,
+    //     tct_no: permitInfo.tctNo
+    // }
 
     return(
         <>
@@ -189,35 +189,35 @@ function ForConstructionOwnerShip({contructionOwnership}: {
 }
 
 
-function ConstructionLocation({constructionLocation}: {
-    constructionLocation: ConstructionLocationTypes
-}){
+// function ConstructionLocation({constructionLocation}: {
+//     constructionLocation: ConstructionLocationTypes
+// }){
 
-    return(
-        <View style={{flexDirection: 'row'}}>
+//     return(
+//         <View style={{flexDirection: 'row'}}>
 
-            <View style={styles.namesBox}>
+//             <View style={styles.namesBox}>
 
-                <View style={{flexDirection: 'column', gap: 5, width: '100%'}}>
-                    <Text style={styles.boxes_text}>LOCATION OF CONSTRUCTION </Text>
-                    <Text style={styles.boxes_text}>{constructionLocation.location}</Text>
+//                 <View style={{flexDirection: 'column', gap: 5, width: '100%'}}>
+//                     <Text style={styles.boxes_text}>LOCATION OF CONSTRUCTION </Text>
+//                     <Text style={styles.boxes_text}>{constructionLocation.location}</Text>
 
-                </View>
+//                 </View>
 
-            </View>
+//             </View>
 
-            <View style={{borderBottom: '2px solid black', width: '40%', padding: 5 }}>
-                <View style={{flexDirection: 'column', gap: 5, width: '100%'}}>
-                    <Text style={styles.boxes_text}>TCT NO.</Text>
-                    <Text style={styles.boxes_text}>{constructionLocation.tct_no}</Text>
+//             <View style={{borderBottom: '2px solid black', width: '40%', padding: 5 }}>
+//                 <View style={{flexDirection: 'column', gap: 5, width: '100%'}}>
+//                     <Text style={styles.boxes_text}>TCT NO.</Text>
+//                     <Text style={styles.boxes_text}>{constructionLocation.tct_no}</Text>
 
-                </View>
-            </View>
+//                 </View>
+//             </View>
 
-        </View> 
+//         </View> 
 
-    )
-}
+//     )
+// }
 
 
 function ScopeOfWork({scopeOfWork}: {
@@ -332,78 +332,78 @@ function ScopeOfWork({scopeOfWork}: {
 }
 
 
-function OccupancyOFBuilding(){
+// function OccupancyOFBuilding(){
 
-    const firstBoxes = [
-        {name: "RESIDENTIAL"},
-        {name: "INDUSTRIAL"},
-        {name: "AGRICULTURAL"},
-    ]
+//     const firstBoxes = [
+//         {name: "RESIDENTIAL"},
+//         {name: "INDUSTRIAL"},
+//         {name: "AGRICULTURAL"},
+//     ]
 
-    const secondBoxes = [
-        {name: "COMMERCIAL"},
-        {name: "INSTITUTIONAL"},
-    ]
+//     const secondBoxes = [
+//         {name: "COMMERCIAL"},
+//         {name: "INSTITUTIONAL"},
+//     ]
 
 
-    const thirdBoxes = [
-        {name: "OTHERS (SPECIFY)"},
+//     const thirdBoxes = [
+//         {name: "OTHERS (SPECIFY)"},
 
-    ]
+//     ]
 
-    return(
-        <View style={{ borderBottom: '2px solid black',  padding: 5, flexDirection: 'column', gap: 5  }}>
+//     return(
+//         <View style={{ borderBottom: '2px solid black',  padding: 5, flexDirection: 'column', gap: 5  }}>
 
-            <Text style={styles.boxes_text}>USE OR OCCUPANCY OF BUILDING / STRUCTURE: </Text>
+//             <Text style={styles.boxes_text}>USE OR OCCUPANCY OF BUILDING / STRUCTURE: </Text>
 
-            <View style={{ flexDirection: 'row', justifyContent: 'space-evenly' }}>
+//             <View style={{ flexDirection: 'row', justifyContent: 'space-evenly' }}>
 
-                <View style={styles.checkBoxesCol}>
+//                 <View style={styles.checkBoxesCol}>
 
-                    {firstBoxes.map((data) => (
-                        <View style={styles.smallboxes_container}>
-                            <View key={data.name} style={styles.checkbox}></View>
-                            <Text style={styles.boxes_text}>{data.name}</Text>
-                        </View>
+//                     {firstBoxes.map((data) => (
+//                         <View style={styles.smallboxes_container}>
+//                             <View key={data.name} style={styles.checkbox}></View>
+//                             <Text style={styles.boxes_text}>{data.name}</Text>
+//                         </View>
                     
-                    ))}
+//                     ))}
 
-                </View>
+//                 </View>
 
-            <View style={styles.checkBoxesCol}>
+//             <View style={styles.checkBoxesCol}>
 
-                {secondBoxes.map((data) => (
-                    <View style={styles.smallboxes_container}>
-                        <View key={data.name} style={styles.checkbox}></View>
-                        <Text style={styles.boxes_text}>{data.name}</Text>
-                    </View>
+//                 {secondBoxes.map((data) => (
+//                     <View style={styles.smallboxes_container}>
+//                         <View key={data.name} style={styles.checkbox}></View>
+//                         <Text style={styles.boxes_text}>{data.name}</Text>
+//                     </View>
                    
-                ))}
+//                 ))}
                 
-            </View>
+//             </View>
 
 
-            <View style={styles.checkBoxesCol}>
+//             <View style={styles.checkBoxesCol}>
 
-                {thirdBoxes.map((data) => (
-                    <View style={styles.smallboxes_container}>
-                        <View key={data.name} style={styles.checkbox}></View>
-                        <Text style={styles.boxes_text}>{data.name}</Text>
-                    </View>
+//                 {thirdBoxes.map((data) => (
+//                     <View style={styles.smallboxes_container}>
+//                         <View key={data.name} style={styles.checkbox}></View>
+//                         <Text style={styles.boxes_text}>{data.name}</Text>
+//                     </View>
                    
-                ))}
+//                 ))}
 
-                <View style={styles.underline}></View>
+//                 <View style={styles.underline}></View>
                 
-            </View>
+//             </View>
 
 
-            </View>
+//             </View>
 
            
-        </View>
-    )
-}
+//         </View>
+//     )
+// }
 
 
 function OccupancyOFCharacter({ characterOccupancy }: { characterOccupancy: string }) {
@@ -516,56 +516,56 @@ function OccupancyOFCharacter({ characterOccupancy }: { characterOccupancy: stri
     );
 }
 
-function Box1Footer(){
+// function Box1Footer(){
 
-    const firstlines = [
-        {name: "OCCUPANCY CLASSIFIED :"},
-        {name: "NUMBER OF UNITS:"},
-        {name: "TOTAL FLOOR AREA :"},
-    ]
+//     const firstlines = [
+//         {name: "OCCUPANCY CLASSIFIED :"},
+//         {name: "NUMBER OF UNITS:"},
+//         {name: "TOTAL FLOOR AREA :"},
+//     ]
 
-    const secondlines = [
-        {name: "TOTAL ESTIMATED COST :"},
-        {name: "PROPOSED DATE OF CONSTRUCION :"},
-        {name: "PROPOSED DATE OF COMPLETION :"},
-    ]
+//     const secondlines = [
+//         {name: "TOTAL ESTIMATED COST :"},
+//         {name: "PROPOSED DATE OF CONSTRUCION :"},
+//         {name: "PROPOSED DATE OF COMPLETION :"},
+//     ]
 
-    return(
+//     return(
 
-        <View style={{ padding: 5, flexDirection: 'column', gap: 5  }}>
+//         <View style={{ padding: 5, flexDirection: 'column', gap: 5  }}>
 
-            <View style={{ flexDirection: 'row', justifyContent: 'space-evenly', gap: 15 }}>
+//             <View style={{ flexDirection: 'row', justifyContent: 'space-evenly', gap: 15 }}>
 
-                    <View style={styles.checkBoxesCol}>
+//                     <View style={styles.checkBoxesCol}>
 
-                        {firstlines.map((data) => (
-                            <View style={styles.linesboxes_container} key={data.name}>
-                                <Text style={styles.boxes_text}>{data.name}</Text>
-                                <View key={data.name} style={styles.underline}></View>
-                            </View>
+//                         {firstlines.map((data) => (
+//                             <View style={styles.linesboxes_container} key={data.name}>
+//                                 <Text style={styles.boxes_text}>{data.name}</Text>
+//                                 <View key={data.name} style={styles.underline}></View>
+//                             </View>
                         
-                        ))}
+//                         ))}
 
-                    </View>
+//                     </View>
 
-                    <View style={styles.checkBoxesCol}>
+//                     <View style={styles.checkBoxesCol}>
 
-                        {secondlines.map((data) => (
-                            <View style={ styles.linesboxes_container } key={data.name}>
-                                <Text style={styles.boxes_text}>{data.name}</Text>
-                                <View key={data.name} style={styles.underline}></View>
+//                         {secondlines.map((data) => (
+//                             <View style={ styles.linesboxes_container } key={data.name}>
+//                                 <Text style={styles.boxes_text}>{data.name}</Text>
+//                                 <View key={data.name} style={styles.underline}></View>
 
-                            </View>
+//                             </View>
                         
-                        ))}
+//                         ))}
                         
-                    </View>
+//                     </View>
 
-            </View>
-        </View>
+//             </View>
+//         </View>
         
-    )
-}
+//     )
+// }
 
 
 const styles = StyleSheet.create({

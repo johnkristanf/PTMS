@@ -1,5 +1,5 @@
 import { SideBar } from "../../../components/SideBar";
-import { ApproveTable } from "../../../components/staff/ApprovedTable";
+// import { ApproveTable } from "../../../components/staff/ApprovedTable";
 
 function ApprovedApplicationPage(){
     return(
@@ -18,7 +18,7 @@ function ApprovedApplicationPage(){
                         />
                     </div>
 
-                    <ApproveTable staffRole="receiver" />
+                    {/* <ApproveTable staffRole="receiver" /> */}
                 </div>
             </div>
         </div>

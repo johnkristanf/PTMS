@@ -1,5 +1,7 @@
 import axios from "axios";
 import { Application } from "../../types/application";
+import { DOMAIN_NAME } from "../../envPaths";
+
 
 
 export const Apply = async (applyCredentials: Application) => {
@@ -7,7 +9,7 @@ export const Apply = async (applyCredentials: Application) => {
     console.log("applyCredentials: ", applyCredentials)
 
     try {
-        const response = await axios.post("http://localhost:4040/application/add", applyCredentials, {
+        const response = await axios.post(`${DOMAIN_NAME}/application/add`, applyCredentials, {
             withCredentials: true
         });
         // const statusOk = response.status === 200;

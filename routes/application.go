@@ -15,6 +15,10 @@ func ApplicationRoutes(e *echo.Echo, h *handlers.ApplicationHandler) {
 	g.GET("/get", h.FetchApplicationDataHandler, h.JWT_METHOD.StaffAdminAutheticationMiddleware)
 	g.GET("/get/applied", h.FetchAppliedServicesHandler, h.JWT_METHOD.AutheticationMiddleware)
 
+	g.GET("/by/staff/proccess/status", h.FetchApplicationByProccessStatusHandler, h.JWT_METHOD.StaffAdminAutheticationMiddleware)
+	g.GET("/disapproved/releaser", h.FetchDisapprovedReleaserHandler, h.JWT_METHOD.StaffAdminAutheticationMiddleware)
+	g.GET("/report", h.FetchReportApplicationHandler, h.JWT_METHOD.StaffAdminAutheticationMiddleware)
+
 	g.GET("/fetch/requirements/:applicationID", h.FetchCheckedRequirementsHandler, h.JWT_METHOD.AutheticationMiddleware)
 
 	g.GET("/fetch/architectural/requirements/:applicationID", h.FetchArchitecturalRequirementsHandler, h.JWT_METHOD.AutheticationMiddleware)
@@ -41,6 +45,7 @@ func ApplicationRoutes(e *echo.Echo, h *handlers.ApplicationHandler) {
 	g.PUT("/update/code/:application_id", h.UpdateApplicationCodeHandler, h.JWT_METHOD.StaffAdminAutheticationMiddleware)
 	g.PUT("/update/approval/:application_id", h.UpdateApplicationApprovalHandler, h.JWT_METHOD.StaffAdminAutheticationMiddleware)
 	g.PUT("/update/disapproval", h.UpdateApplicationDisApprovalHandler, h.JWT_METHOD.StaffAdminAutheticationMiddleware)
+	g.PUT("/submit/releaser", h.UpdateSubmitToReleaserHandler, h.JWT_METHOD.StaffAdminAutheticationMiddleware)
 
 	g.PUT("/set/release/date", h.SetReleaseDateHandler, h.JWT_METHOD.StaffAdminAutheticationMiddleware)
 

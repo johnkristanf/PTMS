@@ -13,7 +13,8 @@ export function LoginForm({ setRole }: {
     const { register, handleSubmit, reset, formState: { errors } } = useForm<LoginCredentials>()
 
     const [showPassword, setShowPassword] = useState<boolean>(false);
-    const [invalidCredentials, setInvalidCredentials] = useState<boolean>(false);
+    const [invalidCredentials, setInvalidCredentials] = useState<boolean>();
+    const [timeLoginTimeout, setTimeLoginTimeout] = useState<boolean>();
     
     const togglePasswordVisibility = () => setShowPassword(!showPassword);
 
@@ -28,10 +29,16 @@ export function LoginForm({ setRole }: {
             },
         });
 
-        const isLogin = await Login(data)
-        if(!isLogin){
+        const loginResult = await Login(data)
+        console.log("loginResult: ", loginResult);
+        
+        if(loginResult === "unauthorized"){
             setInvalidCredentials(true)
             Swal.close();
+        } else if(loginResult === "timeout"){
+            setTimeLoginTimeout(true);
+            Swal.close();
+
         }
 
         reset();
@@ -54,7 +61,9 @@ export function LoginForm({ setRole }: {
                 <div className="flex gap-1">
                     {errors.email && <span className="text-red-800 font-bold">Email is required.</span>}
                     {errors.password && <span className="text-red-800 font-bold">Password is required.</span>}
+
                     {invalidCredentials && <span className="text-red-800 font-bold">Invalid Login Credentials</span>}
+                    {timeLoginTimeout && <span className="text-red-800 font-bold">Request took too long to respond due to slow internet</span>}
 
                 </div>
 

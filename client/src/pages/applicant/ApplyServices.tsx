@@ -23,15 +23,18 @@ function ApplyServicesPage() {
 
     const solo_permit = [
         { name: "Plumbing / Sanitary Permit", permit_type: "Plumbing" },
+        { name: "Electrical Permit", permit_type: "Electrical" },
         { name: "Electronics Permit", permit_type: "Electronics" },
+        { name: "Excavation Permit", permit_type: "Excavation" },
+        { name: "Mechanical Permit", permit_type: "Mechanical" },
+        { name: "Fence Permit", permit_type: "Fence" }
     ];
 
     const individual_permit = [
-        { name: "Excavation Permit", permit_type: "Excavation", info: "Required for digging or trenching work to ensure project conducted safely" },
-        { name: "Signed Permit", permit_type: "Signed", info: "Confirms Authorization for a specific project or activity"},
-        { name: "Demolition Permit", permit_type: "Demolition", info: "Approval required for safe and regulated tearing down of structures" },
-
+        { name: "Signed Permit", permit_type: "Signed", info: "Confirms Authorization for a specific project or activity" },
+        { name: "Demolition Permit", permit_type: "Demolition", info: "Ensures safe of approval for the removal of structures" },
     ];
+
 
     const clickService = (permit_type: string) => {
         setSelectedService(permit_type);
@@ -39,23 +42,23 @@ function ApplyServicesPage() {
     };
 
     return (
-        <div className='flex justify-between items-center h-screen w-full bg-white'>
+        <div className='flex justify-between items-start h-[120vh] w-full bg-white'>
             <SideBar role='applicant' />
 
-            <div className="flex-col flex items-center w-[60%] h-[50%] rounded-md p-8 mr-36">
+            <div className="flex-col flex items-center w-[60%] h-full rounded-md p-8 mr-36 mt-24">
                 <PTMSHeader />
 
                 <div className="flex w-full font-bold ">
-                    <h1 className='text-xl text-gray-600'>Step 1:</h1>
-                    <h1 className='text-2xl text-center flex-1'>Apply Services</h1>
+                    {/* <h1 className='text-xl text-gray-600'>Step 1:</h1> */}
+                    <h1 className='text-2xl flex-1'>Apply Services: </h1>
                 </div>
 
                 
 
-                <div className="flex w-full justify-center mt-5">
+                <div className="flex w-full justify-center mt-2 ">
 
-                    <div className="flex flex-col w-full">
-                        <div className="flex gap-8 w-full mt-5 font-semibold">
+                    <div className="flex flex-col w-full gap-6">
+                        <div className="flex w-full mt-5 font-semibold">
                             <button
                                 onClick={() => clickService("Building")}
                                 className={classNames("p-2 w-full h-[70%] bg-orange-400 rounded-md text-white font-bold hover:bg-gray-400")}
@@ -63,7 +66,7 @@ function ApplyServicesPage() {
                                 Building Permit
                             </button>
 
-                            <div className="flex flex-col items-center w-full">
+                            <div className="flex flex-col items-center w-full text-md">
                                 <h1> - Applying building permit includes: </h1>
                                 <h1>Plumbing | Sanitary</h1>
                                 <h1>Electronics | Electrical</h1>
@@ -71,28 +74,29 @@ function ApplyServicesPage() {
                             </div>
                         </div>
 
-                        <div className="flex flex-col w-[80%] gap-4 font-semibold">
-                            <h1 className='text-xl'>Solo Permit:</h1>
-                            {
-                                solo_permit.map((permit) => (
-                                    <button
-                                        key={permit.name}
-                                        onClick={() => clickService(permit.permit_type)}
-                                        className={classNames("p-2 w-[60%] h-[90%] bg-orange-400 rounded-md text-white font-bold hover:bg-gray-400")}
-                                    >
-                                        {permit.name}
-                                    </button>
-
-                                ))
-                            }
+                        <div className="grid grid-cols-3 gap-4 font-semibold mt-5">
+                            {solo_permit.map((permit) => (
+                                <button
+                                    key={permit.name}
+                                    onClick={() => clickService(permit.permit_type)}
+                                    className={classNames(
+                                        "p-2 w-[80%] h-full bg-orange-400 rounded-md text-white font-bold hover:bg-gray-400"
+                                    )}
+                                >
+                                    {permit.name}
+                                </button>
+                            ))}
                         </div>
+
                     </div>
 
-                    <div className="border-l-2 border-gray-600 h-full mx-8"></div>
-                    
+                    {/* <div className="border-l-2 border-gray-600 h-full mx-8"></div> */}
+                        
 
-                    <div className="flex flex-col font-semibold w-[90%] gap-6">
-                        <h1 className='text-xl'>Individual Permit:</h1>
+                </div>
+
+                <div className="flex flex-col font-semibold w-full gap-6 mt-8">
+                        <h1 className='text-xl'>Other Services:</h1>
                         {
                             individual_permit.map((permit) => (
                                 <div 
@@ -101,19 +105,16 @@ function ApplyServicesPage() {
                                 >
                                     <button
                                         onClick={() => clickService(permit.permit_type)}
-                                        className={classNames("p-2 w-[60%] h-[90%] bg-orange-400 rounded-md text-white font-bold hover:bg-gray-400")}
+                                        className={classNames("p-2 w-[90%] h-full bg-orange-400 rounded-md text-white font-bold hover:bg-gray-400")}
                                     >
                                         {permit.name}
                                     </button>
 
-                                    <h1> - {permit.info}</h1>
+                                    <h1 className='text-md'> - {permit.info}</h1>
                                 </div>
                                 
                             ))
                         }
-                    </div>
-                        
-
                 </div>
 
                 {/* <h1 className='font-semibold text-lg mt-[12rem]'>2024 | PTMS</h1> */}

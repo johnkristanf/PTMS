@@ -27,13 +27,25 @@ export function ApplicantInformationFormStaff({ applicantInfo, setInformationMod
 
   const mutation = useMutation({
     mutationFn: UpdateApplicationCode,
-    onSuccess: () => {
+    onSuccess: (data) => {
+      console.log("response from update code: ", data.data);
+
+      if(data.data === "Application_Code_Existed"){
+        Swal.fire({
+          icon: "error",
+          title: "Application Code Already Existed",
+          text: "Please type another unique code",
+          showConfirmButton: false,
+        });
+
+        return;
+      }
+      
       queryClient.invalidateQueries({ queryKey: ["pending_applications"] });
 
       Swal.fire({
-        position: "top-end",
         icon: "success",
-        title: "Application submit",
+        title: "Application Submitted to the Administrator",
         showConfirmButton: false,
       });
 

@@ -1,33 +1,15 @@
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { FetchStaffAccessRequests } from "../../../http/get/access";
-import { FetchStaffAccessRequestsTypes } from "../../../types/access";
-import { LoginAccount } from "../../../types/auth";
-import { FetchLoginAccount } from "../../../http/get/auth";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { DeleteStaffAccessRequest } from "../../../http/delete/access";
 import Swal from "sweetalert2";
 import { OpenGrantedPage } from "../../../http/post/access";
+import { useFetchStaffAR } from "../../../hook/useFetchStaffAR";
 
 
 const StaffRequestAccessModal = () => {
 
     const queryClient = useQueryClient();
 
-    const { data: response } = useQuery({
-        queryKey: ["login_account"],
-        queryFn: FetchLoginAccount,
-      });
-    
-    const loginAccount: LoginAccount = response?.data; 
-
-    const { data: staffAccessRequestsResponse } = useQuery({
-        queryKey: ["staff_access_request", loginAccount.id],
-        queryFn: async () => {
-            const data = await FetchStaffAccessRequests(loginAccount.id);
-            return data;
-        },
-    });
-
-    const staffAccessRequests: FetchStaffAccessRequestsTypes[] = staffAccessRequestsResponse?.data || [];
+   const { staffAccessRequests } = useFetchStaffAR();
 
     const deleteRequestMutation = useMutation({
         mutationFn: DeleteStaffAccessRequest,

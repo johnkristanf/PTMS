@@ -1,4 +1,5 @@
 import axios from "axios";
+import { DOMAIN_NAME } from "../../envPaths";
 
 
 export const IsApplicationExists = async (firstName: string, lastName: string, permitType: string) => {
@@ -6,7 +7,7 @@ export const IsApplicationExists = async (firstName: string, lastName: string, p
     try {
         const params = new URLSearchParams({ firstName, lastName, permitType });
 
-        const response = await axios.get(`http://localhost:4040/application/exists?${params.toString()}`, {
+        const response = await axios.get(`${DOMAIN_NAME}/application/exists?${params.toString()}`, {
             withCredentials: true
         });
 
@@ -24,7 +25,7 @@ export const FetchTrashApplication = async (searchTerm: string, selectedMonth: s
     const status = "Trash";
     const params = new URLSearchParams({ status, searchTerm, selectedMonth });
 
-    return axios.get(`http://localhost:4040/application/get?${params.toString()}`, {
+    return axios.get(`${DOMAIN_NAME}/application/get?${params.toString()}`, {
         withCredentials: true
     });
 }
@@ -35,7 +36,7 @@ export const FetchPendingApplicantInfo = async (searchTerm: string, selectedMont
     const status = "Pending";
     const params = new URLSearchParams({ status, searchTerm, selectedMonth });
 
-    return axios.get(`http://localhost:4040/application/get?${params.toString()}`, {
+    return axios.get(`${DOMAIN_NAME}/application/get?${params.toString()}`, {
         withCredentials: true
     });
 }
@@ -45,7 +46,7 @@ export const FetchPaidApplications = async (searchTerm: string, selectedMonth: s
     const status = "Paid";
     const params = new URLSearchParams({ status, searchTerm, selectedMonth });
 
-    return axios.get(`http://localhost:4040/application/get?${params.toString()}`, {
+    return axios.get(`${DOMAIN_NAME}/application/get?${params.toString()}`, {
         withCredentials: true
     });
 }
@@ -55,7 +56,7 @@ export const FetchApprovedApplications = async (searchTerm: string, selectedMont
     const status = "Approved";
     const params = new URLSearchParams({ status, searchTerm, selectedMonth });
 
-    return axios.get(`http://localhost:4040/application/get?${params.toString()}`, {
+    return axios.get(`${DOMAIN_NAME}/application/get?${params.toString()}`, {
         withCredentials: true
     });
 }
@@ -64,11 +65,37 @@ export const FetchDisApprovedApplications = async (searchTerm: string, selectedM
     const status = "Disapproved";
     const params = new URLSearchParams({ status, searchTerm, selectedMonth});
 
-    return axios.get(`http://localhost:4040/application/get?${params.toString()}`, {
+    return axios.get(`${DOMAIN_NAME}/application/get?${params.toString()}`, {
         withCredentials: true
     });
 }
 
+
+export const FetchDisApprovedReleaser = async (staffProccessStatus: string, searchTerm: string, selectedMonth: string) => {
+    const params = new URLSearchParams({ staffProccessStatus, searchTerm, selectedMonth});
+
+    return axios.get(`${DOMAIN_NAME}/application/disapproved/releaser?${params.toString()}`, {
+        withCredentials: true
+    });
+}
+
+
+export const FetchApplicationByStaffProccessStatus = async (status: string, searchTerm: string, selectedMonth: string) => {
+    const params = new URLSearchParams({ status, searchTerm, selectedMonth});
+
+    return axios.get(`${DOMAIN_NAME}/application/by/staff/proccess/status?${params.toString()}`, {
+        withCredentials: true
+    });
+}
+
+
+export const FetchReportApplication = async (searchTerm: string, selectedMonth: string) => {
+    const params = new URLSearchParams({ searchTerm, selectedMonth});
+
+    return axios.get(`${DOMAIN_NAME}/application/report?${params.toString()}`, {
+        withCredentials: true
+    });
+}
 
 
 
@@ -79,26 +106,26 @@ export const FetchAppliedServices = async () => {
 }
 
 export const FetchCheckedRequirements = async (applicationID: number) => {
-    return axios.get(`http://localhost:4040/application/fetch/requirements/${applicationID}`, {
+    return axios.get(`${DOMAIN_NAME}/application/fetch/requirements/${applicationID}`, {
         withCredentials: true
     });
 }
 
 export const FetchArchiteturalRequirements = async (applicationID: number) => {
-    return axios.get(`http://localhost:4040/application/fetch/architectural/requirements/${applicationID}`, {
+    return axios.get(`${DOMAIN_NAME}/application/fetch/architectural/requirements/${applicationID}`, {
         withCredentials: true
     });
 }
 
 export const FetchCivilRequirements = async (applicationID: number) => {
-    return axios.get(`http://localhost:4040/application/fetch/civil/requirements/${applicationID}`, {
+    return axios.get(`${DOMAIN_NAME}/application/fetch/civil/requirements/${applicationID}`, {
         withCredentials: true
     });
 }
 
 
 export const FetchElectricalRequirements = async (applicationID: number) => {
-    return axios.get(`http://localhost:4040/application/fetch/electrical/requirements/${applicationID}`, {
+    return axios.get(`${DOMAIN_NAME}/application/fetch/electrical/requirements/${applicationID}`, {
         withCredentials: true
     });
 }
@@ -106,7 +133,7 @@ export const FetchElectricalRequirements = async (applicationID: number) => {
 
 
 export const FetchRequirements = async (applicationID: number, adminType: string) => {
-    return axios.get(`http://localhost:4040/application/fetch/${adminType}/requirements/${applicationID}`, {
+    return axios.get(`${DOMAIN_NAME}/application/fetch/${adminType}/requirements/${applicationID}`, {
         withCredentials: true
     });
 }

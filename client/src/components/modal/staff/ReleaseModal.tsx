@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { faX } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Swal from 'sweetalert2';
@@ -33,7 +33,7 @@ export function ReleaseDateModal({ setOpenReleaseModal, releaseDateData }: {
                 timer: 1500,
             });
 
-            setOpenReleaseModal(false)
+            setOpenReleaseModal(false);
         },
 
         onMutate: () => {
@@ -63,6 +63,16 @@ export function ReleaseDateModal({ setOpenReleaseModal, releaseDateData }: {
         return today.toISOString().split('T')[0]; 
     };
 
+    // Automatically set 'toDate' to 1 week after 'fromDate'
+    useEffect(() => {
+        if (fromDate) {
+            const from = new Date(fromDate);
+            from.setDate(from.getDate() + 7); // Add 7 days
+            const newToDate = from.toISOString().split('T')[0]; // Set to date in YYYY-MM-DD format
+            setToDate(newToDate);
+        }
+    }, [fromDate]);
+
     const onSubmit = (e: React.FormEvent) => {
         e.preventDefault();
 
@@ -73,7 +83,7 @@ export function ReleaseDateModal({ setOpenReleaseModal, releaseDateData }: {
             mutation.mutate({
                 application_id: releaseDateData.application_id,
                 message: message,
-                date_from: formattedFromDate,  
+                date_from: formattedFromDate,
                 date_to: formattedToDate,
                 email: releaseDateData.email,
                 user_id: Number(releaseDateData.user_id),
@@ -81,11 +91,20 @@ export function ReleaseDateModal({ setOpenReleaseModal, releaseDateData }: {
         }
     };
 
+    useEffect(() => {
+        if(releaseDateData?.status === "Approved"){
+            setMessage("Message na pang professional here")
+        }
+    }, [releaseDateData?.status])
+
+    console.log("message: ", message);
+    
+
     return (
         <div className="w-full h-full fixed top-0 left-0 flex justify-center items-center">
             <div className="fixed top-0 bg-gray-600 opacity-75 w-full h-screen"></div>
 
-            <div className="flex flex-col bg-white rounded-md p-8 fixed top-4 w-1/2">
+            <div className="flex flex-col bg-white rounded-md p-8 fixed top-24 w-1/2 h-[80%] overflow-auto">
                 <div className="flex justify-between items-center">
                     <div className="flex-col flex">
                         <h1 className="font-bold text-3xl">Set Release Date</h1>
@@ -101,13 +120,19 @@ export function ReleaseDateModal({ setOpenReleaseModal, releaseDateData }: {
 
                 <form onSubmit={onSubmit} className="flex flex-col">
                     <div className="flex flex-col gap-5">
-                        <textarea
-                            placeholder="Enter your message here..."
-                            className="h-[100px] bg-gray-200 p-3 font-bold rounded-md placeholder-black focus:outline-none"
-                            value={message}
-                            style={{ resize: "none" }}
-                            onChange={(e) => setMessage(e.target.value)} 
-                        />
+
+                        {
+                            releaseDateData && releaseDateData.status == "Disapproved" && (
+                                <textarea
+                                    placeholder="Enter your message here..."
+                                    className="h-[100px] bg-gray-200 p-3 font-bold rounded-md placeholder-black focus:outline-none"
+                                    value={message}
+                                    style={{ resize: "none" }}
+                                    onChange={(e) => setMessage(e.target.value)} 
+                                />
+                            )
+                        }
+                        
 
                         <label className="font-bold text-2xl mt-4">Estimated Date:</label>
 
@@ -126,7 +151,8 @@ export function ReleaseDateModal({ setOpenReleaseModal, releaseDateData }: {
                             className="p-3 font-bold rounded-md placeholder-gray-600 focus:outline-none"
                             value={toDate}
                             min={fromDate || getTodayDate()} 
-                            onChange={(e) => setToDate(e.target.value)} 
+                            onChange={(e) => setToDate(e.target.value)}
+                            readOnly 
                         />
                     </div>
 

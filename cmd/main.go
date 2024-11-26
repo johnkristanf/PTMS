@@ -65,10 +65,8 @@ func main(){
 					colorStart = "\033[0m"  // Default color (no color)
 			}
 	
-			// ANSI escape code for resetting the color
 			colorEnd := "\033[0m"
 	
-			// Print the log with colored text
 			fmt.Printf("%sREQUEST: method: %v, uri: %v, status: %v, custom-value: %v%s\n", 
 				colorStart, c.Request().Method, v.URI, v.Status, value, colorEnd)
 			return nil
@@ -110,6 +108,7 @@ func main(){
 	}
 
 	go accessHandler.DeleteOldLogsSchedulerHandler()
+	go applicationHandler.TrashApplicationHandler()
 	
 	s3Err := documentHandler.InitS3Client()
 	if s3Err != nil {

@@ -14,6 +14,13 @@ import { classNames } from '../../helpers/classNames';
 import PlumbingPDF from '../../components/pdfs/Plumbing';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEllipsisVertical } from '@fortawesome/free-solid-svg-icons';
+import ElectronicsPermit from '../../components/pdfs/Electronics';
+import ElectricalPermit from '../../components/pdfs/Electrical';
+import MechanicalPermit from '../../components/pdfs/Mechanical';
+import FencingPermit from '../../components/pdfs/Fencing';
+import ExcavationPermit from '../../components/pdfs/Excavation';
+import SignagePermit from '../../components/pdfs/Signage';
+import DemolitionPermit from '../../components/pdfs/Demolition';
 
 function ServicesPage(){
 
@@ -42,7 +49,7 @@ function ServicesPage(){
     if(isLoading) return <div className="text-white font-bold text-3xl">Fetching Staff Accounts.......</div>
 
     return(
-        <div className="flex justify-between items-center h-[120vh] w-full bg-white">
+        <div className="flex justify-between items-start h-[130vh] w-full bg-white">
 
             <SideBar role={"applicant"}/>
 
@@ -58,6 +65,34 @@ function ServicesPage(){
 
             {
                 permits && permits.permit_type === "Plumbing" && <PlumbingPDF permitInfo={permits} setPermitsInfo={setPermits} />
+            }
+
+            {
+                permits && permits.permit_type === "Electronics" && <ElectronicsPermit permitInfo={permits} setPermitsInfo={setPermits} />
+            }
+
+            {
+                permits && permits.permit_type === "Electrical" && <ElectricalPermit permitInfo={permits} setPermitsInfo={setPermits} />
+            }
+
+            {
+                permits && permits.permit_type === "Mechanical" && <MechanicalPermit permitInfo={permits} setPermitsInfo={setPermits} />
+            }
+
+            {
+                permits && permits.permit_type === "Fence" && <FencingPermit permitInfo={permits} setPermitsInfo={setPermits} />
+            }
+
+            {
+                permits && permits.permit_type === "Excavation" && <ExcavationPermit permitInfo={permits} setPermitsInfo={setPermits} />
+            }
+
+            {
+                permits && permits.permit_type === "Signed" && <SignagePermit permitInfo={permits} setPermitsInfo={setPermits} />
+            }
+
+            {
+                permits && permits.permit_type === "Demolition" && <DemolitionPermit permitInfo={permits} setPermitsInfo={setPermits} />
             }
 
                 {/* END::PDFS MODAL */}
@@ -92,7 +127,7 @@ function ServicesPage(){
 
                                         <div className="overflow-auto p-3 max-h-96 custom-scrollbar">
                                             <table className="min-w-full text-left text-sm font-light">
-                                            <thead className="border-b font-medium dark:border-neutral-500">
+                                            <thead className="border-b font-medium border-neutral-500">
                                                 <tr>
                                                     <th scope="col" className="px-6 py-4">Name</th>
                                                     <th scope="col" className="px-6 py-4">Permit Type</th>
@@ -109,7 +144,8 @@ function ServicesPage(){
 
                                                     <tr 
                                                         key={data.application_id}
-                                                        >
+                                                        className="border-b border-neutral-500"
+                                                    >
 
                                                         <td className="whitespace-nowrap pl-6 py-4 font-medium">{data.firstname} {data.middleInitial} {data.lastName}</td>
                                                         <td className="whitespace-nowrap pl-6 py-4">{data.permit_type}</td>

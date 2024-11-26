@@ -1,4 +1,4 @@
-import { Text, StyleSheet, View, Image, Svg, Path } from '@react-pdf/renderer';
+import { Text, StyleSheet, View, Svg, Path } from '@react-pdf/renderer';
 import { AppliedServices, ConstructionLocationTypes, ConstructionOwnership, PermitAddress, PermitName } from '../../../types/application';
 
 export function PermitBodyBox1({permitInfo}:{ 

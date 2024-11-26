@@ -5,6 +5,8 @@ import Swal from 'sweetalert2';
 import { CheckedArchituralRequirements } from '../../../http/put/application';
 import { ArchitecturalRequirementFormData } from '../../../types/application';
 import { FetchArchiteturalRequirements } from '../../../http/get/application';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faCheck, faX } from '@fortawesome/free-solid-svg-icons';
 
 const ArchitecturalRequirements = ({ applicationID, setRequirementsModal, setAllRequirementsChecked, allRequirementsChecked }: {
     applicationID: number
@@ -12,8 +14,9 @@ const ArchitecturalRequirements = ({ applicationID, setRequirementsModal, setAll
     setAllRequirementsChecked: React.Dispatch<React.SetStateAction<boolean>>,
     allRequirementsChecked: boolean
 })  => {
-    const { register, handleSubmit, watch } = useForm<ArchitecturalRequirementFormData>();
+    const { register, handleSubmit, watch, setValue } = useForm<ArchitecturalRequirementFormData>();
     const [isChanged, setIsChanged] = useState(false);
+    const [areAllSelected, setAreAllSelected] = useState(false); 
 
     const queryClient = useQueryClient();
 
@@ -23,7 +26,6 @@ const ArchitecturalRequirements = ({ applicationID, setRequirementsModal, setAll
             queryClient.invalidateQueries({ queryKey: ["pending_applications"] });
 
             Swal.fire({
-                position: "top-end",
                 icon: "success",
                 title: "Architectural Requirements Checked!",
                 showConfirmButton: true,
@@ -53,7 +55,6 @@ const ArchitecturalRequirements = ({ applicationID, setRequirementsModal, setAll
 
 
     useEffect(() => {
-        // Check if all the fields from the response are true
         if (response?.data) {
             const allChecked = Object.values(response.data).every(Boolean);
             console.log("allChecked", allChecked);
@@ -69,15 +70,26 @@ const ArchitecturalRequirements = ({ applicationID, setRequirementsModal, setAll
         return () => subscription.unsubscribe();
     }, [watch]);
 
+    const toggleSelectAll = () => {
+        const fields = Object.keys(response?.data || {}) as Array<keyof ArchitecturalRequirementFormData>;
+        const newValue = !areAllSelected;
+
+        fields.forEach(field => setValue(field, newValue)); 
+        setAreAllSelected(newValue);
+        setAllRequirementsChecked(prevState => !prevState);
+    };
+
+
+
     console.log("response?.data architectural", response?.data);
 
     return (
         <>
             <div className="fixed top-0 left-0 w-full h-full bg-gray-800 opacity-75"></div>
 
-            <div className="w-full fixed top-3 left-0 h-screen flex justify-center ">
+            <div className="w-full fixed top-24 left-0 h-screen flex justify-center ">
 
-                <div className="flex flex-col items-center h-[95%] py-4 w-[55%] bg-white rounded-md">
+                <div className="flex flex-col items-center h-[80%] py-4 w-[55%] bg-white rounded-md">
                     <h1 className='font-bold text-3xl mb-5'>Architectural Requirements</h1>
                     <h1 className='font-semibold mb-8'>
                         Requirement Status: 
@@ -85,6 +97,30 @@ const ArchitecturalRequirements = ({ applicationID, setRequirementsModal, setAll
                             {allRequirementsChecked ? 'Completed': 'Incomplete'}
                         </span> 
                     </h1>
+
+                    <div className="flex justify-end mb-5 w-full pr-9">
+                       
+                        <button
+                            type="button"
+                            onClick={toggleSelectAll}
+                            className="bg-orange-400 text-white p-2 rounded-md mr-4"
+                        >
+                            {
+                                areAllSelected 
+                                    ? (
+                                        <>
+                                            <FontAwesomeIcon icon={faX} /> Unselect All
+                                        </>
+
+                                    ) : (
+                                        <>
+                                            <FontAwesomeIcon icon={faCheck} /> Select All  
+                                        </>
+                                    )
+                            }
+                        </button>
+                       
+                    </div>
 
                     <form onSubmit={handleSubmit(onSubmit)} className="max-w-screen-sm w-full h-[100%] overflow-auto">
                         <div className="grid grid-cols-1 gap-3 p-5">
@@ -483,15 +519,10 @@ const ArchitecturalRequirements = ({ applicationID, setRequirementsModal, setAll
                         </div>
 
                         <div className="flex flex-col items-center w-full gap-4 mt-5">
-                            {
-                                !allRequirementsChecked && (
-                                    <button type="submit" disabled={!isChanged} className={`w-[85%] text-white font-bold py-2 px-4 rounded w-1/2 ${isChanged ? 'bg-orange-500 hover:opacity-75' : 'bg-gray-500 cursor-not-allowed'}`}>
-                                        Save
-                                    </button>
-                                )
-                            }
+                            <button type="submit" disabled={!isChanged} className={`w-[85%] text-white font-bold py-2 px-4 rounded w-1/2 ${isChanged ? 'bg-orange-500 hover:opacity-75' : 'bg-gray-500 cursor-not-allowed'}`}>
+                                Save
+                            </button>
                             
-
                             <button
                                 onClick={() => setRequirementsModal(false)}
                                 className='w-[85%] bg-black hover:opacity-75 text-white font-bold py-2 px-4 rounded w-1/2'>

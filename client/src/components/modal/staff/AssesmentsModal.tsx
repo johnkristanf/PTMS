@@ -8,6 +8,8 @@ import { FetchAssessments } from "../../../http/get/assesments";
 import { useState } from "react";
 import AssessmentsPDF from "../../pdfs/Assessments";
 import Swal from "sweetalert2";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faX } from "@fortawesome/free-solid-svg-icons";
 
 export const AssessmentsModal: React.FC<AssessmentModalProps> = ({ applicantAssessmentInfo, setAssessment }) => {
     const { register, handleSubmit, reset } = useForm<AssessmentTypes>();
@@ -93,7 +95,6 @@ export const AssessmentsModal: React.FC<AssessmentModalProps> = ({ applicantAsse
             queryClient.invalidateQueries({ queryKey: ["assessments"] });
             
             Swal.fire({
-                position: "top-end",
                 icon: "success",
                 title: "Assessment Added!",
                 showConfirmButton: true,
@@ -146,11 +147,18 @@ export const AssessmentsModal: React.FC<AssessmentModalProps> = ({ applicantAsse
                     <AssessmentsPDF application_id={applicationId} setAssessment={setAssessment} />
                 ) : (
 
-                    <div className="flex flex-col bg-white rounded-md p-8 fixed top-12 w-1/2 max-h-[90vh] overflow-y-auto">
+                    <div className="flex flex-col bg-white rounded-md p-8 fixed top-24 w-1/2 h-[80%] overflow-y-auto">
                         <div className="flex justify-between items-center mb-5">
                             <div className="flex flex-col">
                                 <h1 className=" font-bold text-3xl">Set Permit Assessments</h1>
                             </div>
+
+                            <FontAwesomeIcon 
+                                icon={faX} 
+                                className="font-bold text-2xl hover:opacity-75 hover:cursor-pointer"
+                                onClick={() => setAssessment(false)}
+
+                            />
                             
                         </div>
 

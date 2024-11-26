@@ -1,22 +1,23 @@
 import React, { useRef, useState } from "react";
 import { ReleaseDateModal } from "../modal/staff/ReleaseModal";
 import { ApplicationFileModal } from "../modal/staff/ApplicationFilesModal";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { FetchApprovedApplications } from "../../http/get/application";
-import { Application, ReleaseDateData } from "../../types/application";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { ReleaseDateData } from "../../types/application";
 import Swal from "sweetalert2";
 import { UploadDocument } from "../../http/post/document";
 
 import '../../assets/scrollStyle.css'
+import { useFetchApprovedByStatus } from "../../hook/useFetchApprovedByStatus";
+import { SubmitToReleaser } from "../../http/put/application";
 
 interface ApproveTableProps {
     searchTerm: string,
     selectedMonth: string,
     staffRole: string;
-    ScannerReport?: boolean;
+    ReleaserReport?: boolean;
 }
 
-export function ApproveTable({ searchTerm, selectedMonth, staffRole, ScannerReport }: ApproveTableProps) {
+export function ApproveTable({ searchTerm, selectedMonth, staffRole, ReleaserReport }: ApproveTableProps) {
 
     const [openReleaseModal, setOpenReleaseModal] = useState<boolean>(false);
     const [openFile, setOpenFile] = useState<boolean>(false);
@@ -53,19 +54,14 @@ export function ApproveTable({ searchTerm, selectedMonth, staffRole, ScannerRepo
         setReleaseDateData({
             application_id: applicationId,
             email,
-            user_id
+            user_id,
+            status: "Approved"
         }); 
     }
 
-    const { data: response } = useQuery({
-        queryKey: ["approved_applications", searchTerm, selectedMonth],
-        queryFn: async () => {
-            const data = await FetchApprovedApplications(searchTerm, selectedMonth);
-            return data;
-        },
-    });
+   
 
-    const mutation = useMutation({
+    const uploadDocumentMutation = useMutation({
         mutationFn: UploadDocument,
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ["approved_applications"] });
@@ -92,7 +88,39 @@ export function ApproveTable({ searchTerm, selectedMonth, staffRole, ScannerRepo
         },
 
         onError: (error: unknown) => {
-            console.error("Signup error:", error);
+            console.error("Document Upload Error:", error);
+        },
+    });
+
+
+    const submitToReleaserMutation = useMutation({
+        mutationFn: SubmitToReleaser,
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ["approved_applications"] });
+
+            Swal.fire({
+                position: "top-end",
+                icon: "success",
+                title: "Application Submitted to Releaser",
+                showConfirmButton: false,
+                timer: 1500,
+            });
+        },
+
+        onMutate: () => {
+            Swal.fire({
+                title: 'Please wait...',
+                text: 'Your request is being processed',
+                allowOutsideClick: false,
+                showConfirmButton: false,
+                willOpen: () => {
+                    Swal.showLoading();
+                },
+            });
+        },
+
+        onError: (error: unknown) => {
+            console.error("Submit to releaser error:", error);
         },
     });
 
@@ -104,7 +132,7 @@ export function ApproveTable({ searchTerm, selectedMonth, staffRole, ScannerRepo
             formData.append("document", file);
             formData.append("application_code", applicationCode);
 
-            mutation.mutate(formData)
+            uploadDocumentMutation.mutate(formData)
             
         } catch (error) {
             console.error("File upload failed", error);
@@ -123,10 +151,12 @@ export function ApproveTable({ searchTerm, selectedMonth, staffRole, ScannerRepo
         }
     };
 
+    const handleSubmitToReleaser = (application_id: number) => {
+        submitToReleaserMutation.mutate(application_id.toString());
+    }
 
-    const approvedApplication: Application[] = response?.data || [];
 
-    console.log("approvedApplication", approvedApplication);
+    const { approvedApplication } = useFetchApprovedByStatus(staffRole, searchTerm, selectedMonth);
     
 
     return (
@@ -140,7 +170,7 @@ export function ApproveTable({ searchTerm, selectedMonth, staffRole, ScannerRepo
                     <div className="inline-block min-w-full py-2 ">
                         <div className="overflow-hidden overflow-y-auto h-[400px] p-5 custom-scrollbar">
                             <table className="min-w-full text-left text-sm font-light">
-                                <thead className="border-b font-medium dark:border-neutral-500">
+                                <thead className="border-b font-medium border-neutral-500">
                                     <tr>
                                         <th scope="col" className="px-6 py-4">Application Code</th>
                                         <th scope="col" className="px-6 py-4">Name</th>
@@ -148,7 +178,7 @@ export function ApproveTable({ searchTerm, selectedMonth, staffRole, ScannerRepo
                                         <th scope="col" className="px-6 py-4">Permit Type</th>
 
                                         {staffRole === 'releaser' && (
-                                            <th scope="col" className="px-6 py-4">Release Date</th>
+                                            <th scope="col" className="px-6 py-4">Action</th>
                                         )}
 
                                         
@@ -157,16 +187,16 @@ export function ApproveTable({ searchTerm, selectedMonth, staffRole, ScannerRepo
                                 <tbody>
                                     {approvedApplication.length === 0 ? (
                                         <tr>
-                                        <td colSpan={staffRole === 'releaser' ? 6 : 5} className="text-center py-4 text-gray-900 text-xl font-semibold pt-5">
-                                            No application available
-                                        </td>
+                                            <td colSpan={staffRole === 'releaser' ? 6 : 5} className="text-center py-4 text-gray-900 text-xl font-semibold pt-5">
+                                                No application available
+                                            </td>
                                         </tr>
                                     ) : (
                                         approvedApplication.map((item) => (
                                         <tr
                                             key={item.application_id}
                                             onClick={(e) => handleRowClick(e, item.applicationCode)}
-                                            className={`border-b transition duration-300 ease-in-out hover:bg-neutral-100 dark:hover:bg-neutral-600 cursor-pointer`}
+                                            className={`border-b border-neutral-500 transition duration-300 ease-in-out  cursor-pointer`}
                                         >
                                             <td className="whitespace-nowrap px-3 py-2 font-medium">{item.applicationCode}</td>
                                             <td className="whitespace-nowrap px-3 py-2 font-medium">
@@ -177,59 +207,56 @@ export function ApproveTable({ searchTerm, selectedMonth, staffRole, ScannerRepo
                                             </td>
                                             <td className="whitespace-nowrap pl-6 py-4">{item.permit_type}</td>
 
-                                            {/* RELEASER CAPABILITIES */}
-                                            {staffRole === 'releaser' && (
-                                            <td className="whitespace-nowrap px-5 py-4">
-                                                {item.release_date === "" ? "N/A" : item.release_date}
-                                            </td>
-                                            )}
+                                            
 
                                             {/* SCANNER CAPABILITIES */}
-                                            {staffRole === 'scanner' && !ScannerReport && (
-                                            <td className="whitespace-nowrap py-4">
-                                                <div className="flex gap-3">
-                                                <input
-                                                    type="file"
-                                                    ref={fileInputRef}
-                                                    style={{ display: "none" }}
-                                                    onClick={handleButtonClick}
-                                                    onChange={handleFileChange}
-                                                />
 
-                                                <button
-                                                    onClick={(e) => {
-                                                    triggerFileInput(e, item.applicationCode);
-                                                    }}
-                                                    className="bg-orange-500 text-white font-bold p-3 rounded-md hover:opacity-75"
-                                                >
-                                                    Store
-                                                </button>
+                                            {staffRole === 'scanner' && !ReleaserReport && (
+                                                <td className="whitespace-nowrap py-4">
+                                                    <div className="flex gap-3">
+                                                    <input
+                                                        type="file"
+                                                        ref={fileInputRef}
+                                                        style={{ display: "none" }}
+                                                        onClick={handleButtonClick}
+                                                        onChange={handleFileChange}
+                                                    />
 
-                                                <button
-                                                    onClick={(e) => {
-                                                    handleButtonClick(e);
-                                                    console.log("Submit clicked");
-                                                    }}
-                                                    className="bg-green-600 text-white font-bold p-3 rounded-md hover:opacity-75"
-                                                >
-                                                    Submit
-                                                </button>
-                                                </div>
-                                            </td>
+                                                    <button
+                                                        onClick={(e) => {
+                                                        triggerFileInput(e, item.applicationCode);
+                                                        }}
+                                                        className="bg-orange-500 text-white font-bold p-3 rounded-md hover:opacity-75"
+                                                    >
+                                                        Store
+                                                    </button>
+
+                                                    <button
+                                                        onClick={(e) => {
+                                                            handleButtonClick(e);
+                                                            handleSubmitToReleaser(item.application_id)
+                                                            console.log("Submit clicked");
+                                                        }}
+                                                        className="bg-green-600 text-white font-bold p-3 rounded-md hover:opacity-75"
+                                                    >
+                                                        Submit
+                                                    </button>
+                                                    </div>
+                                                </td>
                                             )}
 
                                             {/* RELEASER CAPABILITIES */}
-                                            {staffRole === 'releaser' && item.release_date === "" && (
-                                            <td className="whitespace-nowrap pl-4 py-4">
-                                                <button
-                                                onClick={(e) =>
-                                                    onOpenReleaseModal(e, item.application_id, item.email, item.user_id)
-                                                }
-                                                className="bg-orange-500 text-white font-bold p-3 rounded-md hover:opacity-75"
-                                                >
-                                                Release
-                                                </button>
-                                            </td>
+                                            {staffRole === 'releaser' && (
+                                                <td className="whitespace-nowrap pl-4 py-4">
+                                                    <button
+                                                    onClick={(e) =>
+                                                        onOpenReleaseModal(e, item.application_id, item.email, item.user_id)
+                                                    }
+                                                    className="bg-orange-500 text-white font-bold p-3 rounded-md hover:opacity-75"
+                                                    >
+                                                    Release
+                                                    </button>
+                                                </td>
                                             )}
                                         </tr>
                                         ))

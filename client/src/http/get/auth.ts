@@ -1,8 +1,9 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import axios, { AxiosResponse } from "axios";
+import { DOMAIN_NAME } from "../../envPaths";
 
 export function FetchStaffAccounts(): Promise<AxiosResponse<any, any>> {
-    return axios.get("http://localhost:4040/auth/fetch/staff", {
+    return axios.get(`${DOMAIN_NAME}/auth/fetch/staff`, {
         withCredentials: true
     });
 }
@@ -10,7 +11,7 @@ export function FetchStaffAccounts(): Promise<AxiosResponse<any, any>> {
 
 export async function FetchAdminAccount(){
     try {
-        const response = await axios.get("http://localhost:4040/auth/fetch/admin", {
+        const response = await axios.get(`${DOMAIN_NAME}/auth/fetch/admin`, {
             withCredentials: true
         })
 
@@ -31,20 +32,20 @@ export async function FetchAdminAccount(){
 
 
 export async function FetchLoginAccount():  Promise<AxiosResponse<any, any>> {
-    return axios.get("http://localhost:4040/auth/fetch/login/account", {
+    return axios.get(`${DOMAIN_NAME}/auth/fetch/login/account`, {
         withCredentials: true
     });
 }
 
 export const FetchLoginApplicant = (): Promise<AxiosResponse<any, any>> => {
-    return axios.get("http://localhost:4040/auth/fetch/applicant", {
+    return axios.get(`${DOMAIN_NAME}/auth/fetch/applicant`, {
         withCredentials: true
     });
 }
 
 export const FetchStaffAccountById = (): Promise<AxiosResponse<any, any>> => {
     console.log("fetchh by iddd")
-    return axios.get("http://localhost:4040/auth/staff", {
+    return axios.get(`${DOMAIN_NAME}/auth/staff`, {
         withCredentials: true
     });
 }

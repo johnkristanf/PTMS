@@ -4,7 +4,7 @@ import { EditAccountForm } from "../../../components/staff/form/EditAccount"
 
 function EditReceiverAccountPage(){
     return(
-        <div className="flex justify-between items-center h-[110vh] bg-white">
+        <div className="flex justify-between items-center h-[120vh] bg-white">
             <SideBar role={"receiver"}/>
 
             <div className="w-[75%] h-full flex justify-center items-center">

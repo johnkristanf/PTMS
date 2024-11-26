@@ -2,16 +2,18 @@ package handlers
 
 import (
 	"fmt"
-	"sync"
 	"net/http"
 	"reflect"
 	"strconv"
+	"sync"
+	"log"
 
 	"github.com/johnkristanf/TMS-IPAS/database"
 	"github.com/johnkristanf/TMS-IPAS/helpers"
 	"github.com/johnkristanf/TMS-IPAS/middlewares"
 	"github.com/johnkristanf/TMS-IPAS/types"
 	"github.com/labstack/echo/v4"
+	"github.com/robfig/cron/v3"
 )
 
 
@@ -127,6 +129,49 @@ func (h *ApplicationHandler) FetchApplicationDataHandler(c echo.Context) error {
 	return c.JSON(http.StatusOK, applicantInfo)
 }
 
+func (h *ApplicationHandler) FetchApplicationByProccessStatusHandler(c echo.Context) error {
+
+	status := c.QueryParam("status")
+	searchTerm := c.QueryParam("searchTerm")
+	selectedMonth := c.QueryParam("selectedMonth")
+	
+	applicantInfo, err := h.DB_METHOD.FetchApplicationByStaffProccessStatus(status, searchTerm, selectedMonth)
+	if err != nil{
+		return err
+	}
+
+	return c.JSON(http.StatusOK, applicantInfo)
+}
+
+
+func (h *ApplicationHandler) FetchReportApplicationHandler(c echo.Context) error {
+
+	searchTerm := c.QueryParam("searchTerm")
+	selectedMonth := c.QueryParam("selectedMonth")
+	
+	applicantInfo, err := h.DB_METHOD.FetchReportApplication(searchTerm, selectedMonth)
+	if err != nil{
+		return err
+	}
+
+	return c.JSON(http.StatusOK, applicantInfo)
+}
+
+
+func (h *ApplicationHandler) FetchDisapprovedReleaserHandler(c echo.Context) error {
+
+	staffProccessStatus := c.QueryParam("staffProccessStatus")
+	searchTerm := c.QueryParam("searchTerm")
+	selectedMonth := c.QueryParam("selectedMonth")
+	
+	applicantInfo, err := h.DB_METHOD.FetchDisapprovedReleaser(staffProccessStatus, searchTerm, selectedMonth)
+	if err != nil{
+		return err
+	}
+
+	return c.JSON(http.StatusOK, applicantInfo)
+}
+
 
 func (h *ApplicationHandler) UpdateApplicationApprovalHandler(c echo.Context) error {
 	
@@ -205,6 +250,24 @@ func (h *ApplicationHandler) UpdateApplicationDisApprovalHandler(c echo.Context)
 	return c.JSON(http.StatusOK, "Application Disapproved Successfully")
 }
 
+func (h *ApplicationHandler) UpdateSubmitToReleaserHandler(c echo.Context) error {
+
+	applicationIdParam := c.QueryParam("application_id")
+
+	applicationID, err := strconv.ParseInt(applicationIdParam, 10, 64)
+	if err != nil {
+		return c.JSON(400, map[string]string{
+			"error": "Invalid application_id, must be an integer",
+		})
+	}
+
+	if err := h.DB_METHOD.SubmitToReleaserApplication(applicationID); err != nil{
+		return err
+	}
+
+	return c.JSON(http.StatusOK, "Submitted to Releaser!")
+}
+
 
 
 func (h *ApplicationHandler) SetReleaseDateHandler(c echo.Context) error {
@@ -225,7 +288,7 @@ func (h *ApplicationHandler) SetReleaseDateHandler(c echo.Context) error {
         return c.JSON(http.StatusBadRequest, map[string]string{"error": "Missing required fields"})
     }
 
-    if err := h.DB_METHOD.UpdateReleaseDate(releaseDate.ApplicationID, releaseDate.DateFrom, releaseDate.DateTo); err != nil {
+    if err := h.DB_METHOD.UpdateReleaseDateAndSubmitToReport(releaseDate.ApplicationID, releaseDate.DateFrom, releaseDate.DateTo); err != nil {
         return c.JSON(http.StatusInternalServerError, map[string]string{"error": "Failed to update release date"})
     }
 
@@ -265,6 +328,26 @@ func (h *ApplicationHandler) SetReleaseDateHandler(c echo.Context) error {
     }
 
     return c.JSON(http.StatusOK, "Set Release Date Successfully")
+}
+
+
+func (h *ApplicationHandler) TrashApplicationHandler(){
+	c := cron.New()
+
+	_, err := c.AddFunc("@yearly", func(){
+
+		if err := h.DB_METHOD.TrashApplication(); err != nil {
+            log.Printf("Error in putting application to trash : %v", err)
+        } else {
+            log.Println("Application trashed successfully.")
+        }
+	})
+
+	if err != nil {
+        log.Fatalf("Failed to schedule job: %v", err)
+    }
+
+	c.Start()
 }
 
 
@@ -335,6 +418,15 @@ func (h *ApplicationHandler) UpdateApplicationCodeHandler(c echo.Context) error 
 	var update types.UpdateApplicationCode
 	if err := c.Bind(&update); err != nil{
 		return err
+	}
+
+	isCodeExists, err := h.DB_METHOD.IsApplicationCodeExists(update.ApplicationCode)
+	if err != nil{
+		return err
+	}
+
+	if isCodeExists {
+		return c.JSON(http.StatusOK, "Application_Code_Existed")
 	}
 
 	if err := h.DB_METHOD.UpdateApplicationCode(int64(application_id), update.ApplicationCode); err != nil{

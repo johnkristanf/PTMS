@@ -6,6 +6,15 @@ import { FetchLoginAccount } from '../../http/get/auth';
 import { FetchAssessments } from '../../http/get/assesments';
 import { getCurrentFormattedDate } from '../../helpers/currentDate';
 
+import { Font } from '@react-pdf/renderer';
+
+
+Font.register({
+  family: 'Roboto',
+  src: 'https://fonts.gstatic.com/s/roboto/v29/KFOmCnqEu92Fr1Mu7GxP.ttf', // Replace with desired font URL
+});
+
+
 const styles = StyleSheet.create({
   page: {
     flexDirection: 'column',
@@ -54,7 +63,8 @@ const styles = StyleSheet.create({
   underline_40: {
     borderBottom: '1px solid black',
     width: '40%',
-    textAlign: 'center'
+    textAlign: 'center',
+    fontFamily: 'Roboto',
   },
   row_60: {
     flexDirection: 'row',
@@ -144,7 +154,7 @@ const Documents = ({ staff_name, total_assessment, feesList, orderPaymentInputVa
             {feesList.map((data) => (
                 <View key={data.name} style={[styles.row_60, { gap: 10 }]}>
                     <Text>{data.name}</Text>
-                    <Text style={styles.underline_40}>P{data.value}</Text>
+                    <Text style={styles.underline_40}>{`\u20B1 ${data.value.toFixed(2)}`}</Text>
                 </View>
             ))}
         </View>
@@ -152,7 +162,7 @@ const Documents = ({ staff_name, total_assessment, feesList, orderPaymentInputVa
         <View style={[styles.assessments_input_container, { gap: 15, marginTop: 7 }]}>
             <View style={[styles.row_50, { gap: 10 }]}>
                 <Text>Total Assessment</Text>
-                <Text style={styles.underline_40}>P{total_assessment}</Text>
+                <Text style={styles.underline_40}>{`\u20B1 ${total_assessment.toFixed(2)}`}</Text>
             </View>
 
             <View style={[styles.row_45, { gap: 40 }]}>
@@ -255,7 +265,7 @@ export const AssessmentsPDF = ({ application_id, setAssessment }: {
   };
 
   return (
-    <div className="fixed top-0 w-1/2 h-screen bg-white p-8 rounded-md">
+    <div className="fixed top-24 w-1/2 h-[80%] bg-white p-8 rounded-md overflow-auto">
       {pdfUrl && (
         <div className='flex flex-col h-full'>
           <iframe

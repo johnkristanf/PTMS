@@ -1,14 +1,18 @@
 import axios, { AxiosResponse } from "axios";
 import { LoginCredentials, StaffAccount } from "../../types/auth";
+import { DOMAIN_NAME } from "../../envPaths";
 
 
-export const Login = async (loginCredentials: LoginCredentials): Promise<boolean> => {
+
+export const Login = async (loginCredentials: LoginCredentials): Promise<string> => {
 
     try {
-        const response = await axios.post("http://localhost:4040/auth/login", loginCredentials, {
+        const response = await axios.post(`${DOMAIN_NAME}/auth/login`, loginCredentials, {
             withCredentials: true
         })
-        const statusOk = response.status === 200 
+        const statusOk = response.status === 200; 
+        const timeout = response.status === 408;
+        const unauthorized = response.status === 401;
 
         
         if (statusOk) {
@@ -41,18 +45,25 @@ export const Login = async (loginCredentials: LoginCredentials): Promise<boolean
             }
         }
 
-        return true;
+        if (timeout){
+            return "timeout"
+        } else if(unauthorized){
+            return "unauthorized";
+        }
+
+        return "success";
                 
     } catch (error) {
-        console.error(error)
-        return false;
+        console.error(error);
+        return "unauthorized";
+
     }
 }
 
 
 
 export function CreateStaffAccount(data: StaffAccount): Promise<AxiosResponse<unknown, unknown>> {
-    return axios.post("http://localhost:4040/auth/create/staff", data, {
+    return axios.post(`${DOMAIN_NAME}/auth/create/staff`, data, {
         withCredentials: true
     });
 }
@@ -62,7 +73,7 @@ export function CreateStaffAccount(data: StaffAccount): Promise<AxiosResponse<un
 export const SignOut = async () => {
 
     try {
-        const response = await axios.post("http://localhost:4040/auth/signout", {}, {
+        const response = await axios.post(`${DOMAIN_NAME}/auth/signout`, {}, {
             withCredentials: true
         })
         const statusOk = response.status === 200 

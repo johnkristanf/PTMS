@@ -10,7 +10,9 @@ func DocumentRoutes(e *echo.Echo, h *handlers.DocumentHandler) {
 	g := e.Group("/document")
 
 	g.POST("/upload", h.UploadDocumentHandler, h.JWT_METHOD.StaffAdminAutheticationMiddleware)
+	g.POST("/profile/upload", h.UploadProfileHandler, h.JWT_METHOD.StaffAdminAutheticationMiddleware)
 
 	g.GET("/get/:application_code", h.GetDocumentHandler, h.JWT_METHOD.StaffAdminAutheticationMiddleware)
+	g.GET("/get/profile/:userID", h.GetProfilePictureHandler, h.JWT_METHOD.StaffAdminAutheticationMiddleware)
 	
-}
+}               

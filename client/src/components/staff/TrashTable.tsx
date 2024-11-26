@@ -46,7 +46,7 @@ export function TrashTable({ searchTerm, selectedMonth }: dropDownSelectType){
 
                     <div className="overflow-hidden">
                         <table className="min-w-full text-left text-sm font-light">
-                        <thead className="border-b font-medium dark:border-neutral-500">
+                        <thead className="border-b font-medium border-neutral-500">
                             <tr>
                                 <th scope="col" className="px-6 py-4">Name</th>
                                 <th scope="col" className="px-6 py-4">Email</th>
@@ -59,7 +59,7 @@ export function TrashTable({ searchTerm, selectedMonth }: dropDownSelectType){
                         <tbody>
                                         {trashApplications.length === 0 ? (
                                             <tr>
-                                                <td colSpan={4} className="px-6 py-4 text-center">
+                                                <td colSpan={6} className="px-6 py-4 text-center">
                                                     No results found
                                                 </td>
                                             </tr>
@@ -68,7 +68,7 @@ export function TrashTable({ searchTerm, selectedMonth }: dropDownSelectType){
                                             trashApplications.map((data) => (
                                                 <tr
                                                     key={data.application_id}
-                                                    className="font-semibold border-b"
+                                                    className="font-semibold border-b border-neutral-500"
                                                 >
                                                     <td className="whitespace-nowrap px-2 py-3">
                                                         {data.firstname} {data.middleInitial} {data.lastName}

@@ -19,7 +19,6 @@ export function DisapprovedModal({ disapprovalData, setOpenDisapprovedModal }: {
             queryClient.invalidateQueries({ queryKey: ["paid_applications"] });
 
             Swal.fire({
-                position: "top-end",
                 icon: "success",
                 title: "Application Disapproved",
                 showConfirmButton: false,

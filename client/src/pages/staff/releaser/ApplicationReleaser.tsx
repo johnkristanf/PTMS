@@ -7,8 +7,7 @@ import { PTMSHeader } from "../../../components/PtmsHeader";
 function ApplicationReleaserPage() {
 
   const [searchTerm, setSearchTerm] = useState<string>("");
-    // const [selectedWeek, setSelectedWeek] = useState<string>("");
-    const [selectedMonth, setSelectedMonth] = useState<string>(""); 
+  const [selectedMonth, setSelectedMonth] = useState<string>(""); 
     
   return (
     <div className="flex justify-between items-center h-[125vh] bg-white">

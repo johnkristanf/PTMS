@@ -30,7 +30,7 @@ export function PaidTable({ searchTerm, selectedMonth, adminType }: PaidTablePro
 
 
     const [applicationID, setApplicationID] = useState<number>();
-    const [allRequirementsChecked, setAllRequirementsChecked] = useState<boolean>(false); 
+    const [allRequirementsChecked, setAllRequirementsChecked] = useState<boolean>(true); 
 
     const [disapprovalData, setDisapprovalData] = useState<DisapprovalData>();
 
@@ -40,9 +40,9 @@ export function PaidTable({ searchTerm, selectedMonth, adminType }: PaidTablePro
             const data = await FetchPaidApplications(searchTerm, selectedMonth);
             return data;
         },
+
     });
-    
-   
+
     
     const paidApplication: Application[] = paidApplicationsResponse?.data || [];
     
@@ -201,7 +201,7 @@ export function PaidTable({ searchTerm, selectedMonth, adminType }: PaidTablePro
                     <div className="inline-block min-w-full py-2">
                         <div className="overflow-hidden">
                             <table className="min-w-full text-left text-sm font-light">
-                                <thead className="border-b font-medium dark:border-neutral-500">
+                                <thead className="border-b font-medium border-neutral-500">
                                     <tr>
                                         <th scope="col" className="px-3 py-2">Application Code</th>
                                         <th scope="col" className="px-3 py-2">Name</th>
@@ -220,7 +220,7 @@ export function PaidTable({ searchTerm, selectedMonth, adminType }: PaidTablePro
                                         </tr>
                                     ) : (
                                         paidApplication.map((item) => (
-                                            <tr key={item.application_id} className="border-b">
+                                            <tr key={item.application_id} className="border-b border-neutral-500">
                                                 <td className="whitespace-nowrap px-3 py-2 font-medium">{item.applicationCode}</td>
                                                 <td className="whitespace-nowrap px-3 py-2 font-medium">
                                                     {item.firstname} {item.middleInitial} {item.lastName}

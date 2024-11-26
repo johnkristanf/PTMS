@@ -1,6 +1,5 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { FetchAdminAccessRequest } from "../../http/get/access";
-import { FetchPendingAccessRequestTypes, UpdateRequestAccessStatusTypes } from "../../types/access";
+import { UpdateRequestAccessStatusTypes } from "../../types/access";
 import { UpdateRequestAccessStatus } from "../../http/put/access";
 import Swal from "sweetalert2";
 import { useState } from "react";
@@ -8,6 +7,7 @@ import { FetchLoginAccount } from "../../http/get/auth";
 import { LoginAccount } from "../../types/auth";
 import { DeleteStaffAccessRequest } from "../../http/delete/access";
 import { OpenGrantedPage } from "../../http/post/access";
+import { useFetchAdminAR } from "../../hook/useFetchAdminAR";
 
 
 const AdminRequestAccessModal = () => {
@@ -23,13 +23,7 @@ const AdminRequestAccessModal = () => {
     const queryClient = useQueryClient();
     const [accessStatus, setAccessStatus] = useState<string>();
 
-    const { data: pendingAccessRequestResponse } = useQuery({
-        queryKey: ["admin_access_request", loginAccount.adminType, loginAccount.id],
-        queryFn: async () => {
-            const data = await FetchAdminAccessRequest(loginAccount.adminType || "", loginAccount.id);
-            return data;
-        },
-    });
+    
 
     const mutation = useMutation({
         mutationFn: UpdateRequestAccessStatus,
@@ -48,10 +42,6 @@ const AdminRequestAccessModal = () => {
             console.error("Request Access error:", error);
         },
     });
-
-    const pendingAccessReqest: FetchPendingAccessRequestTypes[] = pendingAccessRequestResponse?.data || [];
-
-    console.log("pendingAccessReqest: ", pendingAccessReqest);
     
 
     const handleUpdateRequestAccessStatus = (id: number, status: string) => {
@@ -126,16 +116,18 @@ const AdminRequestAccessModal = () => {
         grantedPageMutation.mutate(access_role)
     }
 
+    const { adminAccessRequest } = useFetchAdminAR();
+
 
     return (
         <div className="absolute top-[12rem] right-[25rem] bg-gray-100 w-[45%] h-[220px] z-10 flex flex-col gap-5 items-center p-2 rounded-md font-semibold overflow-auto">
             <h1 className="text-orange-600 text-xl">Admin Access Request</h1>
 
                 { 
-                    pendingAccessReqest.length === 0 ? (
+                    adminAccessRequest.length === 0 ? (
                         <h1 className="text-lg">No request available</h1>
                     ): (
-                        pendingAccessReqest.map((request) => (
+                        adminAccessRequest.map((request) => (
                             <div 
                                 key={request.id} 
                                 className="flex justify-between items-center gap-5 font-semibold border border-gray-400 rounded-md p-2"
@@ -165,6 +157,16 @@ const AdminRequestAccessModal = () => {
                                     {
                                         request.user_id === loginAccount.id && request.status === "GRANTED"
                                             && (`The request to access ${request.access_role} admin has been granted`)
+                                    }
+
+                                    {
+                                        request.access_role === loginAccount.adminType && request.status === "DENIED"
+                                            && (`You denied ${request.role} admin to access your page`)
+                                    }
+
+                                    {
+                                        request.user_id === loginAccount.id && request.status === "DENIED"
+                                            && (`The request to access ${request.access_role} admin has been denied`)
                                     }
                                     
                                 </h1>
@@ -207,6 +209,18 @@ const AdminRequestAccessModal = () => {
                                             Delete
                                         </button>
                                     </>
+                                )
+                            }
+
+                            {
+                                request.status === "DENIED" && request.user_id === loginAccount.id && (
+                                   
+                                    <button 
+                                        onClick={() => handleDeleteAccessRequest(request.id)}
+                                        className="bg-red-600 rounded-md p-3 text-white text-sm hover:opacity-75"
+                                    >
+                                        Delete
+                                    </button>
                                 )
                             }
     
