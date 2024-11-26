@@ -35,7 +35,7 @@ func main(){
 	e.Use(middleware.Recover())
 
 	e.Use(middleware.CORSWithConfig(middleware.CORSConfig{
-		AllowOrigins: []string{"http://localhost:9090"},
+		AllowOrigins: []string{"http://localhost:9090", "https://ptms-alpha.vercel.app/"},
 		AllowMethods: []string{echo.GET, echo.POST, echo.PUT, echo.DELETE},
 		AllowHeaders: []string{echo.HeaderOrigin, echo.HeaderContentType, echo.HeaderAccept},
 		AllowCredentials: true,
@@ -121,8 +121,8 @@ func main(){
 	routes.AccessRoutes(e, accessHandler)
 
   
-	log.Println("Go http server is listening on port 4040")
-	if err := e.Start(":4040"); err != http.ErrServerClosed {
+	log.Println("Go http server is listening on port 8080")
+	if err := e.Start(":8080"); err != http.ErrServerClosed {
 		log.Fatal(err)
 	}
 }

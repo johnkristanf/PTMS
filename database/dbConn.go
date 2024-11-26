@@ -26,7 +26,7 @@ func DB_CONFIG() (*SQL, error) {
 	dbname   :=  os.Getenv("DB_NAME")
 
 	errorChan := make(chan error, 1)
-	dsn := fmt.Sprintf("host=%s port=%d user=%s password=%s dbname=%s sslmode=disable", host, port, user, password, dbname)
+	dsn := fmt.Sprintf("host=%s port=%s user=%s password=%s dbname=%s sslmode=disable", host, port, user, password, dbname)
 
 	db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})
 	if err != nil {
