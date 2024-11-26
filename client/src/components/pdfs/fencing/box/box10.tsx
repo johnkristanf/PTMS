@@ -1,7 +1,7 @@
 import { View, Text } from '@react-pdf/renderer';
 import styles from '../styles/box10'; // Import the styles
 
-export function PermitBodyBox10({ permitInfo }: { permitInfo: any }) {
+export function PermitBodyBox10() {
     return (
         <>
             <Text style={styles.title}>BOX 10 (TO BE ACCOMPLISHED BY THE BUILDING OFFICIAL)

@@ -3,7 +3,7 @@ import { ApplicationLetterInfoTypes, AppliedServices } from "../../../types/appl
 import { PermitHeader } from "./header";
 import { PermitBodyBox1 } from "./box1";
 // import { PermitBodyBox2 } from "../plumbing/box2";
-import PermitBodyBox3 from "./box3";
+// import PermitBodyBox3 from "./box3";
 import { PermitBodyBox4 } from "./box4";
 import PermitBodyBox5 from "./box5";
 import { PermitBodyBox6 } from "./box6";
@@ -18,9 +18,9 @@ export function PlumbingPermitComponent({ permitInfo }: {
   }) {
   
     const applicationCode = permitInfo.applicationCode
-    const serviceType = permitInfo.serviceType
+    // const serviceType = permitInfo.serviceType
   
-    const applicantName = `${permitInfo.firstname} ${permitInfo.middleInitial} ${permitInfo.lastName} `
+    // const applicantName = `${permitInfo.firstname} ${permitInfo.middleInitial} ${permitInfo.lastName} `
 
     const applicationLetterInfo: ApplicationLetterInfoTypes = {
       firstName: permitInfo.firstname,
@@ -36,7 +36,7 @@ export function PlumbingPermitComponent({ permitInfo }: {
 
         <Page size="A4" style={styles.page}>
   
-          <PermitHeader serviceType={serviceType} applicationCode={applicationCode} />
+          <PermitHeader  applicationCode={applicationCode} />
     
           <View style={styles.body1}>
             <PermitBodyBox1 permitInfo={permitInfo} />
@@ -44,11 +44,10 @@ export function PlumbingPermitComponent({ permitInfo }: {
 
     
           <View style={styles.body3}>
-            <PermitBodyBox3 applicantName={applicantName} />
             <PermitBodyBox4 />
           </View>
     
-            <PermitBodyBox5 applicantName={applicantName} />
+            <PermitBodyBox5 />
     
             <PermitBodyBox6 />
     

@@ -41,7 +41,7 @@ export function PermitBodyBox1({ permitInfo }: { permitInfo: AppliedServices }) 
                             {Array.from({ length: 5 }).map((_, index) => (
                                 <View key={index} style={styles.cell}>
                                     {/* Replace `permitInfo.cellData[index]` with actual data you want to display */}
-                                    <Text style={styles.cellData}>{data.applicationCode ? data.cellData[index] : ''}</Text>
+                                    <Text style={styles.cellData}>{data.applicationCode && data.cellData ? data.cellData[index] : ''}</Text>
                                 </View>
                             ))}
                         </View>
