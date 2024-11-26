@@ -7,6 +7,7 @@ export function PermitBodyBox1({ permitInfo }: { permitInfo: AppliedServices }) 
    
 
     const data = permitInfo;
+
     return (
         <View style={styles.formNo}>
             {/* Title Section */}

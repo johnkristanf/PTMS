@@ -2,6 +2,7 @@ package database
 
 import (
 	"fmt"
+	"os"
 	"time"
 
 	"github.com/johnkristanf/TMS-IPAS/helpers"
@@ -17,13 +18,12 @@ type SQL struct {
 
 func DB_CONFIG() (*SQL, error) {
 
-	var (
-		host     =  "localhost"
-		port     =  5432
-		user     =  "postgres"
-		password =  "johntorremocha"
-		dbname   =  "tms_ipas"
-	)
+	
+	host     :=  os.Getenv("DB_HOST")
+	port     :=  os.Getenv("DB_PORT")
+	user     :=  os.Getenv("DB_USER")
+	password :=  os.Getenv("DB_PASSWORD")
+	dbname   :=  os.Getenv("DB_NAME")
 
 	errorChan := make(chan error, 1)
 	dsn := fmt.Sprintf("host=%s port=%d user=%s password=%s dbname=%s sslmode=disable", host, port, user, password, dbname)

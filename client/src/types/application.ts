@@ -142,6 +142,10 @@ export type AppliedServices = {
 
     scopeType: string
     characterOfOccupancy: string
+
+    cellData?: string
+    labelData?: string
+    checkboxData?: string
 }
 
 

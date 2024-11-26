@@ -11,7 +11,6 @@ import { PermitBodyBox8 } from './mechanical/box/box8';
 import { PermitBodyBox9 } from './mechanical/box/box9';
 import { PermitBodyBox10 } from './mechanical/box/box10';
 import { PermitBodyBox11 } from './mechanical/box/box11';
-import { PermitBodyBox12 } from './mechanical/box/box12';
 import { AppliedServices } from '../../types/application';
 
 function MechanicalPermit({ permitInfo, setPermitsInfo }: { 
