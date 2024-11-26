@@ -3,7 +3,7 @@
 import { View, Text } from '@react-pdf/renderer';
 import styles from '../styles/box10';
 
-export function PermitBodyBox10({ permitInfo }: { permitInfo: any }) {
+export function PermitBodyBox10() {
     return (
         <View style={styles.container}>
             {/* Header */}
