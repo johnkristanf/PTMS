@@ -94,7 +94,7 @@ export function FencingPermitComponent({ permitInfo }: {
                         </View>
                     </View>
                     {/* End Container */}
-                    <PermitBodyBox6 permitInfo={permitInfo} />
+                    <PermitBodyBox6  />
             </View>
         </Page>
     <Page size="A4" style={styles.page}>
@@ -102,7 +102,7 @@ export function FencingPermitComponent({ permitInfo }: {
             <PermitBodyBox7 permitInfo={permitInfo} />
             <PermitBodyBox8 permitInfo={permitInfo} />
             <PermitBodyBox9 permitInfo={permitInfo} />
-            <PermitBodyBox10 permitInfo={permitInfo} />
+            <PermitBodyBox10 />
         </View>
     </Page>
 

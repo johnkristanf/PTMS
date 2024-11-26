@@ -90,14 +90,14 @@ function ExcavationPermitComponent({ permitInfo }: {
                         </View>
                 </View>
                 {/* End Container */}
-                <PermitBodyBox6 permitInfo={permitInfo} />
+                <PermitBodyBox6  />
             </View>
         </Page>
 
         <Page size="A4" style={styles.page}>
             <View style={styles.pageContainer2}>
-                    <PermitBodyBox78 permitInfo={permitInfo} />
-                    <PermitBodyBox9 permitInfo={permitInfo} />
+                    <PermitBodyBox78  />
+                    <PermitBodyBox9  />
                 </View>
         </Page>
         </>

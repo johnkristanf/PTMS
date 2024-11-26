@@ -77,15 +77,15 @@ export function ElectricalComponentPermit({ permitInfo }: {
             <View style={styles.pageContainer}>
                 <PermitBodyBox1 permitInfo={permitInfo} />
                 <PermitBodyBox2 permitInfo={permitInfo} />
-                <PermitBodyBox3 permitInfo={permitInfo} />
+                <PermitBodyBox3  />
                 <PermitBodyBox4 permitInfo={permitInfo} />
-                <PermitBodyBox5 permitInfo={permitInfo} />
+                <PermitBodyBox5  />
             </View>
         </Page>
 
         <Page size="A4" style={styles.page}>
             <View style={styles.pageContainer}>
-                    <PermitBodyBox6 permitInfo={permitInfo} />
+                    <PermitBodyBox6  />
                 </View>
         </Page>
         </>
