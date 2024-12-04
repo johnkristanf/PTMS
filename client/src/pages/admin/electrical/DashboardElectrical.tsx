@@ -43,7 +43,7 @@ function ElectricalDashboardPage() {
             { openAdminAccessModal && (<AdminRequestAccessModal />) }
 
             <div className="flex justify-between items-center h-[125vh] w-full bg-white">
-                <SideBar role={"architectural"} />
+                <SideBar role={"electrical"} />
 
                 <div className="w-full flex justify-center fixed top-0">
                 

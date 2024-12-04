@@ -43,7 +43,7 @@ function CivilDashboardPage() {
             { openAdminAccessModal && (<AdminRequestAccessModal />) }
 
             <div className="flex justify-between items-center h-[125vh] w-full bg-white">
-                <SideBar role={"architectural"} />
+                <SideBar role={"civil"} />
 
                 <div className="w-full flex justify-center fixed top-0">
                 

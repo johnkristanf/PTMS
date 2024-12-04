@@ -129,6 +129,10 @@ export function PaidTable({ searchTerm, selectedMonth, adminType }: PaidTablePro
         setDisapprovalData(data)
         setOpenDisapprovedModal(true);
     }
+
+    console.log("paidApplication: ", paidApplication);
+    console.log("adminType: ", adminType);
+    
     
 
     return(
