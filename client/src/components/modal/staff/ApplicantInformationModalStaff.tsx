@@ -13,7 +13,7 @@ export function ApplicantInformationModalStaff({ setInformationModal, applicantI
 
             <div className="fixed top-0 bg-gray-600 opacity-75 w-full h-screen"></div>
 
-            <div className="flex flex-col bg-white rounded-md p-8 fixed top-5 w-1/2 h-[90%] overflow-auto">
+            <div className="flex flex-col bg-white rounded-md p-8 fixed top-24 w-1/2 h-[80%] overflow-auto">
 
                 <div className="flex flex-col justify-between items-center mb-3">
 

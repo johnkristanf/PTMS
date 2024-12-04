@@ -205,6 +205,11 @@ type APPLICATION_DB_METHOD interface {
 	FetchReportApplication(string, string) ([]*types.ApplicationReport, error)
 	TrashApplication() error
 
+	ApplicationByYear() ([]*types.ApplicationByYear, error)
+	ApplicationByBarangay() ([]*types.ApplicationByBarangay, error)
+	ApplicationByPermitType() ([]*types.ApplicationByPermitType, error)
+	
+
 	FetchAppliedServices(int64) ([]*types.AppliedServicesFetching, error)
 	FetchRequirements(int64) (*types.FirstStepRequirementsFetching, error)
 
@@ -1344,4 +1349,53 @@ func (sql *SQL) UpdateApplicationStatus(applicationID int64, status string) erro
 	}
 
 	return nil
+}
+
+
+func (sql *SQL) ApplicationByYear() (results []*types.ApplicationByYear, err error){
+
+	err = sql.DB.Model(&Application{}).
+		Select("EXTRACT(YEAR FROM created_at) as year, COUNT(id) as count").
+		Group("year").
+		Order("year DESC").
+		Find(&results).Error
+
+	if err != nil {
+		return nil, err
+	}
+
+	return results, nil
+}
+
+
+func (sql *SQL) ApplicationByBarangay() (results []*types.ApplicationByBarangay, err error){
+
+	err = sql.DB.Model(&Application{}).
+		Select("barangay, COUNT(id) as count").
+		Group("barangay").
+		Order("count DESC"). 
+		Find(&results).Error
+
+	if err != nil {
+		return nil, err
+	}
+
+	return results, nil
+}
+
+
+
+func (sql *SQL) ApplicationByPermitType() (results []*types.ApplicationByPermitType, err error){
+
+	err = sql.DB.Model(&Application{}).
+		Select("permit_type, COUNT(id) as count").
+		Group("permit_type").
+		Order("count DESC"). 
+		Find(&results).Error
+
+	if err != nil {
+		return nil, err
+	}
+
+	return results, nil
 }

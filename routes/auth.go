@@ -10,6 +10,10 @@ func AuthRoutes(e *echo.Echo, h *handlers.AuthHandler) {
 	g := e.Group("/auth")
 	
 	g.POST("/login", h.LoginHandler)
+	g.POST("/verify-email/reset", h.VerifyEmailResetHandler)
+
+	g.PUT("/change/password", h.PasswordResetHandler)
+
 
 	g.POST("/create/staff", h.CreateStaffAccountHandler, h.JWT_METHOD.AdminAutheticationMiddleware)
 	g.GET("/fetch/staff", h.FetchStaffAccountsHandler, h.JWT_METHOD.AdminAutheticationMiddleware)

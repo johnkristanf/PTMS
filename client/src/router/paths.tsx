@@ -42,12 +42,31 @@ import TrashApplicationArhictecturalPage from "../pages/admin/architectural/Tras
 import TrashApplicationElectricalPage from "../pages/admin/electrical/TrashApplicationElectrical"
 import TrashApplicationCivilPage from "../pages/admin/civil/TrashApplicationCivil"
 import ReleaserReportPage from "../pages/staff/releaser/ReleaserReport"
+import EmailVerification from "../pages/reset_password/EmailVerification"
+import ResetPassword from "../pages/reset_password/ResetPassword"
+import ArchitecturalDashboardPage from "../pages/admin/architectural/DashboardArchitectural"
+import CivilDashboardPage from "../pages/admin/civil/DashboardCivil"
+import ElectricalDashboardPage from "../pages/admin/electrical/DashboardElectrical"
 
 
 
 // ang purpose sa loader which katulong argument sa path obj diri is mag serve
 // ditso data before rendering the component
 // sample get func axios req for user login
+
+
+// -------------- RESET PASSWORD ------------------
+export const emailVerificationPath = {
+    path: "/email/verify",
+    element: <EmailVerification />
+}
+
+export const resetPasswordPath = {
+    path: "/reset/password",
+    element: <ResetPassword />
+}
+
+
 
 export const root = {
     path: "/",
@@ -114,6 +133,17 @@ export const adminPagePath = {
 
 
 // ------------ ARCHITECTURAL --------------
+
+export const architecturalDashboardPath = {
+    path: "/architectural/dashboard",
+    element:(
+        <QueryProviderWrapper>
+            <ArchitecturalDashboardPage />
+        </QueryProviderWrapper>
+    ),
+}
+
+
 export const paidArchitecturalPath = {
     path: "/architectural/paid/applications",
     element:(
@@ -172,6 +202,15 @@ export const staffAccountArchitecturalPath = {
 
 // ------------ CIVIL --------------
 
+export const civilDashboardPath = {
+    path: "/civil/dashboard",
+    element:(
+        <QueryProviderWrapper>
+            <CivilDashboardPage />
+        </QueryProviderWrapper>
+    ),
+}
+
 export const paidCivilPath = {
     path: "/civil/paid/applications",
     element:(
@@ -225,7 +264,17 @@ export const staffAccountCivilPath = {
 // ------------ END OF CIVIL --------------
 
 
+
 // ------------ ELECTRICAL --------------
+
+export const electricalDashboardPath = {
+    path: "/electrical/dashboard",
+    element:(
+        <QueryProviderWrapper>
+            <ElectricalDashboardPage />
+        </QueryProviderWrapper>
+    ),
+}
 
 export const paidElectricalPath = {
     path: "/electrical/paid/applications",

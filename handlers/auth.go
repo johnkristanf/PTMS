@@ -2,6 +2,7 @@ package handlers
 
 import (
 	"context"
+	"math/rand"
 	"encoding/json"
 	"fmt"
 	"net/http"
@@ -26,7 +27,7 @@ var (
 
 func getGoogleOauthConfig() *oauth2.Config {
     return &oauth2.Config{
-        RedirectURL:  "https://web-ptms.com/auth/google/callback",
+        RedirectURL: os.Getenv("GOOGLE_REDIRECT_URL"),
         ClientID:     os.Getenv("GOOGLE_CLIENT_ID"),
         ClientSecret: os.Getenv("GOOGLE_CLIENT_SECRET"),
         Scopes: []string{
@@ -99,14 +100,22 @@ func (h *AuthHandler) LoginHandler(c echo.Context) error {
 			return err
 		}
 
+		var webPhase http.SameSite
+
+		if os.Getenv("WEB_PHASE") == "production" { 
+			webPhase = http.SameSiteNoneMode 
+		} else {
+			webPhase = http.SameSiteLaxMode 
+		}
+
 		accessTokenCookie := &http.Cookie{
 			Name:     "access_token",
 			Value:    access_token,
 			Path:     "/",
-			SameSite: http.SameSiteNoneMode,
+			SameSite: webPhase,
 			Expires:  time.Now().Add(5 * time.Hour),
 			HttpOnly: true,
-			Secure:   true,
+			Secure:   os.Getenv("WEB_PHASE") == "production",
 
 		}
 	
@@ -114,10 +123,10 @@ func (h *AuthHandler) LoginHandler(c echo.Context) error {
 			Name:     "refresh_token",
 			Value:    refresh_token,
 			Path:     "/",
-			SameSite: http.SameSiteNoneMode,
+			SameSite: webPhase,
 			Expires:  time.Now().Add(3 * 24 * time.Hour),
 			HttpOnly: true,
-			Secure:   true,
+			Secure:   os.Getenv("WEB_PHASE") == "production",
 
 		}
 	
@@ -144,6 +153,58 @@ func (h *AuthHandler) LoginHandler(c echo.Context) error {
 
         return c.JSON(http.StatusUnauthorized, "Invalid role")
 	}
+
+}
+
+
+func GenerateRandomString(length int) string {
+	const charset = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
+
+	randomString := make([]byte, length)
+
+	for i := range randomString {
+		randomString[i] = charset[rand.Intn(len(charset))]
+	}
+
+	return string(randomString)
+}
+
+
+func (h *AuthHandler) VerifyEmailResetHandler(c echo.Context) error {
+
+	var user types.PasswordRestEmailBind
+
+	if err := c.Bind(&user); err != nil {
+		return c.JSON(http.StatusBadRequest, "bad request")
+	}
+
+	fmt.Println("user Email: ", user.Email)
+	
+	uniqueToken := GenerateRandomString(32)
+	resetLink := fmt.Sprintf("%s?token=%s&email=%s", os.Getenv("PASSWORD_RESET_URL"), uniqueToken, user.Email)
+	if err := helpers.SendPasswordResetEmailLink(user.Email, resetLink); err != nil{
+		return err
+	}
+
+	return c.JSON(http.StatusOK, "ResetPassword_Email_Sent")
+}
+
+func (h *AuthHandler) PasswordResetHandler(c echo.Context) error {
+	var user types.UpdateUserPassword
+
+	fmt.Println("user Email: ", user.Email)
+	fmt.Println("user New Password: ", user.NewPassword)
+
+	if err := c.Bind(&user); err != nil {
+		return c.JSON(http.StatusBadRequest, "bad request")
+	}
+
+	if err := h.DB_METHOD.UserChangePassword(user.Email, user.NewPassword); err != nil{
+		return err
+	}
+
+
+	return c.JSON(http.StatusOK, "Password_Reset_Successfully")
 
 }
 
@@ -209,14 +270,22 @@ func (h *AuthHandler) OauthGoogleCallback(c echo.Context) error {
 		return err
 	}
 
+	var webPhase http.SameSite
+
+	if os.Getenv("WEB_PHASE") == "production" { 
+		webPhase = http.SameSiteNoneMode 
+	} else {
+		webPhase = http.SameSiteLaxMode 
+	}
+
 	accessTokenCookie := &http.Cookie{
 		Name:     "access_token",
 		Value:    access_token,
 		Path:     "/",
-		SameSite: http.SameSiteNoneMode,
+		SameSite: webPhase,
 		Expires:  time.Now().Add(5 * time.Hour),
 		HttpOnly: true,
-		Secure:   true,
+		Secure:   os.Getenv("WEB_PHASE") == "production",
 
 	}
 
@@ -224,10 +293,10 @@ func (h *AuthHandler) OauthGoogleCallback(c echo.Context) error {
 		Name:     "refresh_token",
 		Value:    refresh_token,
 		Path:     "/",
-		SameSite: http.SameSiteNoneMode,
+		SameSite: webPhase,
 		Expires:  time.Now().Add(3 * 24 * time.Hour),
 		HttpOnly: true,
-		Secure:   true,
+		Secure:   os.Getenv("WEB_PHASE") == "production",
 
 	}
 
@@ -427,26 +496,34 @@ func (h *AuthHandler) FetchLoginApplicantHandler(c echo.Context) error {
 
 func (h *AuthHandler) SignoutHandler(c echo.Context) error {
 
+	var webPhase http.SameSite
+
+	if os.Getenv("WEB_PHASE") == "production" { 
+		webPhase = http.SameSiteNoneMode 
+	} else {
+		webPhase = http.SameSiteLaxMode 
+	}
+
 	c.SetCookie(&http.Cookie{
 		Name:     "access_token",
 		Value:    "",
 		Path:     "/",
-		SameSite: http.SameSiteNoneMode,
+		SameSite: webPhase,
 		Expires:  time.Unix(0, 0),
 		MaxAge:   -1,
 		HttpOnly: true,
-		Secure:   true,
+		Secure:   os.Getenv("WEB_PHASE") == "production",
 	})
 
 	c.SetCookie(&http.Cookie{
 		Name:     "refresh_token",
-		SameSite: http.SameSiteNoneMode,
+		SameSite: webPhase,
 		Value:    "",
 		Path:     "/",
 		Expires:  time.Unix(0, 0),
 		MaxAge:   -1,
 		HttpOnly: true,
-		Secure:   true,
+		Secure:   os.Getenv("WEB_PHASE") == "production",
 	})
 
 

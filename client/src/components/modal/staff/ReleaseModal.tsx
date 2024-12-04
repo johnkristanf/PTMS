@@ -93,7 +93,8 @@ export function ReleaseDateModal({ setOpenReleaseModal, releaseDateData }: {
 
     useEffect(() => {
         if(releaseDateData?.status === "Approved"){
-            setMessage("Message na pang professional here")
+            setMessage(`We are pleased to inform you that your permit application has been approved. Your documents are now ready for release and can be picked up at the Panabo City Engineer's Office during business hours.`
+            );
         }
     }, [releaseDateData?.status])
 

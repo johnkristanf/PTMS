@@ -67,7 +67,6 @@ export function ApproveTable({ searchTerm, selectedMonth, staffRole, ReleaserRep
             queryClient.invalidateQueries({ queryKey: ["approved_applications"] });
 
             Swal.fire({
-                position: "top-end",
                 icon: "success",
                 title: "File Uploaded Successfully",
                 showConfirmButton: false,

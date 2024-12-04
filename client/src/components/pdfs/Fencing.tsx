@@ -106,6 +106,9 @@ export function FencingPermitComponent({ permitInfo }: {
         </View>
     </Page>
 
+
+    {/* DLI NI COMPLETION EXTRA SHITS NI */}
+
     {/* <Page size="A4" style={styles.page}>
         <View style={styles.pageContainer}>
             <PermitBodyBox11 permitInfo={permitInfo} />

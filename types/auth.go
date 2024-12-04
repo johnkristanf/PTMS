@@ -15,6 +15,16 @@ type LoginCredentialsBind struct {
 	Password string `json:"password"`
 }
 
+type PasswordRestEmailBind struct {
+	Email    string `json:"email"`
+}
+
+type UpdateUserPassword struct {
+	Email    string `json:"email"`
+	NewPassword string `json:"newPassword"`
+}
+
+
 type LoginCredentialsDTO struct {
 	Email    string
 	Password string

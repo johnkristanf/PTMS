@@ -8,7 +8,6 @@ import RequirementsModal from '../../components/modal/applicant/RequirementsModa
 import BuildingPDF from '../../components/pdfs/Building';
 
 import '../../assets/scrollStyle.css'
-import CompletionPDF from '../../components/pdfs/Completion';
 import { PTMSHeader } from '../../components/PtmsHeader';
 import { classNames } from '../../helpers/classNames';
 import PlumbingPDF from '../../components/pdfs/Plumbing';
@@ -21,6 +20,7 @@ import FencingPermit from '../../components/pdfs/Fencing';
 import ExcavationPermit from '../../components/pdfs/Excavation';
 import SignagePermit from '../../components/pdfs/Signage';
 import DemolitionPermit from '../../components/pdfs/Demolition';
+import MechanicalCompletionPDF from '../../components/pdfs/completions/MechanicalCompletion';
 
 function ServicesPage(){
 
@@ -28,7 +28,9 @@ function ServicesPage(){
     const [applicantInfo, setApplicantInfo] = useState<AppliedServices>();
     const [informationModal, setInformationModal] = useState<boolean>();
     const [showRequirements, setShowRequirements] = useState<boolean>(false);
+
     const [openCompletion, setOpenCompletion] = useState<boolean>(false);
+
     const [showOptionsId, setShowOptionsId] = useState<number | null | undefined>(); // Track the ID of clicked ellipsis
 
 
@@ -58,44 +60,44 @@ function ServicesPage(){
             }
 
            
-                {/* PDFS MODAL */}
-            {
-                permits && permits.permit_type === "Building" && <BuildingPDF permitInfo={permits} setPermitsInfo={setPermits} />
-            }
+            {/* PERMIT PDFS MODAL */}
+                {
+                    permits && permits.permit_type === "Building" && <BuildingPDF permitInfo={permits} setPermitsInfo={setPermits} />
+                }
 
-            {
-                permits && permits.permit_type === "Plumbing" && <PlumbingPDF permitInfo={permits} setPermitsInfo={setPermits} />
-            }
+                {
+                    permits && permits.permit_type === "Plumbing" && <PlumbingPDF permitInfo={permits} setPermitsInfo={setPermits} />
+                }
 
-            {
-                permits && permits.permit_type === "Electronics" && <ElectronicsPermit permitInfo={permits} setPermitsInfo={setPermits} />
-            }
+                {
+                    permits && permits.permit_type === "Electronics" && <ElectronicsPermit permitInfo={permits} setPermitsInfo={setPermits} />
+                }
 
-            {
-                permits && permits.permit_type === "Electrical" && <ElectricalPermit permitInfo={permits} setPermitsInfo={setPermits} />
-            }
+                {
+                    permits && permits.permit_type === "Electrical" && <ElectricalPermit permitInfo={permits} setPermitsInfo={setPermits} />
+                }
 
-            {
-                permits && permits.permit_type === "Mechanical" && <MechanicalPermit permitInfo={permits} setPermitsInfo={setPermits} />
-            }
+                {
+                    permits && permits.permit_type === "Mechanical" && <MechanicalPermit permitInfo={permits} setPermitsInfo={setPermits} />
+                }
 
-            {
-                permits && permits.permit_type === "Fence" && <FencingPermit permitInfo={permits} setPermitsInfo={setPermits} />
-            }
+                {
+                    permits && permits.permit_type === "Fence" && <FencingPermit permitInfo={permits} setPermitsInfo={setPermits} />
+                }
 
-            {
-                permits && permits.permit_type === "Excavation" && <ExcavationPermit permitInfo={permits} setPermitsInfo={setPermits} />
-            }
+                {
+                    permits && permits.permit_type === "Excavation" && <ExcavationPermit permitInfo={permits} setPermitsInfo={setPermits} />
+                }
 
-            {
-                permits && permits.permit_type === "Signed" && <SignagePermit permitInfo={permits} setPermitsInfo={setPermits} />
-            }
+                {
+                    permits && permits.permit_type === "Signed" && <SignagePermit permitInfo={permits} setPermitsInfo={setPermits} />
+                }
 
-            {
-                permits && permits.permit_type === "Demolition" && <DemolitionPermit permitInfo={permits} setPermitsInfo={setPermits} />
-            }
+                {
+                    permits && permits.permit_type === "Demolition" && <DemolitionPermit permitInfo={permits} setPermitsInfo={setPermits} />
+                }
 
-                {/* END::PDFS MODAL */}
+            {/* END::PERMIT PDFS MODAL */}
 
 
             {
@@ -103,10 +105,17 @@ function ServicesPage(){
             }
 
 
-            {
-                openCompletion && <CompletionPDF setOpenCompletion={setOpenCompletion} /> 
-            }
+            {/* COMPLETION PDFS MODAL */}
 
+                {
+                    openCompletion && permits && permits.permit_type === "Mechanical"  && <MechanicalCompletionPDF permitInfo={permits} setPermitsInfo={setPermits} /> 
+                }
+
+
+            {/* END::COMPLETION PDFS MODAL */}
+
+
+           
 
             <div className="flex justify-center items-start h-screen w-[79%] pt-32">
                 <PTMSHeader />
@@ -210,6 +219,7 @@ function ServicesPage(){
                                                                             onClick={() => {
                                                                                     setShowOptionsId(null)
                                                                                     setOpenCompletion(true)
+                                                                                    setPermits(data)
                                                                                 }}
                                                                             >
                                                                                 Completion

@@ -36,6 +36,8 @@ type OfficeAccounts struct {
 
 type AUTH_DB_METHOD interface {
 	Login(*types.LoginCredentialsDTO) (*types.UserInfo, error)
+	UserChangePassword(string, string) error
+
 	SignupGoogleUser(*types.GoogleUserInfo) (*types.LastSignedInUser, bool, error)
 
 	CreateStaffAccount(*types.CreateStaffAccountDTO) error
@@ -61,6 +63,22 @@ func (sql *SQL) Login(lc *types.LoginCredentialsDTO) (userInfo *types.UserInfo, 
 	}
 
 	return userInfo, nil
+}
+
+
+func (sql *SQL) UserChangePassword(email string, newPassword string) error {
+
+	hashedPassword, err := helpers.GenerateHashedPassword(newPassword)
+	if err != nil {
+		return err
+	}
+
+	result := sql.DB.Model(&OfficeAccounts{}).Where("email = ? ", email).Update("password", hashedPassword)
+	if result.Error != nil {
+		return result.Error
+	}
+
+	return nil
 }
 
 

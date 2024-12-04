@@ -247,6 +247,22 @@ type ApplicationApprovalFetching struct{
 	Error 	error
 }
 
+
+type ApplicationByYear struct {
+	Year 			 string `json:"year"`
+	Count 			 int64  `json:"total_application"`
+}
+
+type ApplicationByBarangay struct {
+	Barangay 		 string `json:"barangay"`
+	Count 			 int64  `json:"total_application"`
+}
+
+type ApplicationByPermitType struct {
+	PermitType 		 string `json:"permit_type"`
+	Count 			 int64  `json:"total_application"`
+}
+
 type FormattedInbox struct {
 	ID         		int64 	`json:"inbox_id"`
 	Message    		string	`json:"message"`

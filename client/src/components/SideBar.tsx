@@ -303,6 +303,8 @@ function NavLinks({ role }: { role: string }) {
 
   // ----------------------------------ADMINS----------------------------------------
   if (role === "architectural") {
+    navLinks.push({ name: "Dashboard", to: "/architectural/dashboard", iconSrc: "/img/icons/applicants.png" });
+
     navLinks.push({ name: "Applicants", to: "/architectural/paid/applications", iconSrc: "/img/icons/applicants.png" });
 
     navLinks.push({ name: "Approved", to: "/architectural/approved/applications", iconSrc: "/img/icons/approved.png" });
@@ -317,6 +319,8 @@ function NavLinks({ role }: { role: string }) {
 
 
   if (role === "civil") {
+    navLinks.push({ name: "Dashboard", to: "/civil/dashboard", iconSrc: "/img/icons/applicants.png" });
+
     navLinks.push({ name: "Applicants", to: "/civil/paid/applications", iconSrc: "/img/icons/applicants.png" });
     navLinks.push({ name: "Approved", to: "/civil/approved/applications", iconSrc: "/img/icons/approved.png" });
     navLinks.push({ name: "Disapproved", to: "/civil/disapproved/applications", iconSrc: "/img/icons/disapproved.png" });
@@ -329,6 +333,8 @@ function NavLinks({ role }: { role: string }) {
   }
 
   if (role === "electrical") {
+    navLinks.push({ name: "Dashboard", to: "/electrical/dashboard", iconSrc: "/img/icons/applicants.png" });
+
     navLinks.push({ name: "Applicants", to: "/electrical/paid/applications", iconSrc: "/img/icons/applicants.png" });
     navLinks.push({ name: "Approved", to: "/electrical/approved/applications", iconSrc: "/img/icons/approved.png" });
     navLinks.push({ name: "Disapproved", to: "/electrical/disapproved/applications", iconSrc: "/img/icons/disapproved.png" });

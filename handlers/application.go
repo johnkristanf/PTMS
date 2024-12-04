@@ -351,8 +351,37 @@ func (h *ApplicationHandler) TrashApplicationHandler(){
 }
 
 
+func (h *ApplicationHandler) FetchApplicationByYearHandler(c echo.Context) error {
+
+	results, err := h.DB_METHOD.ApplicationByYear()
+	if err != nil{
+		return err
+	}
+
+	return c.JSON(http.StatusOK, results)
+}
 
 
+func (h *ApplicationHandler) FetchApplicationByBarangayHandler(c echo.Context) error {
+	
+	results, err := h.DB_METHOD.ApplicationByBarangay()
+	if err != nil{
+		return err
+	}
+
+	return c.JSON(http.StatusOK, results)
+}
+
+
+func (h *ApplicationHandler) FetchApplicationByPermitTypeHandler(c echo.Context) error {
+	
+	results, err := h.DB_METHOD.ApplicationByPermitType()
+	if err != nil{
+		return err
+	}
+
+	return c.JSON(http.StatusOK, results)
+}
 
 
 

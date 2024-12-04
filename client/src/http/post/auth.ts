@@ -20,13 +20,13 @@ export const Login = async (loginCredentials: LoginCredentials): Promise<string>
 
             switch (role) {
                 case "architectural":
-                    window.location.href = "/architectural/paid/applications";
+                    window.location.href = "/architectural/dashboard";
                     break;
                 case "electrical":
-                    window.location.href = "/electrical/paid/applications";
+                    window.location.href = "/electrical/dashboard";
                     break;
                 case "civil":
-                    window.location.href = "/civil/paid/applications";
+                    window.location.href = "/civil/dashboard";
                     break;
 
                 case "RECEIVER":

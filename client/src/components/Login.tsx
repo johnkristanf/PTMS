@@ -5,6 +5,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { faArrowLeft, faEye, faEyeSlash } from "@fortawesome/free-solid-svg-icons"
 import { useState } from "react"
 import Swal from "sweetalert2"
+import { GOOGLE_LOGIN_URL } from "../envPaths"
 
 
 export function LoginForm({ setRole }: {
@@ -90,7 +91,12 @@ export function LoginForm({ setRole }: {
                 </div>
 
                 <div className="flex justify-between items-center mt-5">
-                    <p className="font-semibold hover:opacity-75 hover:cursor-pointer">Forgot your password?</p>
+                    <a 
+                        className="font-semibold hover:opacity-75 hover:cursor-pointer"
+                        href="/email/verify"
+                    >
+                            Forgot your password?
+                    </a>
 
                     <button
                         type="submit"
@@ -121,7 +127,7 @@ export function ApplicantLogin({setRole}: {
             <h1 className="text-black font-bold text-justify">Please log in with your Google account for application updates.</h1>    
 
             <button 
-                onClick={() => window.location.href = 'https://web-ptms.com/auth/google/login'} 
+                onClick={() => window.location.href = GOOGLE_LOGIN_URL } 
                 className="p-3 flex items-center gap-2 bg-orange-400 rounded-md text-white font-bold hover:opacity-75"
                 >
 

@@ -61,6 +61,30 @@ export const FetchApprovedApplications = async (searchTerm: string, selectedMont
     });
 }
 
+
+export const FetchApplicationsByYear = async () => {
+
+    return axios.get(`${DOMAIN_NAME}/application/by/year`, {
+        withCredentials: true
+    });
+}
+
+
+export const FetchApplicationsByBarangay = async () => {
+
+    return axios.get(`${DOMAIN_NAME}/application/by/barangay`, {
+        withCredentials: true
+    });
+}
+
+
+export const FetchApplicationsByPermitType = async () => {
+
+    return axios.get(`${DOMAIN_NAME}/application/by/permit_type`, {
+        withCredentials: true
+    });
+}
+
 export const FetchDisApprovedApplications = async (searchTerm: string, selectedMonth: string) => {
     const status = "Disapproved";
     const params = new URLSearchParams({ status, searchTerm, selectedMonth});

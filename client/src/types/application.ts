@@ -148,6 +148,22 @@ export type AppliedServices = {
     checkboxData?: string
 }
 
+export type ApplicationByYear = {
+    year: string,
+    total_application: number
+}
+
+export type ApplicationByPermitType = {
+    permit_type: string,
+    total_application: number
+}
+
+export type ApplicationByBarangay = {
+    barangay: string,
+    total_application: number
+}
+
+
 
 export type AssessmentApplicationData = {
     application_id?: number,

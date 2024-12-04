@@ -52,6 +52,10 @@ func ApplicationRoutes(e *echo.Echo, h *handlers.ApplicationHandler) {
 	// g.PUT("/update/status/:application_id", h.UpdateApplicationStatusHandler, h.JWT_METHOD.StaffAdminAutheticationMiddleware)
 
 
+	g.GET("/by/year", h.FetchApplicationByYearHandler, h.JWT_METHOD.StaffAdminAutheticationMiddleware)
+	g.GET("/by/barangay", h.FetchApplicationByBarangayHandler, h.JWT_METHOD.StaffAdminAutheticationMiddleware)
+	g.GET("/by/permit_type", h.FetchApplicationByPermitTypeHandler, h.JWT_METHOD.StaffAdminAutheticationMiddleware)
+
 
 	
 }

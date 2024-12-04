@@ -382,3 +382,73 @@ Panabo City Engineering's Issuance of Permit Section`, applicantName, applicatio
     fmt.Println("Email sent successfully to:", to)
     return nil
 }
+
+
+func SendPasswordResetEmailLink(to string, resetLink string) error {
+
+	client, err := Connection()
+	if err != nil {
+        return err
+    }
+
+    defer Disconnection(client)
+
+	body := fmt.Sprintf(`Dear %s,
+		We received a request to reset your password for accessing the PTMS portal of Panabo City's Engineering Office. If you did not request this, please ignore this email.
+
+		To reset your password, please click the link below:
+
+		%s
+
+		This link will take you to a form where you can create a new password. The link will expire in 24 hours for security purposes.
+
+		Thank you for your attention to this matter.
+
+		Sincerely,
+		Panabo City Engineering's Issuance of Permit Section`, to, resetLink)
+
+
+	headers := map[string]string{
+		"From":		from,
+		"To": 		to,
+		"Subject": "Password Reset Request for PTMS Portal",
+	}
+
+	message := ""
+	for k, v := range headers {
+		message += fmt.Sprintf("%s: %s\r", k, v)
+	}
+	message += "\r" + body
+
+
+	authenticate := smtp.PlainAuth("", from, password, host)
+
+	if err := client.Auth(authenticate); err != nil {
+		return err
+	}
+
+	if err := client.Mail(from); err != nil {
+		return err
+	}
+
+	if err := client.Rcpt(headers["To"]); err != nil {
+		return err
+	}
+
+	// Send the email content
+	writer, err := client.Data()
+    if err != nil {
+        return err
+    }
+
+    _, err = writer.Write([]byte(message))
+    if err != nil {
+        return err
+    }
+
+	if err := writer.Close(); err != nil {
+		return err
+	}
+
+	return nil
+}

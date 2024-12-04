@@ -1,23 +1,13 @@
 import { Document, PDFViewer, Page, StyleSheet, View, pdf, Image } from '@react-pdf/renderer';
 import { saveAs } from 'file-saver';
-import { PermitBodyBox1 } from './mechanical/box/box1';
-import { PermitBodyBox2 } from './mechanical/box/box2';
-import { PermitBodyBox3 } from './mechanical/box/box3';
-import { PermitBodyBox4 } from './mechanical/box/box4';
-import { PermitBodyBox5 } from './mechanical/box/box5';
-import { PermitBodyBox6 } from './mechanical/box/box6';
-import { PermitBodyBox7 } from './mechanical/box/box7';
-import { PermitBodyBox8 } from './mechanical/box/box8';
-import { PermitBodyBox9 } from './mechanical/box/box9';
-import { PermitBodyBox10 } from './mechanical/box/box10';
-import { PermitBodyBox11 } from './mechanical/box/box11';
-import { AppliedServices } from '../../types/application';
-import { PermitBodyBox12 } from './mechanical/box/box12';
+import { AppliedServices } from '../../../types/application';
+import { PermitBodyBox12 } from '../mechanical/box/box12';
 
-function MechanicalPermit({ permitInfo, setPermitsInfo }: { 
+
+function MechanicalCompletionPDF({ permitInfo, setPermitsInfo }: { 
     permitInfo: AppliedServices,
     setPermitsInfo: React.Dispatch<React.SetStateAction<AppliedServices | undefined>>
-  
+
 }) {
 
     // Render the document
@@ -37,7 +27,7 @@ function MechanicalPermit({ permitInfo, setPermitsInfo }: {
             <div className="fixed top-0 w-full h-full bg-gray-800 opacity-75"></div>
             <div className="flex justify-center w-full h-full fixed top-20">
                 <div className="flex flex-col mt-3 items-center h-[80%] py-4 w-[55%] bg-white rounded-md">
-                    <h1 className='font-bold text-3xl mb-3'>Mechanical Permit PDF</h1>
+                    <h1 className='font-bold text-3xl mb-3'>Mechanical Completion PDF</h1>
                     <div className="max-w-screen-sm w-full h-full overflow-auto custom-scrollbar-small">
                         <PDFViewer className='w-full h-full' showToolbar={false}>
                             {doc}
@@ -69,48 +59,6 @@ export function MechanicalPermitComponent({ permitInfo }: {
   }) {
     return (
         <>
-
-            <Page size="A4" style={styles.page}>
-                <View style={styles.pageContainer2}>
-                    <PermitBodyBox11 permitInfo={permitInfo} />
-                </View>
-            </Page>
-
-            <Page size="A4" style={styles.page}>
-                <View style={styles.pageContainer}>
-                    <Image src="/img/no_to_fixer.png" style={styles.headerImage} />
-                    <PermitBodyBox1 permitInfo={permitInfo} />
-                    <PermitBodyBox2 permitInfo={permitInfo} />
-                    
-                    {/* Container for Box4 and Box6 */}
-                    <View style={styles.box4And6Container}>
-                        <View style={styles.box4}>
-                            <PermitBodyBox3 permitInfo={permitInfo} />
-                            <PermitBodyBox5 permitInfo={permitInfo} />
-                        </View>
-                        <View style={styles.box6}>
-                            <PermitBodyBox4 permitInfo={permitInfo} />
-                            <PermitBodyBox6 permitInfo={permitInfo} />
-                        </View>
-                    </View>
-                    {/* End Container */}
-                    
-                </View>
-            </Page>
-
-            <Page size="A4" style={styles.page}>
-                <View style={styles.pageContainer3}>
-                    <PermitBodyBox7 permitInfo={permitInfo} />
-                    <PermitBodyBox8 permitInfo={permitInfo} />
-                    <PermitBodyBox9 permitInfo={permitInfo} />
-                    <PermitBodyBox10 permitInfo={permitInfo} />
-                </View>
-            </Page>
-
-         
-
-            {/* COMPLETION NI SA MECHANICAL */}
-
             <Page size="A4" style={styles.page}>
                 <View style={styles.pageContainer}>
                 <Image src="/img/no_to_fixer-mono.jpg" style={styles.headerImage} />
@@ -171,4 +119,4 @@ const styles = StyleSheet.create({
     },
 });
 
-export default MechanicalPermit;
+export default MechanicalCompletionPDF;

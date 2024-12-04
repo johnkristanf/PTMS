@@ -107,7 +107,7 @@ export function PendingTable({ searchTerm, selectedMonth }: dropDownSelectType) 
 
 
                             <table className="min-w-full text-left text-sm font-light">
-                                <thead className="border-b font-medium dark:border-neutral-500">
+                                <thead className="border-b font-medium border-gray-500">
                                     <tr>
                                         <th scope="col" className="px-4 py-4">Name</th>
                                         <th scope="col" className="px-4 py-4">Address</th>
@@ -128,7 +128,7 @@ export function PendingTable({ searchTerm, selectedMonth }: dropDownSelectType) 
                                         pendingApplications.map((data) => (
                                             <tr
                                                 key={data.application_id}
-                                                className="font-bold border-b"
+                                                className="font-bold border-b border-gray-500"
                                             >
                                                 <td className="whitespace-nowrap px-2 py-3">
                                                     {data.firstname} {data.middleInitial} {data.lastName}
