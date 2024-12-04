@@ -34,12 +34,14 @@ func main(){
 
 	e.Use(middleware.Recover())
 
-	e.Use(middleware.CORSWithConfig(middleware.CORSConfig{
-		AllowOrigins: []string{"http://localhost:9090", "https://ptms-alpha.vercel.app/"},
-		AllowMethods: []string{echo.GET, echo.POST, echo.PUT, echo.DELETE},
-		AllowHeaders: []string{echo.HeaderOrigin, echo.HeaderContentType, echo.HeaderAccept},
-		AllowCredentials: true,
-	}))
+	// Comment this when you push to prod to avoid nginx error cors
+
+	// e.Use(middleware.CORSWithConfig(middleware.CORSConfig{
+	// 	AllowOrigins: []string{"http://localhost:9090", "https://ptms-alpha.vercel.app"},
+	// 	AllowMethods: []string{echo.GET, echo.POST, echo.PUT, echo.DELETE},
+	// 	AllowHeaders: []string{echo.HeaderOrigin, echo.HeaderContentType, echo.HeaderAccept},
+	// 	AllowCredentials: true,
+	// }))
 
 	e.Use(middleware.RequestLoggerWithConfig(middleware.RequestLoggerConfig{
 		LogStatus: true,
