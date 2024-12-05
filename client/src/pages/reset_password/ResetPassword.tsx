@@ -16,8 +16,10 @@ function ResetPassword() {
         const emailFromQuery = queryParams.get('email');
         
         if (emailFromQuery) {
-            setEmail(emailFromQuery);
+            const decodedEmail = decodeURIComponent(emailFromQuery);
+            setEmail(decodedEmail);
         }
+
     }, [location]);
 
     const passwordValidationPattern = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).+$/;
