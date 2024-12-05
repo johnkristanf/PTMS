@@ -2,8 +2,6 @@ import { useState } from "react"
 import { SideBar } from "../../../components/SideBar"
 import { PTMSHeader } from "../../../components/PtmsHeader";
 
-import StaffRequestAccessModal from "../../../components/admin/StaffRequestAccessModal";
-import AdminRequestAccessModal from "../../../components/admin/AdminRequestAccessModal";
 import { useFetchStaffPendingAR } from "../../../hook/useFetchStaffPendingAR";
 import AdminArNotifButton from "../../../components/admin/AdminARNotifButton";
 
@@ -12,6 +10,8 @@ import { Chart } from "react-google-charts";
 import { useQuery } from "@tanstack/react-query";
 import { FetchApplicationsByBarangay, FetchApplicationsByPermitType, FetchApplicationsByYear } from "../../../http/get/application";
 import { ApplicationByBarangay, ApplicationByPermitType, ApplicationByYear } from "../../../types/application";
+import DashboardAdminARModal from "../../../components/admin/DashboardAdminARModal";
+import DashboardStaffARModal from "../../../components/admin/DashboardStaffARModal";
 
 
 function CivilDashboardPage() {
@@ -39,8 +39,8 @@ function CivilDashboardPage() {
     return (
 
         <>
-            { openStaffAccessModal && (<StaffRequestAccessModal />) }
-            { openAdminAccessModal && (<AdminRequestAccessModal />) }
+            { openStaffAccessModal && (<DashboardStaffARModal />) }
+            { openAdminAccessModal && (<DashboardAdminARModal />) }
 
             <div className="flex justify-between items-center h-[125vh] w-full bg-white">
                 <SideBar role={"civil"} />

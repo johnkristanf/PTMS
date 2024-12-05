@@ -20,7 +20,15 @@ import FencingPermit from '../../components/pdfs/Fencing';
 import ExcavationPermit from '../../components/pdfs/Excavation';
 import SignagePermit from '../../components/pdfs/Signage';
 import DemolitionPermit from '../../components/pdfs/Demolition';
-import MechanicalCompletionPDF from '../../components/pdfs/completions/MechanicalCompletion';
+import ElectricalCompletionPDF from '../../components/pdfs/completions/Electrical';
+import BuildingCompletionPDF from '../../components/pdfs/completions/Building';
+import PlumbingCompletionPDF from '../../components/pdfs/completions/Plumbing';
+import ElectronicsCompletionPDF from '../../components/pdfs/completions/Electronics';
+import FenceCompletionPDF from '../../components/pdfs/completions/Fence';
+import ExcavationCompletionPDF from '../../components/pdfs/completions/Excavation';
+import SignedCompletionPDF from '../../components/pdfs/completions/Signed';
+import DemolitionCompletionPDF from '../../components/pdfs/completions/Demolition';
+import MechanicalCompletionPDF from '../../components/pdfs/completions/Mechanical';
 
 function ServicesPage(){
 
@@ -62,39 +70,39 @@ function ServicesPage(){
            
             {/* PERMIT PDFS MODAL */}
                 {
-                    permits && permits.permit_type === "Building" && <BuildingPDF permitInfo={permits} setPermitsInfo={setPermits} />
+                    !openCompletion && permits && permits.permit_type === "Building" && <BuildingPDF permitInfo={permits} setPermitsInfo={setPermits} />
                 }
 
                 {
-                    permits && permits.permit_type === "Plumbing" && <PlumbingPDF permitInfo={permits} setPermitsInfo={setPermits} />
+                    !openCompletion && permits && permits.permit_type === "Plumbing" && <PlumbingPDF permitInfo={permits} setPermitsInfo={setPermits} />
                 }
 
                 {
-                    permits && permits.permit_type === "Electronics" && <ElectronicsPermit permitInfo={permits} setPermitsInfo={setPermits} />
+                    !openCompletion && permits && permits.permit_type === "Electronics" && <ElectronicsPermit permitInfo={permits} setPermitsInfo={setPermits} />
                 }
 
                 {
-                    permits && permits.permit_type === "Electrical" && <ElectricalPermit permitInfo={permits} setPermitsInfo={setPermits} />
+                    !openCompletion && permits && permits.permit_type === "Electrical" && <ElectricalPermit permitInfo={permits} setPermitsInfo={setPermits} />
                 }
 
                 {
-                    permits && permits.permit_type === "Mechanical" && <MechanicalPermit permitInfo={permits} setPermitsInfo={setPermits} />
+                    !openCompletion && permits && permits.permit_type === "Mechanical" && <MechanicalPermit permitInfo={permits} setPermitsInfo={setPermits} />
                 }
 
                 {
-                    permits && permits.permit_type === "Fence" && <FencingPermit permitInfo={permits} setPermitsInfo={setPermits} />
+                    !openCompletion && permits && permits.permit_type === "Fence" && <FencingPermit permitInfo={permits} setPermitsInfo={setPermits} />
                 }
 
                 {
-                    permits && permits.permit_type === "Excavation" && <ExcavationPermit permitInfo={permits} setPermitsInfo={setPermits} />
+                    !openCompletion && permits && permits.permit_type === "Excavation" && <ExcavationPermit permitInfo={permits} setPermitsInfo={setPermits} />
                 }
 
                 {
-                    permits && permits.permit_type === "Signed" && <SignagePermit permitInfo={permits} setPermitsInfo={setPermits} />
+                    !openCompletion && permits && permits.permit_type === "Signed" && <SignagePermit permitInfo={permits} setPermitsInfo={setPermits} />
                 }
 
                 {
-                    permits && permits.permit_type === "Demolition" && <DemolitionPermit permitInfo={permits} setPermitsInfo={setPermits} />
+                    !openCompletion && permits && permits.permit_type === "Demolition" && <DemolitionPermit permitInfo={permits} setPermitsInfo={setPermits} />
                 }
 
             {/* END::PERMIT PDFS MODAL */}
@@ -107,10 +115,44 @@ function ServicesPage(){
 
             {/* COMPLETION PDFS MODAL */}
 
+
+                {
+                    openCompletion && permits && permits.permit_type === "Building"  && <BuildingCompletionPDF permitInfo={permits} setPermitsInfo={setPermits} /> 
+                }
+
+                {
+                    openCompletion && permits && permits.permit_type === "Plumbing"  && <PlumbingCompletionPDF permitInfo={permits} setPermitsInfo={setPermits} /> 
+                }
+
+                {
+                    openCompletion && permits && permits.permit_type === "Electronics"  && <ElectronicsCompletionPDF permitInfo={permits} setPermitsInfo={setPermits} /> 
+                }
+
+                {
+                    openCompletion && permits && permits.permit_type === "Electrical"  && <ElectricalCompletionPDF permitInfo={permits} setPermitsInfo={setPermits} /> 
+                }
+
+
                 {
                     openCompletion && permits && permits.permit_type === "Mechanical"  && <MechanicalCompletionPDF permitInfo={permits} setPermitsInfo={setPermits} /> 
                 }
 
+                {
+                    openCompletion && permits && permits.permit_type === "Fence"  && <FenceCompletionPDF permitInfo={permits} setPermitsInfo={setPermits} /> 
+                }
+
+                {
+                    openCompletion && permits && permits.permit_type === "Excavation"  && <ExcavationCompletionPDF permitInfo={permits} setPermitsInfo={setPermits} /> 
+                }
+
+
+                {
+                    openCompletion && permits && permits.permit_type === "Signed"  && <SignedCompletionPDF permitInfo={permits} setPermitsInfo={setPermits} /> 
+                }
+
+                {
+                    openCompletion && permits && permits.permit_type === "Demolition"  && <DemolitionCompletionPDF permitInfo={permits} setPermitsInfo={setPermits} /> 
+                }
 
             {/* END::COMPLETION PDFS MODAL */}
 

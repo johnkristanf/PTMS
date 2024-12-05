@@ -4,7 +4,7 @@ import { AppliedServices } from '../../../types/application';
 import { PermitBodyBox12 } from '../mechanical/box/box12';
 
 
-function MechanicalCompletionPDF({ permitInfo, setPermitsInfo }: { 
+function MechanicalCompletionPDFOriginal({ permitInfo, setPermitsInfo }: { 
     permitInfo: AppliedServices,
     setPermitsInfo: React.Dispatch<React.SetStateAction<AppliedServices | undefined>>
 
@@ -119,4 +119,4 @@ const styles = StyleSheet.create({
     },
 });
 
-export default MechanicalCompletionPDF;
+export default MechanicalCompletionPDFOriginal;

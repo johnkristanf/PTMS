@@ -125,6 +125,10 @@ export function ApplicantLogin({setRole}: {
 
             <h1 className="text-black font-bold text-justify">Please log in with your Google account for application updates.</h1>    
 
+
+            {/* FOR DEVELOPMENT: http://localhost:8080/auth/google/login */}
+            {/* FOR PRODUCTION:  https://web-ptms.com/auth/google/login */}
+
             <button 
                 onClick={() => window.location.href = "https://web-ptms.com/auth/google/login" } 
                 className="p-3 flex items-center gap-2 bg-orange-400 rounded-md text-white font-bold hover:opacity-75"
