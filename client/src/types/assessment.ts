@@ -24,6 +24,9 @@ export type AssessmentTypes = {
 
 
 export type AssessmentRender = {
+    date_paid: string,
+    full_name: string,
+    or_number: string,
     assessment_id: number,
     applicantName: string,
     permitType: string, 
