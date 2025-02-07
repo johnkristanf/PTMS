@@ -11,7 +11,7 @@ export function PermitBodyBox11({ permitInfo }: { permitInfo: AppliedServices })
         <View style={styles.container}>
 
         <View style={styles.imageContainer}>
-              <Image source={{ uri: box1Image }} />
+              <Image source={ box1Image } />
         </View>
 
             {/* Content (Two forms side by side) */}
