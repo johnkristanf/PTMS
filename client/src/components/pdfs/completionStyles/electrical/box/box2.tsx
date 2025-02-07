@@ -5,7 +5,7 @@ import box1Image from '/img/Completion/Electrical/box2.png';
 export function PermitBodyBox2() {
     return (
         <View style={styles.imageContainer}>
-              <Image source={{ uri: box1Image }} />
+              <Image source={box1Image } />
         </View>
     );
 }
