@@ -8,7 +8,7 @@ import { DOMAIN_NAME } from "../../envPaths";
 export const StaffAccountLogin = async (loginCredentials: LoginCredentials): Promise<string> => {
 
     try {
-        const response = await axios.post(`${DOMAIN_NAME}/auth/staff_account/login`, loginCredentials, {
+        const response = await axios.post(`${DOMAIN_NAME}/go/auth/staff_account/login`, loginCredentials, {
             withCredentials: true
         })
         const statusOk = response.status === 200; 
@@ -64,7 +64,7 @@ export const StaffAccountLogin = async (loginCredentials: LoginCredentials): Pro
 
 export const SignupApplicant = async (signupCrendentials: SignupCredentials): Promise<string> => {
     try {
-        const response = await axios.post(`${DOMAIN_NAME}/auth/applicant/signup`, signupCrendentials);
+        const response = await axios.post(`${DOMAIN_NAME}/go/auth/applicant/signup`, signupCrendentials);
         console.log("response signup: ", response);
 
         return "signup_success";
@@ -87,7 +87,7 @@ export const SignupApplicant = async (signupCrendentials: SignupCredentials): Pr
 export const ApplicantLogin = async (loginCredentials: LoginCredentials): Promise<string> => {
 
     try {
-        const response = await axios.post(`${DOMAIN_NAME}/auth/applicant/login`, loginCredentials, {
+        const response = await axios.post(`${DOMAIN_NAME}/go/auth/applicant/login`, loginCredentials, {
             withCredentials: true
         })
         const timeout = response.status === 408;

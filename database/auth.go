@@ -26,7 +26,7 @@ import (
 
 type User struct {
 	ID        	int64		`gorm:"primaryKey;autoIncrement:true;uniqueIndex:idx_userID"`
-	FullName  	string		`gorm:"not null"`
+	FullName  	string		
 	Email     	string 		`gorm:"not null;index"`
 	Password    string 		`gorm:"not null;index"`
 	Picture     string 		`gorm:"not null;default:'No_Profile'"`
