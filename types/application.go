@@ -169,6 +169,10 @@ type AssessmentTypes struct {
 
 type AssessmentRender struct {
 	ID               int64  `json:"assessment_id"`
+	FullName                   string  `json:"full_name"` 
+	DatePaid					string	`json:"date_paid"`
+	ORNumber					string	`json:"or_number"`
+
 	AssControlNumber string `json:"assessment_controlNo"`
 	Date             string `json:"date"`
 	ProjectProposed  string `json:"project_proposed"`
@@ -267,6 +271,7 @@ type FormattedInbox struct {
 	ID         		int64 	`json:"inbox_id"`
 	Message    		string	`json:"message"`
 	Status    		string	`json:"status"`
+	Subject    		string	`json:"subject"`
 	UserID     		int64	`json:"user_id"`
 	TimeCreated  	string 	`json:"time_created"`
 }

@@ -6,8 +6,8 @@ import { PTMSHeader } from "../../../components/PtmsHeader";
 
 import StaffRequestAccessModal from "../../../components/admin/StaffRequestAccessModal";
 import AdminRequestAccessModal from "../../../components/admin/AdminRequestAccessModal";
-import { useFetchStaffPendingAR } from "../../../hook/useFetchStaffPendingAR";
 import AdminArNotifButton from "../../../components/admin/AdminARNotifButton";
+import StaffARNotifButton from "../../../components/staff/StaffARNotifButton";
 
 function PaidElectricalPage(){
 
@@ -31,8 +31,6 @@ function PaidElectricalPage(){
         });
     };
 
-    const { pendingAccessReqest } = useFetchStaffPendingAR();
-
 
     return(
 
@@ -44,31 +42,18 @@ function PaidElectricalPage(){
                 <SideBar role={"electrical"}/>
 
             
-                <div className="w-[77%] h-full flex justify-center items-center mr-5">
+                <div className="w-full h-full flex justify-center items-center ml-5 mr-5">
 
                     <PTMSHeader />
 
                     <div className="flex flex-col gap-2 w-full h-[80%] mt-32">
 
                         <div className="flex justify-between">
-                            <h1 className="text-orange-400 text-4xl font-bold">Applicants</h1>
+                            <h1 className="text-blue-700 text-4xl font-bold">Applicants</h1>
 
                             <div className="flex items-center gap-3">
 
-                                <div className="flex gap-1">
-                                    {pendingAccessReqest && pendingAccessReqest.length > 0 && (
-                                        <div className="flex items-center justify-center text-white bg-red-500 rounded-full w-4 h-4 text-sm">
-                                            {pendingAccessReqest.length}
-                                        </div>
-                                    )}
-
-                                    <button 
-                                        className="text-2xl hover:opacity-75 hover:cursor-pointer text-sm bg-gray-500 text-white rounded-md p-2"
-                                        onClick={toggleStaffAccessModal}
-                                    >
-                                        Staff AR 
-                                    </button>
-                                </div>
+                                <StaffARNotifButton toggleStaffAccessModal={toggleStaffAccessModal}/>
 
                                 <AdminArNotifButton toggleAdminAccessModal={toggleAdminAccessModal}/>
 

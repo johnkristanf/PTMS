@@ -59,7 +59,7 @@ func (h *ApplicationHandler) AddApplicationHandler(c echo.Context) error {
 	}()
 	
 	go func() {
-		if err := h.DB_METHOD.ApplicationInbox(application.UserID, applicantName); err != nil {
+		if err := h.DB_METHOD.ApplicationInbox(application.UserID, applicantName, "PTMS Permit Application"); err != nil {
 			errorChan <- err
 		} 
 	}()
@@ -225,7 +225,7 @@ func (h *ApplicationHandler) UpdateApplicationDisApprovalHandler(c echo.Context)
 
 	go func() {
 		defer wg.Done()
-		if err := h.DB_METHOD.DisapprovalInbox(application.UserID, application.DisapprovalMessage); err != nil {
+		if err := h.DB_METHOD.DisapprovalInbox(application.UserID, application.DisapprovalMessage, "PTMS Permit Disapproval"); err != nil {
 			errorChan <- err 
 		}
 	}()
@@ -306,7 +306,7 @@ func (h *ApplicationHandler) SetReleaseDateHandler(c echo.Context) error {
 
     go func() {
         defer wg.Done()
-        if err := h.DB_METHOD.ReleaseDateInbox(releaseDate.UserID, releaseDate.Message); err != nil {
+        if err := h.DB_METHOD.ReleaseDateInbox(releaseDate.UserID, releaseDate.Message, "PTMS Permit Release"); err != nil {
             errorChan <- err
         }
     }()
@@ -480,7 +480,7 @@ func (h *ApplicationHandler) UpdateApplicationCodeHandler(c echo.Context) error 
 	go func ()  {
 		defer wg.Done()
 
-		if err := h.DB_METHOD.SetApplicationCodeInbox(update.UserID, applicantName, update.ApplicationCode); err != nil{
+		if err := h.DB_METHOD.SetApplicationCodeInbox(update.UserID, applicantName, update.ApplicationCode, "PTMS Permit Application Code"); err != nil{
 			errorChan <- err
 		}
 	}()

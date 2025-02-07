@@ -9,6 +9,14 @@ import { AssessmentsModal } from "../modal/staff/AssesmentsModal";
 import { AssessmentCheckListModal } from "../modal/staff/AssesmentChecklist";
 import RequirementsModalStaff from "../modal/staff/RequirementsModalStaff";
 import { dropDownSelectType } from "../../types/dropdown";
+import { faAddressCard, faFileLines, faReceipt } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+
+import {
+    HoverCard,
+    HoverCardContent,
+    HoverCardTrigger,
+} from "@/components/ui/hover-card"
 
 export function PendingTable({ searchTerm, selectedMonth }: dropDownSelectType) {
 
@@ -100,7 +108,7 @@ export function PendingTable({ searchTerm, selectedMonth }: dropDownSelectType) 
 
             )}
 
-            <div className="flex flex-col bg-orange-100 w-[99%] h-[70%] rounded-md">
+        <div className="flex flex-col bg-blue-100 w-[99%] h-[70%] rounded-md">
                 <div className=" p-3">
                     <div className="inline-block min-w-full py-2">
                         <div className="overflow-hidden overflow-y-auto h-[400px] custom-scrollbar">
@@ -112,7 +120,7 @@ export function PendingTable({ searchTerm, selectedMonth }: dropDownSelectType) 
                                         <th scope="col" className="px-4 py-4">Name</th>
                                         <th scope="col" className="px-4 py-4">Address</th>
                                         <th scope="col" className="px-4 py-4">Permit Type</th>
-                                        <th scope="col" className="px-4 py-4">Actions</th>
+                                        <th scope="col" className="px-4 py-4">Verification</th>
                                     </tr>
                                 </thead>
 
@@ -146,30 +154,66 @@ export function PendingTable({ searchTerm, selectedMonth }: dropDownSelectType) 
                                                 <td className="whitespace-nowrap px-2 py-3">
                                                     <div className="flex gap-5">
 
-                                                        <button
-                                                            onClick={() => openFirstStepRequirements(data.application_id)}
-                                                            className="bg-sky-600 text-white font-bold p-3 rounded-md hover:opacity-75"
-                                                        >
-                                                            Requirements
-                                                        </button>
+                                                        <HoverCard>
+                                                                <HoverCardTrigger>
+                                                                    <button
+                                                                        onClick={() => openFirstStepRequirements(data.application_id)}
+                                                                        className="bg-sky-600 text-white font-bold p-3 rounded-md hover:opacity-75"
+                                                                    >
+                                                                        <FontAwesomeIcon icon={faFileLines}/>
+                                                                    </button>
+                                                                </HoverCardTrigger>
+
+                                                                <HoverCardContent>
+                                                                    <div className="text-center">
+                                                                        Step 1: <br /> Check if the applicant <br /> requirements is completed.
+                                                                    </div>
+                                                                </HoverCardContent>
+
+                                                        </HoverCard>
 
 
-                                                        <button
-                                                            onClick={() => openAssessments(data)}
-                                                            className="bg-green-700 rounded-md p-3 text-white font-bold hover:opacity-75"
-                                                        >
-                                                            Assessments
-                                                        </button>
+                                                        <HoverCard>
+                                                                <HoverCardTrigger>
+                                                                    <button
+                                                                        onClick={() => openAssessments(data)}
+                                                                        className="bg-green-700 rounded-md p-3 text-white font-bold hover:opacity-75"
+                                                                    >
+                                                                        <FontAwesomeIcon icon={faReceipt}/>
+                                                                    </button>
+
+                                                                </HoverCardTrigger>
+
+                                                                <HoverCardContent>
+                                                                    <div className="text-center">
+                                                                        Step 2: <br /> Assessment setting after <br /> the requirements <br /> needed is fulfilled.
+                                                                    </div>
+
+                                                                    
+                                                                </HoverCardContent>
+
+                                                        </HoverCard>
 
 
-                                                        <button
-                                                            onClick={() => openApplicationInformationModal(data)}
-                                                            className="bg-orange-500 rounded-md p-3 text-white font-bold hover:opacity-75"
-                                                        >
-                                                            Information
-                                                        </button>
+                                                        <HoverCard>
+                                                                <HoverCardTrigger>
+                                                                    <button
+                                                                        onClick={() => openApplicationInformationModal(data)}
+                                                                        className="bg-blue-700 rounded-md p-3 text-white font-bold hover:opacity-75"
+                                                                    >
+                                                                        <FontAwesomeIcon icon={faAddressCard}/>
+                                                                    </button>
 
-                                                       
+                                                                </HoverCardTrigger>
+
+                                                                <HoverCardContent>
+                                                                    <div className="text-center">
+                                                                        Step 3: <br /> Application code  setting after <br /> the assessment is <br /> paid.
+                                                                    </div>
+                                                                </HoverCardContent>
+
+                                                        </HoverCard>
+
                                                     </div>
                                                 </td>
                                             </tr>

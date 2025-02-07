@@ -11,7 +11,10 @@ function InboxModal({ setOpenInbox, inboxInfo }: {
     inboxInfo: Inboxes
 }) {
 
-    const queryClient = useQueryClient()
+    const queryClient = useQueryClient();
+
+    console.log("inboxInfo: ", inboxInfo);
+    
 
     const mutation = useMutation({
         mutationFn: deleteInbox,
@@ -62,7 +65,8 @@ function InboxModal({ setOpenInbox, inboxInfo }: {
             <div className="bg-white rounded-md h-[80%] w-1/2 p-8 flex flex-col items-end overflow-auto">
 
                 <div className="w-full flex justify-between mb-3">
-                    <h1 className="font-bold text-4xl">Inbox</h1>
+                    {/* MAO NI ILISAN PAPART */}
+                    <h1 className="font-bold text-4xl">{inboxInfo.subject}</h1>
                     <button
                         onClick={() => DeleteInbox(inboxInfo.inbox_id)}
                         className="bg-red-800 text-white rounded-md p-2 whitespace-nowrap mb-3"
@@ -74,7 +78,7 @@ function InboxModal({ setOpenInbox, inboxInfo }: {
                 </div>
 
                
-                <div className="font-semibold text-justify text-gray-700 h-full">
+                <div className="font-semibold text-justify text-gray-700 text-sm h-full">
                     {formattedMessage}
                 </div>
 

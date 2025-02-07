@@ -188,6 +188,7 @@ type Assessment struct {
 type Inbox struct {
 	ID   			int64		`gorm:"primaryKey;autoIncrement:true;uniqueIndex:idx_inboxID"`
 	Message  		string    	`gorm:"type:text;not null"`
+	Subject  		string    	`gorm:"type:text;not null"`
 	Status     		string    	`gorm:"type:text;not null;default:unread"`
 	UserID			int64		`gorm:"not null"`
 	CreatedAt 		time.Time 	`gorm:"not null;autoCreateTime"`
@@ -243,12 +244,12 @@ type APPLICATION_DB_METHOD interface {
 	SetPaidAsssesment(types.AssessmentsPaidFormData) error
 	FetchAssessments(int64) (*types.AssessmentRender, error)
 
-	ApplicationInbox(int64, string) error
-	SetApplicationCodeInbox(int64, string, string) error
-	ApplicationApprovalInbox(int64, string) error
+	ApplicationInbox(int64, string, string) error
+	SetApplicationCodeInbox(int64, string, string, string) error
+	ApplicationApprovalInbox(int64, string, string) error
 
-	DisapprovalInbox(int64, string) error
-	ReleaseDateInbox(int64, string) error
+	DisapprovalInbox(int64, string, string) error
+	ReleaseDateInbox(int64, string, string) error
 
 	FetchInboxesToday(int64) ([]*types.FormattedInbox, error)
 	FetchUnreadInboxes(int64) ([]*types.FormattedInbox, error)
@@ -367,19 +368,19 @@ func (sql *SQL) SetPaidAsssesment(assessments types.AssessmentsPaidFormData) err
 
 
 func (sql *SQL) FetchAssessments(applicationID int64) (assessments *types.AssessmentRender, err error) {
-
 	result := sql.DB.Table("assessments").
-				Select("id, ass_control_number, date, project_proposed, location, units, building_construction, electrical_installation, mechanical_installation, plumbing_installation, electronic_installation, building_accessories, other_accessories, building_occupancy, building_inspection, fines_surcharge_penalties, total_assesment, status").
-				Where("application_id = ?", applicationID).
-				Find(&assessments)
+		Select("assessments.id, assessments.date_paid, assessments.or_number, assessments.ass_control_number, assessments.date, assessments.project_proposed, assessments.location, assessments.units, assessments.building_construction, assessments.electrical_installation, assessments.mechanical_installation, assessments.plumbing_installation, assessments.electronic_installation, assessments.building_accessories, assessments.other_accessories, assessments.building_occupancy, assessments.building_inspection, assessments.fines_surcharge_penalties, assessments.total_assesment, assessments.status, CONCAT(applications.first_name, ' ', COALESCE(applications.middle_initial, ''), ' ', applications.last_name) AS full_name").
+		Joins("JOIN applications ON assessments.application_id = applications.id").
+		Where("assessments.application_id = ?", applicationID).
+		Find(&assessments)
 
-	if err = result.Error; err != nil{
+	if err = result.Error; err != nil {
 		return nil, err
-	}		
-	
-	return assessments, nil
+	}
 
+	return assessments, nil
 }
+
 
 
 
@@ -671,7 +672,7 @@ func (sql *SQL) CreateElectricalRequirements(applicationID int64) error {
 
 // ----------------------INBOXES----------------------
 
-func (sql *SQL) ApplicationInbox(user_id int64, applicantName string) error {
+func (sql *SQL) ApplicationInbox(user_id int64, applicantName string, subject string) error {
 
 	message := fmt.Sprintf(`Dear %s,
 We are writing to inform you that we received your login information for applying for a permit in the PTMS portal of Panabo City's Engineering Office. Your successful login indicates that you are now ready to proceed with the application process.
@@ -690,6 +691,7 @@ Panabo City Engineering's Issuance of Permit Section`, applicantName)
 	inbox := &Inbox{
 		Message: message,
 		UserID: user_id,
+		Subject: subject,
 	}
 
 	if result := sql.DB.Create(&inbox); result.Error != nil {
@@ -700,7 +702,7 @@ Panabo City Engineering's Issuance of Permit Section`, applicantName)
 }
 
 
-func (sql *SQL) SetApplicationCodeInbox(user_id int64, applicantName string, applicationCode string) error {
+func (sql *SQL) SetApplicationCodeInbox(user_id int64, applicantName string, applicationCode string, subject string) error {
 
 	message := fmt.Sprintf(`Dear %s,
 
@@ -716,6 +718,7 @@ Panabo City Engineering's Issuance of Permit Section`, applicantName, applicatio
 	inbox := &Inbox{
 		Message: message,
 		UserID: user_id,
+		Subject: subject,
 	}
 
 	if result := sql.DB.Create(&inbox); result.Error != nil {
@@ -726,7 +729,7 @@ Panabo City Engineering's Issuance of Permit Section`, applicantName, applicatio
 }
 
 
-func (sql *SQL) ApplicationApprovalInbox(user_id int64, applicantName string) error {
+func (sql *SQL) ApplicationApprovalInbox(user_id int64, applicantName string, subject string) error {
 
 	message := fmt.Sprintf(`Dear %s,
 
@@ -742,6 +745,7 @@ func (sql *SQL) ApplicationApprovalInbox(user_id int64, applicantName string) er
 	inbox := &Inbox{
 		Message: message,
 		UserID: user_id,
+		Subject: subject,
 	}
 
 	if result := sql.DB.Create(&inbox); result.Error != nil {
@@ -751,11 +755,12 @@ func (sql *SQL) ApplicationApprovalInbox(user_id int64, applicantName string) er
 	return nil
 }
 
-func (sql *SQL) DisapprovalInbox(user_id int64, disApprovalMessage string) error {
+func (sql *SQL) DisapprovalInbox(user_id int64, disApprovalMessage string, subject string) error {
 
 	inbox := &Inbox{
 		Message: disApprovalMessage,
 		UserID: user_id,
+		Subject: subject,
 	}
 
 	if result := sql.DB.Create(&inbox); result.Error != nil {
@@ -766,11 +771,12 @@ func (sql *SQL) DisapprovalInbox(user_id int64, disApprovalMessage string) error
 }
 
 
-func (sql *SQL) ReleaseDateInbox(user_id int64, releaseDateMessage string) error {
+func (sql *SQL) ReleaseDateInbox(user_id int64, releaseDateMessage string, subject string) error {
 
 	inbox := &Inbox{
 		Message: releaseDateMessage,
 		UserID: user_id,
+		Subject: subject,
 	}
 
 	if result := sql.DB.Create(&inbox); result.Error != nil {
@@ -799,6 +805,7 @@ func (sql *SQL) FetchAllInboxes(userID int64) ([]*types.FormattedInbox, error) {
 			Message:    inbox.Message,
 			Status: 	inbox.Status,	
 			UserID:     inbox.UserID,
+			Subject:    inbox.Subject,
 			TimeCreated:  inbox.CreatedAt.Local().Format("03:04 PM"), 
 		}
 		inboxes = append(inboxes, formattedInbox)
@@ -826,6 +833,7 @@ func (sql *SQL) FetchInboxesToday(userID int64) ([]*types.FormattedInbox, error)
 			ID:         inbox.ID,
 			Message:    inbox.Message,
 			UserID:     inbox.UserID,
+			Subject:    inbox.Subject,
 			TimeCreated:  inbox.CreatedAt.Local().Format("03:04 PM"), 
 		}
 		inboxes = append(inboxes, formattedInbox)
@@ -851,6 +859,8 @@ func (sql *SQL) FetchUnreadInboxes(userID int64) ([]*types.FormattedInbox, error
 			ID:         inbox.ID,
 			Message:    inbox.Message,
 			UserID:     inbox.UserID,
+			Subject:    inbox.Subject,
+			
 			TimeCreated:  inbox.CreatedAt.Local().Format("03:04 PM"), 
 		}
 		inboxes = append(inboxes, formattedInbox)
@@ -1155,7 +1165,7 @@ func (sql *SQL) UpdateApplicationApproval(applicationID int64, adminApproved str
 			return err
 		}
 
-		if err := sql.ApplicationApprovalInbox(currentApplication.UserID, applicantName); err != nil{
+		if err := sql.ApplicationApprovalInbox(currentApplication.UserID, applicantName, "PTMS Permit Approval"); err != nil{
 			return err
 		}
 		
@@ -1356,6 +1366,7 @@ func (sql *SQL) ApplicationByYear() (results []*types.ApplicationByYear, err err
 
 	err = sql.DB.Model(&Application{}).
 		Select("EXTRACT(YEAR FROM created_at) as year, COUNT(id) as count").
+		Where("status = ?", "Approved").
 		Group("year").
 		Order("year DESC").
 		Find(&results).Error

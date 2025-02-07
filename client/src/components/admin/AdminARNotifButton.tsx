@@ -1,4 +1,6 @@
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useFetchAdminAR } from "../../hook/useFetchAdminAR";
+import { faBell } from "@fortawesome/free-solid-svg-icons";
 
 function AdminArNotifButton({
     toggleAdminAccessModal
@@ -16,12 +18,17 @@ function AdminArNotifButton({
                 </div>
             )}
 
-            <button 
+            <FontAwesomeIcon 
+                icon={faBell}
+                onClick={toggleAdminAccessModal}
+            />
+
+            {/* <button 
                 className="text-2xl hover:opacity-75 hover:cursor-pointer text-sm bg-gray-500 text-white rounded-md p-2"
                 onClick={toggleAdminAccessModal}
             >
                 Admin AR 
-            </button>
+            </button> */}
         </div>
     )
 

@@ -12,6 +12,15 @@ import { UpdateApplicationApprovedAdmin } from "../../http/put/application";
 import { classNames } from "../../helpers/classNames";
 import { DisapprovedModal } from "../modal/admin/DisapprovedModal";
 import { AssessmentCheckListModal } from "../modal/staff/AssesmentChecklist";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import {  faFileLines, faReceipt, faThumbsDown, faThumbsUp } from "@fortawesome/free-solid-svg-icons";
+
+import {
+    HoverCard,
+    HoverCardContent,
+    HoverCardTrigger,
+} from "@/components/ui/hover-card"
+  
 
 
 interface PaidTableProps {
@@ -102,7 +111,7 @@ export function PaidTable({ searchTerm, selectedMonth, adminType }: PaidTablePro
             text: admins == 2 ? lastAdminToApproveMessage : adminToApproveMessage,
             icon: "question",
             showCancelButton: true,
-            confirmButtonColor: "#ff981a",
+            confirmButtonColor: "#3085d6",
             cancelButtonColor: "#000000",
             confirmButtonText: "Yes",
         }).then((result) => {
@@ -200,7 +209,7 @@ export function PaidTable({ searchTerm, selectedMonth, adminType }: PaidTablePro
 
             
             
-            <div className="flex flex-col bg-orange-100 w-full h-[70%] rounded-md p-2 mt-3">
+            <div className="flex flex-col bg-blue-100 w-full h-[70%] rounded-md p-2 mt-3">
                 <div className="overflow-y-auto overflow-hidden w-full custom-scrollbar-extrasmall">
                     <div className="inline-block min-w-full py-2">
                         <div className="overflow-hidden">
@@ -247,55 +256,100 @@ export function PaidTable({ searchTerm, selectedMonth, adminType }: PaidTablePro
                                                     <div className="flex gap-2">
 
                                                         {adminType && !item.admin_approved?.split(",").includes(adminType) && (
-                                                            <button
-                                                                onClick={() => openAssessments(item.application_id)}
-                                                                className="bg-green-700 rounded-md p-3 text-white font-bold hover:opacity-75"
-                                                            >
-                                                                Assessments
-                                                            </button>
+
+                                                            <HoverCard>
+                                                                <HoverCardTrigger>
+                                                                    <button
+                                                                        onClick={() => openAssessments(item.application_id)}
+                                                                        className="bg-green-700 rounded-md p-3 text-white font-bold hover:opacity-75"
+                                                                    >
+                                                                        <FontAwesomeIcon icon={faReceipt}/>
+                                                                    </button>
+                                                                </HoverCardTrigger>
+
+                                                                <HoverCardContent>
+                                                                    Assessment Hover
+                                                                </HoverCardContent>
+
+                                                            </HoverCard>
+
+                                                           
                                                         )}
 
                                                         {adminType && !item.admin_approved?.split(",").includes(adminType) && (
-                                                            <button
-                                                                onClick={() => openRequirements(item.application_id)}
-                                                                className="bg-sky-600 rounded-md p-3 text-white font-bold hover:opacity-75"
-                                                            >
-                                                                Requirements
-                                                            </button>
+
+                                                            <HoverCard>
+                                                                <HoverCardTrigger>
+                                                                    <button
+                                                                        onClick={() => openRequirements(item.application_id)}
+                                                                        className="bg-sky-600 rounded-md p-3 text-white font-bold hover:opacity-75"
+                                                                    >
+                                                                        <FontAwesomeIcon icon={faFileLines}/>
+                                                                    </button>
+                                                                </HoverCardTrigger>
+
+                                                                <HoverCardContent>
+                                                                    Requirements Hover
+                                                                </HoverCardContent>
+
+                                                            </HoverCard>
+                                                            
                                                         )}
 
                                                         {adminType && item.admin_approved?.split(",").includes(adminType) ? (
                                                             <h1 className="text-green-500 font-bold text-md">Application Approved</h1>
                                                         ) : (
 
-                                                            <button
-                                                                onClick={() => onApprove(item.application_id, item.admin_approved || "")}
-                                                                className={classNames(
-                                                                    allRequirementsChecked && item.application_id == applicationID ? "bg-orange-600" : "bg-gray-400 hover:cursor-not-allowed",
-                                                                    "text-white font-bold p-3 rounded-md hover:opacity-75"
-                                                                )}
-                                                                disabled={!allRequirementsChecked}
-                                                            >
-                                                                Approve
-                                                            </button>
+                                                            <HoverCard>
+                                                                <HoverCardTrigger>
+                                                                    <button
+                                                                        onClick={() => onApprove(item.application_id, item.admin_approved || "")}
+                                                                        className={classNames(
+                                                                            allRequirementsChecked && item.application_id == applicationID ? "bg-blue-700" : "bg-gray-400 hover:cursor-not-allowed",
+                                                                            "text-white font-bold p-3 rounded-md hover:opacity-75"
+                                                                        )}
+                                                                        disabled={!allRequirementsChecked}
+                                                                    >
+                                                                        <FontAwesomeIcon icon={faThumbsUp}/>
+                                                                    </button>
+                                                                </HoverCardTrigger>
+
+                                                                <HoverCardContent>
+                                                                    Approved Hover
+                                                                </HoverCardContent>
+
+                                                            </HoverCard>
+
+                                                            
                                                         )}
 
                                                         {adminType && !item.admin_approved?.split(",").includes(adminType) && (
-                                                            <button
-                                                                onClick={() =>
-                                                                    onOpenDisapprovedModal({
-                                                                        application_id: item.application_id,
-                                                                        firstname: item.firstname,
-                                                                        middleInitial: item.middleInitial,
-                                                                        lastName: item.lastName,
-                                                                        email: item.email,
-                                                                        user_id: item.user_id,
-                                                                    })
-                                                                }
-                                                                className="bg-red-600 text-white font-bold p-3 rounded-md hover:opacity-75"
-                                                            >
-                                                                Disapprove
-                                                            </button>
+
+                                                            <HoverCard>
+                                                                <HoverCardTrigger>
+                                                                    <button
+                                                                        onClick={() =>
+                                                                            onOpenDisapprovedModal({
+                                                                                application_id: item.application_id,
+                                                                                firstname: item.firstname,
+                                                                                middleInitial: item.middleInitial,
+                                                                                lastName: item.lastName,
+                                                                                email: item.email,
+                                                                                user_id: item.user_id,
+                                                                            })
+                                                                        }
+                                                                        className="bg-red-600 text-white font-bold p-3 rounded-md hover:opacity-75"
+                                                                    >
+                                                                        <FontAwesomeIcon icon={faThumbsDown}/>
+                                                                    </button>
+                                                                </HoverCardTrigger>
+
+                                                                <HoverCardContent>
+                                                                    Disapproved Hover
+                                                                </HoverCardContent>
+
+                                                            </HoverCard>
+                                                            
                                                         )}
                                                     </div>
                                                 </td>

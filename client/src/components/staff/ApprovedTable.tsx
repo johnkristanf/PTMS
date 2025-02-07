@@ -9,6 +9,14 @@ import { UploadDocument } from "../../http/post/document";
 import '../../assets/scrollStyle.css'
 import { useFetchApprovedByStatus } from "../../hook/useFetchApprovedByStatus";
 import { SubmitToReleaser } from "../../http/put/application";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faCircleCheck, faFileExport, faWarehouse } from "@fortawesome/free-solid-svg-icons";
+
+import {
+    HoverCard,
+    HoverCardContent,
+    HoverCardTrigger,
+} from "@/components/ui/hover-card"
 
 interface ApproveTableProps {
     searchTerm: string,
@@ -164,7 +172,7 @@ export function ApproveTable({ searchTerm, selectedMonth, staffRole, ReleaserRep
 
             {openFile && staffRole === 'scanner'&&  <ApplicationFileModal setOpenFile={setOpenFile} selectedApplicationCode={selectedApplicationCode} />}
 
-            <div className="flex flex-col bg-orange-100 w-full h-[70%] rounded-md ">
+            <div className="flex flex-col bg-blue-100 w-full h-[70%] rounded-md ">
                 <div>
                     <div className="inline-block min-w-full py-2 ">
                         <div className="overflow-hidden overflow-y-auto h-[400px] p-5 custom-scrollbar">
@@ -221,25 +229,47 @@ export function ApproveTable({ searchTerm, selectedMonth, staffRole, ReleaserRep
                                                         onChange={handleFileChange}
                                                     />
 
-                                                    <button
-                                                        onClick={(e) => {
-                                                        triggerFileInput(e, item.applicationCode);
-                                                        }}
-                                                        className="bg-orange-500 text-white font-bold p-3 rounded-md hover:opacity-75"
-                                                    >
-                                                        Store
-                                                    </button>
+                                                        <HoverCard>
+                                                            <HoverCardTrigger>
+                                                                <button
+                                                                    onClick={(e) => {
+                                                                    triggerFileInput(e, item.applicationCode);
+                                                                    }}
+                                                                    className="bg-blue-700 text-white font-bold p-3 rounded-md hover:opacity-75"
+                                                                >
+                                                                    <FontAwesomeIcon icon={faWarehouse}/>
+                                                                </button>
+                                                            </HoverCardTrigger>
+                                                        
+                                                            <HoverCardContent>
+                                                                Store Documents Hover
+                                                            </HoverCardContent>
+                                                        
+                                                        </HoverCard> 
 
-                                                    <button
-                                                        onClick={(e) => {
-                                                            handleButtonClick(e);
-                                                            handleSubmitToReleaser(item.application_id)
-                                                            console.log("Submit clicked");
-                                                        }}
-                                                        className="bg-green-600 text-white font-bold p-3 rounded-md hover:opacity-75"
-                                                    >
-                                                        Submit
-                                                    </button>
+                                                        <HoverCard>
+                                                            <HoverCardTrigger>
+                                                                <button
+                                                                    onClick={(e) => {
+                                                                        handleButtonClick(e);
+                                                                        handleSubmitToReleaser(item.application_id)
+                                                                        console.log("Submit clicked");
+                                                                    }}
+                                                                    className="bg-green-600 text-white font-bold p-3 rounded-md hover:opacity-75"
+                                                                >
+                                                                    <FontAwesomeIcon icon={faCircleCheck}/>
+                                                                </button>
+                                                            </HoverCardTrigger>
+                                                        
+                                                            <HoverCardContent>
+                                                                Submit Documents Hover
+                                                            </HoverCardContent>
+                                                        
+                                                        </HoverCard> 
+
+                                                   
+
+                                                    
                                                     </div>
                                                 </td>
                                             )}
@@ -247,14 +277,26 @@ export function ApproveTable({ searchTerm, selectedMonth, staffRole, ReleaserRep
                                             {/* RELEASER CAPABILITIES */}
                                             {staffRole === 'releaser' && (
                                                 <td className="whitespace-nowrap pl-4 py-4">
-                                                    <button
-                                                    onClick={(e) =>
-                                                        onOpenReleaseModal(e, item.application_id, item.email, item.user_id)
-                                                    }
-                                                    className="bg-orange-500 text-white font-bold p-3 rounded-md hover:opacity-75"
-                                                    >
-                                                    Release
-                                                    </button>
+
+                                                    <HoverCard>
+                                                            <HoverCardTrigger>
+                                                                <button
+                                                                onClick={(e) =>
+                                                                    onOpenReleaseModal(e, item.application_id, item.email, item.user_id)
+                                                                }
+                                                                className="bg-blue-700 text-white font-bold p-3 rounded-md hover:opacity-75"
+                                                                >
+                                                                    <FontAwesomeIcon icon={faFileExport}/>
+                                                                </button>
+                                                            </HoverCardTrigger>
+                                                        
+                                                            <HoverCardContent>
+                                                                Release Approved Documents Hover
+                                                            </HoverCardContent>
+                                                        
+                                                        </HoverCard> 
+
+                                                    
                                                 </td>
                                             )}
                                         </tr>

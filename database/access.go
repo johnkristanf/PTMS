@@ -28,8 +28,8 @@ type Access_Logs struct {
 
 type ACCESS_DB_METHOD interface {
 	RequestAccessRole(*types.AccessRole) error
-	FindUserByRole(string) (*types.UserInfo, error)
-	FindUserByAdminType(string) (*types.UserInfo, error)
+	FindUserByRole(string) (*types.StaffAccountInfo, error)
+	FindUserByAdminType(string) (*types.StaffAccountInfo, error)
 
 	FetchPendingRequestAccess() ([]types.FetchPendingRequestAccess, error)
 	FetchAdminRequestAccess(string, int64) ([]types.FetchAdminRequestAccess, error)
@@ -60,7 +60,7 @@ func (sql * SQL) RequestAccessRole(accessData *types.AccessRole) error {
 	return nil
 }
 
-func (sql *SQL) FindUserByRole(role string) (userInfo *types.UserInfo, err error) {
+func (sql *SQL) FindUserByRole(role string) (userInfo *types.StaffAccountInfo, err error) {
 	result := sql.DB.Select("id, name, email, password, role, admin_type").Table("office_accounts").Where("role = ?", role).First(&userInfo)
 	if result.Error != nil {
 		return nil, result.Error
@@ -69,7 +69,7 @@ func (sql *SQL) FindUserByRole(role string) (userInfo *types.UserInfo, err error
 	return userInfo, nil
 }
 
-func (sql *SQL) FindUserByAdminType(adminType string) (userInfo *types.UserInfo, err error) {
+func (sql *SQL) FindUserByAdminType(adminType string) (userInfo *types.StaffAccountInfo, err error) {
 	result := sql.DB.Select("id, name, email, password, role, admin_type").Table("office_accounts").Where("admin_type = ?", adminType).First(&userInfo)
 	if result.Error != nil {
 		return nil, result.Error

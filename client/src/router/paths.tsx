@@ -47,6 +47,7 @@ import ResetPassword from "../pages/reset_password/ResetPassword"
 import ArchitecturalDashboardPage from "../pages/admin/architectural/DashboardArchitectural"
 import CivilDashboardPage from "../pages/admin/civil/DashboardCivil"
 import ElectricalDashboardPage from "../pages/admin/electrical/DashboardElectrical"
+import ActivationPage from "@/pages/applicant/Activation"
 
 
 
@@ -66,7 +67,10 @@ export const resetPasswordPath = {
     element: <ResetPassword />
 }
 
-
+export const activationPath = {
+    path: "/activate",
+    element: <ActivationPage />
+}
 
 export const root = {
     path: "/",

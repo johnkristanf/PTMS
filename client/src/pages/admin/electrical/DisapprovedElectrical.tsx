@@ -5,8 +5,8 @@ import { SideBar } from "../../../components/SideBar";
 import { DisapprovedTable } from "../../../components/staff/DisapprovedTable";
 import AdminRequestAccessModal from "../../../components/admin/AdminRequestAccessModal";
 import StaffRequestAccessModal from "../../../components/admin/StaffRequestAccessModal";
-import { useFetchStaffPendingAR } from "../../../hook/useFetchStaffPendingAR";
 import AdminArNotifButton from "../../../components/admin/AdminARNotifButton";
+import StaffARNotifButton from "../../../components/staff/StaffARNotifButton";
 
 function DisapprovedElectricalPage(){
 
@@ -30,8 +30,6 @@ function DisapprovedElectricalPage(){
         });
     };
 
-    const { pendingAccessReqest } = useFetchStaffPendingAR();
-
 
     return(
 
@@ -43,30 +41,18 @@ function DisapprovedElectricalPage(){
 
                 <SideBar role={"electrical"} />
 
-                <div className="w-[76%] h-full flex justify-center items-center mr-5">
+                <div className="w-full h-full flex justify-center items-center mr-5">
 
                     <PTMSHeader />
 
-                    <div className="flex flex-col justify-start gap-2 w-full h-[80%] mt-32">
+                    <div className="flex flex-col justify-start gap-2 w-full h-[80%] ml-5 mt-32">
 
                         <div className="flex justify-between">
-                            <h1 className="text-orange-500 text-4xl font-bold">Disapproved Applications</h1>
+                            <h1 className="text-blue-700 text-4xl font-bold">Disapproved Applications</h1>
                             <div className="flex items-center gap-3">
 
-                                <div className="flex gap-1">
-                                    {pendingAccessReqest && pendingAccessReqest.length > 0 && (
-                                        <div className="flex items-center justify-center text-white bg-red-500 rounded-full w-4 h-4 text-sm">
-                                            {pendingAccessReqest.length}
-                                        </div>
-                                    )}
+                                <StaffARNotifButton  toggleStaffAccessModal={toggleStaffAccessModal}/>
 
-                                    <button 
-                                        className="text-2xl hover:opacity-75 hover:cursor-pointer text-sm bg-gray-500 text-white rounded-md p-2"
-                                        onClick={toggleStaffAccessModal}
-                                    >
-                                        Staff AR 
-                                    </button>
-                                </div>
 
                                 <AdminArNotifButton toggleAdminAccessModal={toggleAdminAccessModal}/>
                                 

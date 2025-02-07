@@ -1,6 +1,10 @@
 package types
 
-import "github.com/golang-jwt/jwt/v5"
+import (
+	"time"
+
+	"github.com/golang-jwt/jwt/v5"
+)
 
 type OfficeAccounts struct {
 	Name 	 	string
@@ -8,6 +12,13 @@ type OfficeAccounts struct {
 	Password 	string
 	Role     	string
 	AdminType 	string
+}
+
+
+type SignupCredentialsBind struct {
+	FullName    string 	`json:"full_name"`
+	Email    	string 	`json:"email"`
+	Password 	string 	`json:"password"`
 }
 
 type LoginCredentialsBind struct {
@@ -24,6 +35,12 @@ type UpdateUserPassword struct {
 	NewPassword string `json:"newPassword"`
 }
 
+
+type SignupCredentialsDTO struct {
+	FullName    string
+	Email    string
+	Password string
+}
 
 type LoginCredentialsDTO struct {
 	Email    string
@@ -74,7 +91,7 @@ type EditStaffAccountDTO struct {
 }
 
 
-type UserInfo struct {
+type StaffAccountInfo struct {
 	ID       int64
 	Name	 string
 	Email    string
@@ -82,6 +99,24 @@ type UserInfo struct {
 	Role     string
 	AdminType string
 }
+
+type ApplicantAccountInfo struct {
+	ID       	int64
+	FullName	string
+	Email    	string
+	Password 	string
+	HasLogined 	bool
+	IsVerified 	bool
+	CreatedAt   time.Time
+	UpdatedAt   time.Time
+}
+
+type SignupResponse struct{
+	Message string
+	Email string
+}
+
+
 
 type GoogleUserInfo struct {
 	ID       string 	`json:"id"`
@@ -100,6 +135,15 @@ type LastSignedInUser struct {
 	HasLogined     bool		
 }
 
+type LoginApplicantInfo struct {
+	ID       	   int64 		`json:"id"`
+	FullName 	 	   string		`json:"full_name"`
+	Email    	   string 		`json:"email"`
+	Role     	   string		`json:"role"`
+	Picture  	   string 		`json:"picture"`
+	HasLogined     bool		
+}
+
 type SignInResponseChan struct{
 	Error    error
 	UserInfo *LastSignedInUser
@@ -108,7 +152,7 @@ type SignInResponseChan struct{
 
 
 type LoginResponse struct {
-	UserInfo *UserInfo
+	UserInfo *StaffAccountInfo
 	Error    error
 }
 

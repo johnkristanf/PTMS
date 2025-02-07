@@ -93,14 +93,26 @@ export const AssessmentsModal: React.FC<AssessmentModalProps> = ({ applicantAsse
         mutationFn: SetAssesment,
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ["assessments"] });
-            
-            Swal.fire({
-                icon: "success",
-                title: "Assessment Added!",
-                showConfirmButton: true,
-            });
 
-            setRenderAssessmentPDF(true);
+
+            Swal.fire({
+                title: "Application Next Step",
+                text: "Click again the assessment icon button to see the assessment list",
+                icon: "info",
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    Swal.fire({
+                        icon: "success",
+                        title: "Assessment Added!",
+                        showConfirmButton: true,
+                    });
+
+                    setRenderAssessmentPDF(true);
+        
+                }
+            });
+            
+            
 
             reset();
 
@@ -114,27 +126,41 @@ export const AssessmentsModal: React.FC<AssessmentModalProps> = ({ applicantAsse
     const onSubmit: SubmitHandler<AssessmentTypes> = (data) => {
 
         console.log("assessments", data)
+
+        Swal.fire({
+            title: "Are you sure?",
+            text: "Setting the assessment for this application",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#3085d6",
+            cancelButtonColor: "#d33",
+            confirmButtonText: "Yes"
+          }).then((result) => {
+            if (result.isConfirmed) {
+                const convertedData = {
+                    ...data,
+                    building_construction: parseFloat(data.building_construction as unknown as string),
+                    electrical_installation: parseFloat(data.electrical_installation as unknown as string),
+                    mechanical_installation: parseFloat(data.mechanical_installation as unknown as string),
+                    plumbing_installation: parseFloat(data.plumbing_installation as unknown as string),
+                    electronics_installation: parseFloat(data.electronics_installation as unknown as string),
+                    building_accessories: parseFloat(data.building_accessories as unknown as string),
+                    other_accessories: parseFloat(data.other_accessories as unknown as string),
+                    building_occupancy: parseFloat(data.building_occupancy as unknown as string),
+                    building_inspection: parseFloat(data.building_inspection as unknown as string),
+                    fines_surcharges_penalties: parseFloat(data.fines_surcharges_penalties as unknown as string),
+                };
         
-        const convertedData = {
-            ...data,
-            building_construction: parseFloat(data.building_construction as unknown as string),
-            electrical_installation: parseFloat(data.electrical_installation as unknown as string),
-            mechanical_installation: parseFloat(data.mechanical_installation as unknown as string),
-            plumbing_installation: parseFloat(data.plumbing_installation as unknown as string),
-            electronics_installation: parseFloat(data.electronics_installation as unknown as string),
-            building_accessories: parseFloat(data.building_accessories as unknown as string),
-            other_accessories: parseFloat(data.other_accessories as unknown as string),
-            building_occupancy: parseFloat(data.building_occupancy as unknown as string),
-            building_inspection: parseFloat(data.building_inspection as unknown as string),
-            fines_surcharges_penalties: parseFloat(data.fines_surcharges_penalties as unknown as string),
-        };
-
-        if (applicantAssessmentInfo.application_id) {
-            convertedData.application_id = applicantAssessmentInfo.application_id;
-        }
-
-        mutation.mutate(convertedData)
-        reset();
+                if (applicantAssessmentInfo.application_id) {
+                    convertedData.application_id = applicantAssessmentInfo.application_id;
+                }
+        
+                mutation.mutate(convertedData)
+                reset();
+            }
+        });
+        
+        
     };
 
 
@@ -177,7 +203,7 @@ export const AssessmentsModal: React.FC<AssessmentModalProps> = ({ applicantAsse
                                             disabled={data.disabled}
                                             {...register(data.registerName as keyof AssessmentTypes)}
                                             className={
-                                                `${data.disabled ? 'bg-gray-500 text-white': 'bg-gray-300 hover:opacity-75'} p-3 font-bold rounded-md placeholder-gray-600 focus:outline-orange-500`
+                                                `${data.disabled ? 'bg-gray-500 text-white': 'bg-gray-300 hover:opacity-75'} p-3 font-bold rounded-md placeholder-gray-600 focus:outline-blue-500`
                                             }
                                         />
                                         
@@ -205,7 +231,7 @@ export const AssessmentsModal: React.FC<AssessmentModalProps> = ({ applicantAsse
 
                             <div className="flex flex-col gap-3">
                                 <button 
-                                    className="bg-orange-500 text-white font-bold rounded-md p-2 mt-1 hover:opacity-75"
+                                    className="bg-blue-700 text-white font-bold rounded-md p-2 mt-1 hover:opacity-75"
                                     type="submit"
                                 >
                                     Save

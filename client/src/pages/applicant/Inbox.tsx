@@ -82,7 +82,7 @@ function InboxPage() {
                 inboxInfo && openInbox && <InboxModal setOpenInbox={setOpenInbox} inboxInfo={inboxInfo} />
             }
 
-            <div className="flex-col flex items-center w-[60%] rounded-md p-8 mr-36">  
+            <div className="flex-col flex items-center w-full rounded-md p-8">  
 
                 <PTMSHeader />
 
@@ -99,7 +99,7 @@ function InboxPage() {
                                     onClick={() => setSelectedFilter(item.filterType as FilterType)}
                                     className={classNames(
                                         "rounded-md p-2 text-white font-bold w-[15%] hover:opacity-75",
-                                        selectedFilter === item.filterType ? "bg-gray-500" : "bg-orange-400"
+                                        selectedFilter === item.filterType ? "bg-gray-500" : "bg-blue-700"
                                     )}
                                     key={item.name}
                                 >
@@ -117,7 +117,7 @@ function InboxPage() {
                                     
                                     <div onClick={() => openInboxModal(item)} key={index} className="bg-gray-300 rounded-md w-full flex items-center gap-5 p-4 space-x-4 hover:opacity-75 hover:cursor-pointer">
                                         <h1 className={`flex-1 overflow-hidden text-ellipsis whitespace-nowrap ${item.status === 'read' ? 'font-sm' : 'font-bold'}`}>
-                                            {item.message}
+                                           {item.subject} - {item.message}
                                         </h1>
 
                                         {

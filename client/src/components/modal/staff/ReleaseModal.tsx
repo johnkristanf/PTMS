@@ -92,11 +92,17 @@ export function ReleaseDateModal({ setOpenReleaseModal, releaseDateData }: {
     };
 
     useEffect(() => {
-        if(releaseDateData?.status === "Approved"){
-            setMessage(`We are pleased to inform you that your permit application has been approved. Your documents are now ready for release and can be picked up at the Panabo City Engineer's Office during business hours.`
-            );
+        if (releaseDateData?.status === "Approved") {
+            setMessage(`We are pleased to inform you that your permit application has been approved. 
+            Your documents are now ready for release and can be picked up at the Panabo City Engineer's Office during business hours.
+    
+            📍 **Pickup Location:** Panabo City Engineer's Office  
+            ⏰ **Business Hours:** Monday to Friday, 8:00 AM - 5:00 PM  
+            📅 **Estimated Release Date:** ${formatDate(fromDate)} - ${formatDate(toDate)}
+    
+            If you have any questions, feel free to contact us. Thank you!`);
         }
-    }, [releaseDateData?.status])
+    }, [fromDate, releaseDateData?.status, toDate])
 
     console.log("message: ", message);
     
@@ -161,7 +167,7 @@ export function ReleaseDateModal({ setOpenReleaseModal, releaseDateData }: {
                         className={`${
                             isSaveDisabled
                                 ? 'bg-gray-400 cursor-not-allowed'
-                                : 'bg-orange-500 hover:opacity-75'
+                                : 'bg-blue-700 hover:opacity-75'
                         } text-white font-bold rounded-md p-2 mt-5`}
                         type="submit"
                         disabled={isSaveDisabled} 

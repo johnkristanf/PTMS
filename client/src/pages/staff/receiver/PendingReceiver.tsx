@@ -29,13 +29,13 @@ function ReceiverPage() {
       <div className="flex justify-between items-center h-[120vh] bg-white">
         <SideBar role={"receiver"} />
 
-        <div className="w-[80%] h-full flex justify-center items-center mr-1">
+        <div className="w-full h-full flex justify-center items-center mr-1">
           <PTMSHeader />
 
           <div className="flex flex-col gap-2 w-full h-[80%] mt-24 pr-3 pl-2">
 
             <div className="flex justify-between mb-5">
-              <h1 className="text-orange-400 text-4xl font-bold">Pending Applications</h1>
+              <h1 className="text-blue-700 text-4xl font-bold">Pending Applications</h1>
 
               <div className="flex items-center gap-3">
 

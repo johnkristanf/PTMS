@@ -72,7 +72,7 @@ Panabo City Engineering's Issuance of Permit Section `, applicantName)
 	headers := map[string]string{
 		"From":		from,
 		"To": 		to,
-		"Subject": "Panabo City's Engineering Office Issuance of Permits",
+		"Subject": "PTMS Permit Application",
 	}
 
 	message := ""
@@ -132,7 +132,7 @@ func SendDisapprovalEmail(to string, disApprovalMessage string) error {
 	headers := map[string]string{
 		"From":		from,
 		"To": 		to,
-		"Subject": "Panabo City's Engineering Office Issuance of Permits",
+		"Subject": "PTMS Permit Disapproval",
 	}
 
 	message := ""
@@ -193,7 +193,7 @@ func SendReleaseDateEmail(to string, releaseMessage string) error {
 	headers := map[string]string{
 		"From":		from,
 		"To": 		to,
-		"Subject": "Panabo City's Engineering Office Issuance of Permits",
+		"Subject": "PTMS Permit Release",
 	}
 
 	message := ""
@@ -264,7 +264,7 @@ Panabo City Engineering's Issuance of Permit Section`, applicantName)
 	headers := map[string]string{
 		"From":		from,
 		"To": 		to,
-		"Subject": "Panabo City's Engineering Office Issuance of Permits",
+		"Subject": "PTMS Permit Approval",
 	}
 
 	message := ""
@@ -337,7 +337,7 @@ Panabo City Engineering's Issuance of Permit Section`, applicantName, applicatio
 	headers := map[string]string{
 		"From":		from,
 		"To": 		to,
-		"Subject": "Panabo City's Engineering Office Issuance of Permits",
+		"Subject": "PTMS Permit Application Code",
 	}
 
 	message := ""
@@ -384,6 +384,81 @@ Panabo City Engineering's Issuance of Permit Section`, applicantName, applicatio
 }
 
 
+func SendActivationSignupLinkEmail(to string) error {
+
+	client, err := Connection();
+	if err != nil {
+        return err
+    }
+
+    defer Disconnection(client)
+
+	// CHANGE THIS SHIT TO PRODUCTION LATER ON https://web-ptms.com/activate?email
+
+	activationLink := fmt.Sprintf("http://localhost:9090/activate?email=%s", to)
+
+
+	body := fmt.Sprintf(`Dear %s,
+
+To activate your account, please click the link below:
+🔗 %s
+
+Thank you for your cooperation.
+
+Sincerely,  
+Panabo City Engineering's Issuance of Permit Section`, to, activationLink)
+
+
+
+	headers := map[string]string{
+		"From":		from,
+		"To": 		to,
+		"Subject": "PTMS Account Activation Link",
+	}
+
+	message := ""
+    for k, v := range headers {
+        message += fmt.Sprintf("%s: %s\r\n", k, v) 
+    }
+    message += "\r\n" + body
+
+	authenticate := smtp.PlainAuth("", from, password, host)
+
+
+	if err := client.Auth(authenticate); err != nil{
+		return err
+	}
+
+	if err := client.Mail(from); err != nil{
+		return err
+	}
+
+	if err := client.Rcpt(to); err != nil{
+		return err
+	}
+
+	writer, err := client.Data()
+    if err != nil {
+		fmt.Println("Data Error:", err)
+        return err
+    }
+
+
+    _, err = writer.Write([]byte(message))
+    if err != nil {
+        return err
+    }
+
+	
+	if err := writer.Close(); err != nil {
+        fmt.Println("Writer Close Error:", err)
+        return err
+    }
+
+    fmt.Println("Email sent successfully to:", to)
+    return nil
+}
+
 func SendPasswordResetEmailLink(to string, resetLink string) error {
 
 	client, err := Connection()
@@ -411,7 +486,7 @@ func SendPasswordResetEmailLink(to string, resetLink string) error {
 	headers := map[string]string{
 		"From":		from,
 		"To": 		to,
-		"Subject": "Password Reset Request for PTMS Portal",
+		"Subject": "PTMS Password Reset",
 	}
 
 	message := ""

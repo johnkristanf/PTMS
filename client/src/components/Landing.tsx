@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { classNames } from "../helpers/classNames";
-import { ApplicantLogin, LoginForm } from "./Login";
+import { ApplicantAuthentication, LoginForm } from "./Login";
 
 export function LoginRoles(){
 
@@ -13,7 +13,7 @@ export function LoginRoles(){
     ]
 
     return(
-        <div className={`flex flex-col relative items-center justify-around w-[30%] ${role === "applicant" ? "h-[40%]" : "h-[60%]"}  p-12 rounded-md bg-white`} >
+        <div className={`flex flex-col relative items-center justify-around w-[35%] h-[70%]  p-12 rounded-md bg-white`} >
 
             {
                 role === "" && (
@@ -28,7 +28,7 @@ export function LoginRoles(){
                             roles.map((data) => (
                                 <button
                                     key={data.name}
-                                    className={classNames("p-3 w-full bg-orange-400 rounded-md text-white font-bold hover:bg-gray-400 mt-5")}
+                                    className={classNames("p-3 w-full bg-blue-700 rounded-md text-white font-bold hover:bg-gray-400 mt-5")}
                                     onClick={() => setRole(data.clickedRole)}
                                 >
                                     { data.name }
@@ -41,7 +41,7 @@ export function LoginRoles(){
                 )
             }
 
-            { role === "applicant" && <ApplicantLogin setRole={setRole} /> }
+            { role === "applicant" && <ApplicantAuthentication setRole={setRole} /> }
 
             { (role === "staff" || role === "admin") && <LoginForm setRole={setRole} /> }
  

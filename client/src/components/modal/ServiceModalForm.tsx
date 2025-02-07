@@ -277,6 +277,18 @@ export const ServiceModalForm = ({ selectedService, setServiceModalOpen }: {
 
                             {/* <label className="font-semibold">Enter Address</label> */}
                             <div className="flex flex-col gap-5 font-semibold">
+
+                                <select 
+                                    className="bg-gray-200 placeholder-black font-semibold rounded-md p-2 focus:outline-slate-800 w-full"
+                                    {...register("barangay")}
+                                    required
+                                >
+                                    <option disabled selected>Select Barangay</option>
+                                    {barangayOptions.map((barangay, index) => (
+                                        <option key={index} value={barangay}>{barangay}</option>
+                                    ))}
+                                </select>
+
                                 {
                                     applicantAddress.map((data) => (
                                         <div className='flex flex-col w-full'>
@@ -293,16 +305,7 @@ export const ServiceModalForm = ({ selectedService, setServiceModalOpen }: {
                                         </div>
                                     ))
                                 }
-                                <select 
-                                    className="bg-gray-200 placeholder-black font-semibold rounded-md p-2 focus:outline-slate-800 w-full"
-                                    {...register("barangay")}
-                                    required
-                                >
-                                    <option disabled selected>Select Barangay</option>
-                                    {barangayOptions.map((barangay, index) => (
-                                        <option key={index} value={barangay}>{barangay}</option>
-                                    ))}
-                                </select>
+                                
                             </div>
                         </div>
 
@@ -325,6 +328,10 @@ export const ServiceModalForm = ({ selectedService, setServiceModalOpen }: {
                                     ))
                                 }
                             </div>
+
+                            <h1 className='mt-5 text-gray-600 text-sm font-semibold'>Note: TCT No. (Transfer Certificate of Title Number) is a unique land title number proving property ownership. 
+                                It’s required for permits to verify the applicant's right to use the land.
+                            </h1>
                         </div>
 
                         <div className="w-full border border-gray-300 p-3 rounded-md">
@@ -376,7 +383,7 @@ export const ServiceModalForm = ({ selectedService, setServiceModalOpen }: {
                             type="submit"
                             className={classNames(
                                 "rounded-md p-2 mt-3 text-white w-full font-semibold",
-                                isFormValid ? "bg-orange-500 hover:opacity-75" : "bg-gray-500 cursor-not-allowed"
+                                isFormValid ? "bg-blue-700 hover:opacity-75" : "bg-gray-500 cursor-not-allowed"
                             )}
                             disabled={!isFormValid}
                         >

@@ -44,7 +44,7 @@ type AuthHandler struct {
 	JWT_METHOD  middlewares.JWT_METHOD
 }
 
-func (h *AuthHandler) LoginHandler(c echo.Context) error {
+func (h *AuthHandler) StaffAccountLoginHandler(c echo.Context) error {
 
 	ctx, cancel := context.WithTimeout(c.Request().Context(), time.Millisecond * 200)
 	defer cancel()
@@ -112,7 +112,7 @@ func (h *AuthHandler) LoginHandler(c echo.Context) error {
 			Name:     "access_token",
 			Value:    access_token,
 			Path:     "/",
-			SameSite: http.SameSiteNoneMode,
+			SameSite: http.SameSiteLaxMode,
 			Expires:  time.Now().Add(5 * time.Hour),
 			HttpOnly: true,
 			Secure:   true,
@@ -123,7 +123,7 @@ func (h *AuthHandler) LoginHandler(c echo.Context) error {
 			Name:     "refresh_token",
 			Value:    refresh_token,
 			Path:     "/",
-			SameSite: http.SameSiteNoneMode,
+			SameSite: http.SameSiteLaxMode,
 			Expires:  time.Now().Add(3 * 24 * time.Hour),
 			HttpOnly: true,
 			Secure:   true,
@@ -155,6 +155,110 @@ func (h *AuthHandler) LoginHandler(c echo.Context) error {
 	}
 
 }
+
+func (h *AuthHandler) ApplicantSignupHandler(c echo.Context) error{
+
+	var sc types.SignupCredentialsBind
+
+	if err := c.Bind(&sc); err != nil {
+		return c.JSON(http.StatusBadRequest, "bad request")
+	}
+
+	scDTO := &types.SignupCredentialsDTO{
+		FullName:  strings.TrimSpace(sc.FullName),
+		Email: strings.TrimSpace(sc.Email),
+		Password: strings.TrimSpace(sc.Password),
+	}
+
+	response, err := h.DB_METHOD.SignupApplicant(scDTO)
+	if err != nil {
+		return err
+	}
+
+	if response.Message == "email_already_exists"{
+		// Pop up some message in the FE for email exising
+		return c.JSON(http.StatusConflict, "email_already_exists")
+	}
+
+	if err := helpers.SendActivationSignupLinkEmail(response.Email); err != nil{
+		return err
+	}
+
+	return c.JSON(http.StatusForbidden, "verification_needed")
+
+}
+
+func (h *AuthHandler) ApplicantLoginHandler(c echo.Context) error {
+
+	var lc types.LoginCredentialsBind
+	if err := c.Bind(&lc); err != nil {
+		return c.JSON(http.StatusBadRequest, "bad request")
+	}
+
+	fmt.Println("Applicant Email: ", lc.Email)
+	fmt.Println("Applicant Password: ", lc.Password)
+
+	lcDTO := &types.LoginCredentialsDTO{
+		Email: strings.TrimSpace(lc.Email),
+		Password: strings.TrimSpace(lc.Password),
+	}
+
+	loginApplicantInfo, err := h.DB_METHOD.LoginApplicant(lcDTO)
+
+	if err != nil{
+		if err.Error() == "Invalid_Credentials"{
+			return c.JSON(http.StatusUnauthorized, "invalid_credentials")
+		}
+	}
+	
+
+	
+		access_token, err := h.JWT_METHOD.GenerateAccessToken(loginApplicantInfo.ID, loginApplicantInfo.FullName, loginApplicantInfo.Email, loginApplicantInfo.Role, loginApplicantInfo.Picture)
+		if err != nil {
+			return err
+		}
+
+		refresh_token, err := h.JWT_METHOD.GenerateRefreshToken(loginApplicantInfo.ID, loginApplicantInfo.FullName, loginApplicantInfo.Email, loginApplicantInfo.Role, loginApplicantInfo.Picture)
+		if err != nil {
+			return err
+		}
+
+		// var webPhase http.SameSite
+
+		// if os.Getenv("WEB_PHASE") == "production" { 
+		// 	webPhase = http.SameSiteNoneMode 
+		// } else {
+		// 	webPhase = http.SameSiteLaxMode 
+		// }
+
+		accessTokenCookie := &http.Cookie{
+			Name:     "access_token",
+			Value:    access_token,
+			Path:     "/",
+			SameSite: http.SameSiteLaxMode,
+			Expires:  time.Now().Add(5 * time.Hour),
+			HttpOnly: true,
+			Secure:   true,
+
+		}
+	
+		refreshTokenCookie := &http.Cookie{
+			Name:     "refresh_token",
+			Value:    refresh_token,
+			Path:     "/",
+			SameSite: http.SameSiteLaxMode,
+			Expires:  time.Now().Add(3 * 24 * time.Hour),
+			HttpOnly: true,
+			Secure:   true,
+
+		}
+	
+		c.SetCookie(accessTokenCookie)
+		c.SetCookie(refreshTokenCookie)
+
+        return c.JSON(http.StatusOK, "Login Successfully")
+}
+
 
 
 func GenerateRandomString(length int) string {
@@ -214,6 +318,7 @@ func (h *AuthHandler) PasswordResetHandler(c echo.Context) error {
 
 func (h *AuthHandler) OauthGoogleLogin(c echo.Context) error {
 	googleOauthConfig := getGoogleOauthConfig()
+	fmt.Println("googleOauthConfig RedirectURL: ", googleOauthConfig.RedirectURL)
 	URL := googleOauthConfig.AuthCodeURL(oauthStateString, oauth2.AccessTypeOffline, oauth2.ApprovalForce)
 	return c.Redirect(http.StatusTemporaryRedirect, URL)
 }
@@ -282,7 +387,7 @@ func (h *AuthHandler) OauthGoogleCallback(c echo.Context) error {
 		Name:     "access_token",
 		Value:    access_token,
 		Path:     "/",
-		SameSite: http.SameSiteNoneMode,
+		SameSite: http.SameSiteLaxMode,
 		Expires:  time.Now().Add(5 * time.Hour),
 		HttpOnly: true,
 		Secure:   true,
@@ -293,7 +398,7 @@ func (h *AuthHandler) OauthGoogleCallback(c echo.Context) error {
 		Name:     "refresh_token",
 		Value:    refresh_token,
 		Path:     "/",
-		SameSite: http.SameSiteNoneMode,
+		SameSite: http.SameSiteLaxMode,
 		Expires:  time.Now().Add(3 * 24 * time.Hour),
 		HttpOnly: true,
 		Secure:   true,
@@ -508,7 +613,7 @@ func (h *AuthHandler) SignoutHandler(c echo.Context) error {
 		Name:     "access_token",
 		Value:    "",
 		Path:     "/",
-		SameSite: http.SameSiteNoneMode,
+		SameSite: http.SameSiteLaxMode,
 		Expires:  time.Unix(0, 0),
 		MaxAge:   -1,
 		HttpOnly: true,
@@ -517,7 +622,7 @@ func (h *AuthHandler) SignoutHandler(c echo.Context) error {
 
 	c.SetCookie(&http.Cookie{
 		Name:     "refresh_token",
-		SameSite: http.SameSiteNoneMode,
+		SameSite: http.SameSiteLaxMode,
 		Value:    "",
 		Path:     "/",
 		Expires:  time.Unix(0, 0),

@@ -1,25 +1,42 @@
 package database
 
 import (
+	"errors"
 	"fmt"
 	"time"
 
 	"github.com/johnkristanf/TMS-IPAS/helpers"
 	"github.com/johnkristanf/TMS-IPAS/types"
 	"golang.org/x/crypto/bcrypt"
+	"gorm.io/gorm"
 )
+
+// type User struct {
+// 	ID        	int64		`gorm:"primaryKey;autoIncrement:true;uniqueIndex:idx_userID"`
+// 	GoogleID  	string		`gorm:"not null"`
+// 	Name  		string		`gorm:"not null"`
+// 	Email     	string 		`gorm:"not null;index"`
+// 	Role      	string 		`gorm:"not null"`
+// 	Picture     string 		`gorm:"not null"`
+// 	HasLogined  bool 		`gorm:"not null"`
+// 	CreatedAt 	time.Time 	`gorm:"not null;autoCreateTime"`
+// 	UpdatedAt 	time.Time	`gorm:"not null;autoUpdateTime"`
+// }
+
 
 type User struct {
 	ID        	int64		`gorm:"primaryKey;autoIncrement:true;uniqueIndex:idx_userID"`
-	GoogleID  	string		`gorm:"not null"`
-	Name  		string		`gorm:"not null"`
+	FullName  	string		`gorm:"not null"`
 	Email     	string 		`gorm:"not null;index"`
-	Role      	string 		`gorm:"not null"`
-	Picture     string 		`gorm:"not null"`
+	Password    string 		`gorm:"not null;index"`
+	Picture     string 		`gorm:"not null;default:'No_Profile'"`
 	HasLogined  bool 		`gorm:"not null"`
+	IsVerified  bool 		`gorm:"not null;default:false"`
 	CreatedAt 	time.Time 	`gorm:"not null;autoCreateTime"`
-	UpdatedAt 	time.Time	`gorm:"not null;autoUpdateTime"`
+	UpdatedAt 	time.Time 	`gorm:"not null;autoUpdateTime"`
 }
+
+
 
 type OfficeAccounts struct {
 	ID        int64			`gorm:"primaryKey;autoIncrement:true;uniqueIndex:idx_userID"`
@@ -35,8 +52,11 @@ type OfficeAccounts struct {
 
 
 type AUTH_DB_METHOD interface {
-	Login(*types.LoginCredentialsDTO) (*types.UserInfo, error)
+	Login(*types.LoginCredentialsDTO) (*types.StaffAccountInfo, error)
 	UserChangePassword(string, string) error
+
+	LoginApplicant(*types.LoginCredentialsDTO) (*types.LoginApplicantInfo, error)
+	SignupApplicant(*types.SignupCredentialsDTO) (*types.SignupResponse, error)
 
 	SignupGoogleUser(*types.GoogleUserInfo) (*types.LastSignedInUser, bool, error)
 
@@ -51,7 +71,7 @@ type AUTH_DB_METHOD interface {
 	FetchLoginApplicant(int64) (*types.LoginApplicant, error)
 }
 
-func (sql *SQL) Login(lc *types.LoginCredentialsDTO) (userInfo *types.UserInfo, err error){
+func (sql *SQL) Login(lc *types.LoginCredentialsDTO) (userInfo *types.StaffAccountInfo, err error){
 
 	result := sql.DB.Select("id, name, email, password, role, admin_type").Table("office_accounts").Where("email = ?", lc.Email).First(&userInfo)
 	if result.Error != nil {
@@ -64,6 +84,83 @@ func (sql *SQL) Login(lc *types.LoginCredentialsDTO) (userInfo *types.UserInfo, 
 
 	return userInfo, nil
 }
+
+func (sql *SQL) SignupApplicant(sc *types.SignupCredentialsDTO) (*types.SignupResponse, error){
+	var applicantInfo *types.ApplicantAccountInfo
+
+	result := sql.DB.Table("users").
+        Select("id, full_name, email, password, has_logined, is_verified").
+        Where("email = ?", sc.Email).
+        First(&applicantInfo)
+
+	if result.Error == nil {  
+    	// User already exists, handle it
+		return &types.SignupResponse{Message: "email_already_exists"}, nil
+
+	} else if !errors.Is(result.Error, gorm.ErrRecordNotFound) {
+		return nil, result.Error
+	}
+
+	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(sc.Password), bcrypt.DefaultCost)
+	if err != nil {
+		return nil, fmt.Errorf("failed to hash password")
+	}
+
+	newApplicant := types.ApplicantAccountInfo{
+		FullName:   sc.FullName,
+		Email:      sc.Email,
+		Password:   string(hashedPassword),
+		HasLogined: false,
+		IsVerified: false,
+		CreatedAt:  time.Now(),  
+		UpdatedAt:  time.Now(), 
+	}
+
+	if err := sql.DB.Table("users").Create(&newApplicant).Error; err != nil {
+		return nil, err
+	}
+
+	return &types.SignupResponse{Message: "verification_needed", Email: newApplicant.Email}, nil
+
+}
+
+func (sql *SQL) LoginApplicant(lc *types.LoginCredentialsDTO) (*types.LoginApplicantInfo, error) {
+	var userInfo User
+
+	result := sql.DB.Select("id, full_name, email, password, picture, has_logined").
+		Table("users").
+		Where("email = ?", lc.Email).
+		First(&userInfo)
+
+	if result.Error != nil {
+		if errors.Is(result.Error, gorm.ErrRecordNotFound) {
+			return nil, fmt.Errorf("Invalid_Credentials")
+		}
+		return nil, result.Error
+	}
+
+	if err := bcrypt.CompareHashAndPassword([]byte(userInfo.Password), []byte(lc.Password)); err != nil {
+		return nil, fmt.Errorf("Invalid_Credentials")
+	}
+
+	if !userInfo.IsVerified{
+		updateResult := sql.DB.Model(&userInfo).Update("has_logined", true)
+		if updateResult.Error != nil {
+			return nil, updateResult.Error
+		}
+	}
+
+	
+	return &types.LoginApplicantInfo{
+		ID:        userInfo.ID,
+		FullName:      userInfo.FullName,
+		Email:     userInfo.Email,
+		Picture:   userInfo.Picture,
+		Role: 	   "applicant",
+		HasLogined: userInfo.HasLogined,
+	}, nil
+}
+
 
 
 func (sql *SQL) UserChangePassword(email string, newPassword string) error {
@@ -204,9 +301,9 @@ func (sql *SQL) SignupGoogleUser(googleUserInfo *types.GoogleUserInfo) (*types.L
 	if err := sql.DB.Where("email = ?", googleUserInfo.Email).First(&existingUser).Error; err == nil {
 		return &types.LastSignedInUser{
 			ID:        existingUser.ID,
-			Name:      existingUser.Name,
+			Name:      existingUser.FullName,
 			Email:     existingUser.Email,
-			Role:      existingUser.Role,
+			// Role:      existingUser.Role,
 			Picture:   existingUser.Picture,	
 			HasLogined: existingUser.HasLogined,
 		}, true, nil 
@@ -215,10 +312,9 @@ func (sql *SQL) SignupGoogleUser(googleUserInfo *types.GoogleUserInfo) (*types.L
 
 
 	googleUser := &User{
-		GoogleID:   googleUserInfo.ID,
-		Name:       googleUserInfo.Name,
+		FullName:       googleUserInfo.Name,
 		Email:      googleUserInfo.Email,
-		Role:       "applicant",
+		// Role:       "applicant",
 		Picture: 	googleUserInfo.Picture,
 		HasLogined: true,
 	}
@@ -229,9 +325,9 @@ func (sql *SQL) SignupGoogleUser(googleUserInfo *types.GoogleUserInfo) (*types.L
 
 	return &types.LastSignedInUser{
 		ID:        googleUser.ID,
-		Name:      googleUser.Name,
+		Name:      googleUser.FullName,
 		Email:     googleUser.Email,
-		Role:      googleUser.Role,
+		// Role:      googleUser.Role,
 		Picture:   googleUser.Picture,
 		HasLogined: googleUser.HasLogined,
 	}, false, nil 

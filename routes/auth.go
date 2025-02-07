@@ -9,7 +9,11 @@ func AuthRoutes(e *echo.Echo, h *handlers.AuthHandler) {
 	
 	g := e.Group("/auth")
 	
-	g.POST("/login", h.LoginHandler)
+	g.POST("/staff_account/login", h.StaffAccountLoginHandler)
+
+	g.POST("/applicant/signup", h.ApplicantSignupHandler)
+	g.POST("/applicant/login", h.ApplicantLoginHandler)
+
 	g.POST("/verify-email/reset", h.VerifyEmailResetHandler)
 
 	g.PUT("/change/password", h.PasswordResetHandler)

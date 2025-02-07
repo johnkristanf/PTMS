@@ -1,13 +1,14 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import axios, { AxiosResponse } from "axios";
-import { LoginCredentials, StaffAccount } from "../../types/auth";
+import { LoginCredentials, SignupCredentials, StaffAccount } from "../../types/auth";
 import { DOMAIN_NAME } from "../../envPaths";
 
 
 
-export const Login = async (loginCredentials: LoginCredentials): Promise<string> => {
+export const StaffAccountLogin = async (loginCredentials: LoginCredentials): Promise<string> => {
 
     try {
-        const response = await axios.post(`${DOMAIN_NAME}/auth/login`, loginCredentials, {
+        const response = await axios.post(`${DOMAIN_NAME}/auth/staff_account/login`, loginCredentials, {
             withCredentials: true
         })
         const statusOk = response.status === 200; 
@@ -45,6 +46,54 @@ export const Login = async (loginCredentials: LoginCredentials): Promise<string>
             }
         }
 
+        if (timeout){
+            return "timeout"
+        } else if(unauthorized){
+            return "unauthorized";
+        }
+
+        return "success";
+                
+    } catch (error) {
+        console.error(error);
+        return "unauthorized";
+
+    }
+}
+
+
+export const SignupApplicant = async (signupCrendentials: SignupCredentials): Promise<string> => {
+    try {
+        const response = await axios.post(`${DOMAIN_NAME}/auth/applicant/signup`, signupCrendentials);
+        console.log("response signup: ", response);
+
+        return "signup_success";
+            
+    } catch (error: any) {
+        if (axios.isAxiosError(error) && error.response) {
+            console.error("Axios error response: ", error.response);
+
+            if (error.response.status === 403) {
+                return "need_verification";
+            }
+        }
+
+        return "Error in Sign Up";
+    }
+};
+
+
+
+export const ApplicantLogin = async (loginCredentials: LoginCredentials): Promise<string> => {
+
+    try {
+        const response = await axios.post(`${DOMAIN_NAME}/auth/applicant/login`, loginCredentials, {
+            withCredentials: true
+        })
+        const timeout = response.status === 408;
+        const unauthorized = response.status === 401;
+
+        
         if (timeout){
             return "timeout"
         } else if(unauthorized){

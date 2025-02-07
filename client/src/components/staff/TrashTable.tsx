@@ -4,6 +4,15 @@ import { Application } from "../../types/application";
 import { FetchTrashApplication } from "../../http/get/application";
 import { useState } from "react";
 import { ApplicationFileModal } from "../modal/staff/ApplicationFilesModal";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faFolderOpen } from "@fortawesome/free-solid-svg-icons";
+
+
+import {
+    HoverCard,
+    HoverCardContent,
+    HoverCardTrigger,
+} from "@/components/ui/hover-card"
 
 export function TrashTable({ searchTerm, selectedMonth }: dropDownSelectType){
 
@@ -39,7 +48,7 @@ export function TrashTable({ searchTerm, selectedMonth }: dropDownSelectType){
                     />
             )}
 
-            <div className="flex flex-col bg-orange-100 w-full h-[70%] rounded-md">
+            <div className="flex flex-col bg-blue-100 w-full h-[70%] rounded-md">
 
                 <div className="overflow-x-auto p-5">
                     <div className="inline-block min-w-full py-2 ">
@@ -88,13 +97,24 @@ export function TrashTable({ searchTerm, selectedMonth }: dropDownSelectType){
                                                     </td>
 
                                                     <td className="whitespace-nowrap px-2 py-3">
-                                                        <button 
-                                                            className="bg-orange-400 rounded-md p-3 text-white hover:opacity-75"
-                                                            onClick={() => handleViewDocuments(data.applicationCode)}
 
-                                                        >
-                                                            View Documents
-                                                        </button>
+                                                        <HoverCard>
+                                                            <HoverCardTrigger>
+                                                                <button 
+                                                                    className="bg-blue-700 rounded-md p-3 text-white hover:opacity-75"
+                                                                    onClick={() => handleViewDocuments(data.applicationCode)}
+
+                                                                >
+                                                                    <FontAwesomeIcon icon={faFolderOpen}/>
+                                                                </button>
+                                                            </HoverCardTrigger>
+                                                        
+                                                            <HoverCardContent>
+                                                                View Documents Hover
+                                                            </HoverCardContent>
+                                                        
+                                                        </HoverCard>  
+
                                                     </td>
 
                                                     

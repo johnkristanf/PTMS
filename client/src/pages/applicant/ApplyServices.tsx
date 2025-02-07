@@ -45,7 +45,7 @@ function ApplyServicesPage() {
         <div className='flex justify-between items-start h-[120vh] w-full bg-white'>
             <SideBar role='applicant' />
 
-            <div className="flex-col flex items-center w-[60%] h-full rounded-md p-8 mr-36 mt-24">
+            <div className="flex-col flex items-center w-full h-full rounded-md p-8 mt-24">
                 <PTMSHeader />
 
                 <div className="flex w-full font-bold ">
@@ -61,7 +61,7 @@ function ApplyServicesPage() {
                         <div className="flex w-full mt-5 font-semibold">
                             <button
                                 onClick={() => clickService("Building")}
-                                className={classNames("p-2 w-full h-[70%] bg-orange-400 rounded-md text-white font-bold hover:bg-gray-400")}
+                                className={classNames("p-2 w-full h-[70%] bg-blue-700 rounded-md text-white font-bold hover:bg-gray-400")}
                             >
                                 Building Permit
                             </button>
@@ -80,7 +80,7 @@ function ApplyServicesPage() {
                                     key={permit.name}
                                     onClick={() => clickService(permit.permit_type)}
                                     className={classNames(
-                                        "p-2 w-[80%] h-full bg-orange-400 rounded-md text-white font-bold hover:bg-gray-400"
+                                        "p-2 w-[80%] h-full bg-blue-700 rounded-md text-white font-bold hover:bg-gray-400"
                                     )}
                                 >
                                     {permit.name}
@@ -105,7 +105,7 @@ function ApplyServicesPage() {
                                 >
                                     <button
                                         onClick={() => clickService(permit.permit_type)}
-                                        className={classNames("p-2 w-[90%] h-full bg-orange-400 rounded-md text-white font-bold hover:bg-gray-400")}
+                                        className={classNames("p-2 w-[90%] h-full bg-blue-700 rounded-md text-white font-bold hover:bg-gray-400")}
                                     >
                                         {permit.name}
                                     </button>

@@ -5,7 +5,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { FetchLoginAccount } from "../http/get/auth";
 import { useEffect, useRef, useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faChevronRight, faEdit, faSignOut } from "@fortawesome/free-solid-svg-icons";
+import { faBars, faChevronRight, faEdit, faSignOut } from "@fortawesome/free-solid-svg-icons";
 import { LoginAccount } from "../types/auth";
 import Swal from "sweetalert2";
 import { RequestAccessRole } from "../http/post/access";
@@ -13,26 +13,49 @@ import { AccessRoleTypes } from "../types/access";
 import { UploadProfilePicture } from "../http/post/document";
 import { GetProfilePicture } from "../http/get/document";
 
+import {
+  Sheet,
+  SheetContent,
+  SheetTrigger,
+} from "@/components/ui/sheet"
+
+
 export function SideBar({role}: {
   role: string
 }){
     return(
-        <div className="flex flex-col  gap-2 p-8 bg-gray-200 h-[140vh] w-[19%] z-[9999] ">
-          <img src="/img/ENGINEER_LOGO.png" alt="City Engineering Logo" width={90} className="mt-8" />
 
-          <UserInfo />
+      <Sheet>
+        <SheetTrigger className="fixed top-4 left-5 z-[9999]">
           
-          <NavLinks role={role} />
+          <FontAwesomeIcon 
+            icon={faBars} 
+            className="text-4xl font-semibold text-white"
+          />
 
-          <button
-            onClick={() => SignOut()}
-            className="bg-white text-gray-600 w-48 rounded-md p-3 font-bold hover:bg-gray-500 hover:text-white mt-4"
-          >
-            <FontAwesomeIcon icon={faSignOut}/> SIGN OUT
-          </button> 
+        </SheetTrigger>
 
+        <SheetContent side="left" className="z-[99999]">
+
+          <div className="flex flex-col items-center gap-2 h-[90vh] w-full z-[9999] mt-4 overflow-y-auto custom-scrollbar">
+            <img src="/img/ENGINEER_LOGO.png" alt="City Engineering Logo" width={90} className="mt-8" />
+
+            <UserInfo />
             
+            <NavLinks role={role} />
+
+            <button
+              onClick={() => SignOut()}
+              className="bg-white text-gray-600 w-48 rounded-md p-3 font-bold hover:bg-blue-700 hover:text-white mt-4"
+            >
+              <FontAwesomeIcon icon={faSignOut}/> SIGN OUT
+            </button> 
+
         </div>
+
+        </SheetContent>
+      </Sheet>
+
     )
 }
 
@@ -54,6 +77,9 @@ function UserInfo() {
   });
 
   const loginAccount: LoginAccount  = loginAccountResponse?.data;  
+
+  console.log("loginAccount: ", loginAccount);
+  
 
 
   const { data: profilePictureResponse } = useQuery({
@@ -142,60 +168,50 @@ function UserInfo() {
           Welcome!
         </h1>
 
-        <div className="flex items-center gap-2 mb-1">
+        <div className="flex items-center gap-2 mb-1 relative">
 
-          {
-            loginAccount.role !== "applicant" && (
-              <FontAwesomeIcon 
-                icon={faEdit} 
-                className="absolute mt-7 text-md bg-white rounded-full p-2 left-[12px] hover:cursor-pointer hover:opacity-75"
-                onClick={() => triggerFileInput()}
-              />
-            )
-          }
+          {loginAccount.role !== "applicant" && (
 
-          
+            <FontAwesomeIcon 
+              icon={faEdit} 
+              className="absolute left-[-21px] top-[70%] -translate-y-1/2  rounded-full p-2 hover:cursor-pointer hover:opacity-75 "
+              onClick={() => triggerFileInput()}
+            />
+          )}
 
-          {
-            loginAccount.role === "applicant" ? (
+          <div className="relative">
 
+            {loginAccount.role === "applicant" ? (
               <img 
                 src={
-                  
-                  loginAccount.picture == "" 
+                  loginAccount.picture == "" || loginAccount.picture == "No_Profile"
                   ? "/img/icons/staff_picture.png" 
                   : loginAccount.picture
                 } 
-                
-                className="rounded-full" 
-                width={40} 
-                height={20} 
+                className="rounded-full w-[60px] h-[60px] object-cover" 
               />
-  
-  
-            ): (
-                <img 
-                  src={
-                    profilePictureResponse?.data != "No_Profile"
-                      ? profilePictureResponse?.data.profile_src 
-                      : "/img/icons/staff_picture.png" 
-                  } 
-                    
-                  className="rounded-full" 
-                  width={60} 
-                  height={20} 
-                />
-            )
-          }
+            ) : (
 
-          
-          <div className=" font-bold text-xl overflow-hidden whitespace-nowrap text-ellipsis w-full text-center">
+              <img 
+                src={
+                  profilePictureResponse?.data != "No_Profile"
+                    ? profilePictureResponse?.data.profile_src 
+                    : "/img/icons/staff_picture.png" 
+                } 
+                className="rounded-full w-[60px] h-[60px] object-cover" 
+              />
+            )}
+
+          </div>
+
+          <div className="font-bold text-xl w-full text-center">
             {loginAccount.name}
           </div>
 
         </div>
 
-        <h1 className="font-bold text-orange-400">{loginAccount.role.toLocaleUpperCase()}</h1>
+
+        <h1 className="font-bold text-blue-700">{loginAccount.role.toLocaleUpperCase()}</h1>
 
         <input
           ref={fileInputRef} 
@@ -415,7 +431,7 @@ function NavLinks({ role }: { role: string }) {
             onClick={() => setActiveLink(item.to)}
             className={classNames(
               "font-bold text-lg p-2 rounded-md w-full text-center flex items-center gap-1",
-              activeLink === item.to ? "bg-orange-400 text-white" : "text-gray-600 hover:bg-gray-500 hover:text-white"
+              activeLink === item.to ? "bg-blue-700 text-white" : "text-gray-600 hover:bg-gray-500 hover:text-white"
             )}
           >
 
@@ -430,7 +446,7 @@ function NavLinks({ role }: { role: string }) {
 
           <div 
             onClick={toggleAdminModal}
-            className="relative flex  justify-center text-lg p-2 rounded-md gap-2 text-gray-600 hover:bg-gray-500 hover:text-white"
+            className="relative flex  justify-center text-lg p-2 rounded-md gap-2 text-gray-600 hover:bg-blue-700 hover:text-white"
           >
             <img 
               src="/img/icons/staff_picture.png"             
@@ -475,7 +491,7 @@ function NavLinks({ role }: { role: string }) {
         
           <div 
             onClick={toggleAdminModal}
-            className="relative flex gap-3 text-lg p-2 rounded-md text-gray-600 hover:bg-gray-500 hover:text-white"
+            className="relative flex gap-3 text-lg p-2 rounded-md text-gray-600 hover:bg-blue-700 hover:text-white"
           >
             <img 
               src="/img/icons/staff_picture.png"             

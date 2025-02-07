@@ -8,11 +8,11 @@ import RequirementsModal from '../../components/modal/applicant/RequirementsModa
 import BuildingPDF from '../../components/pdfs/Building';
 
 import '../../assets/scrollStyle.css'
-import { PTMSHeader } from '../../components/PtmsHeader';
+import { ApplicationNoteSubHeader, PTMSHeader } from '../../components/PtmsHeader';
 import { classNames } from '../../helpers/classNames';
 import PlumbingPDF from '../../components/pdfs/Plumbing';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faEllipsisVertical } from '@fortawesome/free-solid-svg-icons';
+import { faAddressCard, faEllipsisVertical, faFileLines, faRectangleList } from '@fortawesome/free-solid-svg-icons';
 import ElectronicsPermit from '../../components/pdfs/Electronics';
 import ElectricalPermit from '../../components/pdfs/Electrical';
 import MechanicalPermit from '../../components/pdfs/Mechanical';
@@ -29,6 +29,13 @@ import ExcavationCompletionPDF from '../../components/pdfs/completions/Excavatio
 import SignedCompletionPDF from '../../components/pdfs/completions/Signed';
 import DemolitionCompletionPDF from '../../components/pdfs/completions/Demolition';
 import MechanicalCompletionPDF from '../../components/pdfs/completions/Mechanical';
+
+
+import {
+    HoverCard,
+    HoverCardContent,
+    HoverCardTrigger,
+} from "@/components/ui/hover-card"
 
 function ServicesPage(){
 
@@ -159,19 +166,21 @@ function ServicesPage(){
 
            
 
-            <div className="flex justify-center items-start h-screen w-[79%] pt-32">
+            <div className="flex justify-center items-start h-screen w-full pt-32">
                 <PTMSHeader />
 
-                <div className="flex flex-col gap-5 w-full pb-5">
+                <ApplicationNoteSubHeader />
+
+                <div className="flex flex-col gap-5 w-full pb-5 ml-8 mt-20">
 
                     <div className="flex flex-col">
                         <h1 className='font-bold text-xl text-gray-600 mb-5'>Step 3:</h1>
-                        <h1 className="text-4xl font-bold text-orange-500">Applied Services</h1>
+                        <h1 className="text-4xl font-bold text-blue-700">Applied Services</h1>
                     </div>
 
-                    <div className="flex gap-3 pr-12">
+                    <div className="flex gap-3 pr-12 bg-blue-100">
 
-                                <div className="flex flex-col bg-orange-100 h-[70%] rounded-md">
+                                <div className="flex flex-col h-[70%] rounded-md w-full">
 
                                     <div className="overflow-x-auto sm:-mx-6 lg:-mx-8">
                                         <div className="inline-block min-w-full py-2 sm:px-6 lg:px-8">
@@ -215,27 +224,64 @@ function ServicesPage(){
 
                                                         <td className="whitespace-nowrap pl-6 py-4">
                                                             <div className="flex gap-5">
-                                                                <button 
-                                                                    onClick={() => openApplicationModal(data)}
-                                                                    className="bg-orange-400 rounded-md p-2 text-white font-bold hover:opacity-75"
-                                                                    >
-                                                                    View Information
-                                                                </button>
 
-                                                                <button 
-                                                                    onClick={() => setPermits(data)}
-                                                                    className="bg-green-700 rounded-md p-2 text-white font-bold hover:opacity-75"
-                                                                    >
-                                                                    Application Form
-                                                                </button>
+                                                                <HoverCard>
+                                                                        <HoverCardTrigger>
+                                                                            <button 
+                                                                                onClick={() => openApplicationModal(data)}
+                                                                                className="bg-blue-700 rounded-md p-2 text-white font-bold hover:opacity-75"
+                                                                                >
+                                                                                <FontAwesomeIcon icon={faAddressCard}/>
+                                                                            </button>
+
+                                                                        </HoverCardTrigger>
+
+                                                                        <HoverCardContent>
+                                                                            Information Hover
+                                                                        </HoverCardContent>
+
+                                                                </HoverCard>
+
+                                                                
+                                                                
+
+                                                                <HoverCard>
+                                                                        <HoverCardTrigger>
+                                                                            <button 
+                                                                                onClick={() => setPermits(data)}
+                                                                                className="bg-green-700 rounded-md p-2 text-white font-bold hover:opacity-75"
+                                                                                >
+                                                                                <FontAwesomeIcon icon={faRectangleList}/>
+                                                                            </button>
+                                                                        </HoverCardTrigger>
+
+                                                                        <HoverCardContent>
+                                                                            Application Form Hover
+                                                                        </HoverCardContent>
+
+                                                                </HoverCard>
 
 
-                                                                <button 
-                                                                    onClick={() => setShowRequirements(true)}
-                                                                    className="bg-sky-600 text-white font-bold p-2 rounded-md hover:opacity-75"
-                                                                    >
-                                                                    Requirements
-                                                                </button>
+                                                                
+
+                                                                <HoverCard>
+                                                                        <HoverCardTrigger>
+                                                                            <button 
+                                                                                onClick={() => setShowRequirements(true)}
+                                                                                className="bg-sky-600 text-white font-bold p-2 rounded-md hover:opacity-75"
+                                                                                >
+                                                                                <FontAwesomeIcon icon={faFileLines}/>
+                                                                            </button>
+                                                                        </HoverCardTrigger>
+
+                                                                        <HoverCardContent>
+                                                                            Requirements Hover
+                                                                        </HoverCardContent>
+
+                                                                </HoverCard>
+
+
+                                                                
                                                                 
 
                                                                 <FontAwesomeIcon 
@@ -255,7 +301,7 @@ function ServicesPage(){
                                                                             disabled={data.status != 'Approved'}
                                                                             className={classNames(
                                                                                 "w-full text-white p-2 hover:opacity-75 rounded-md cursor-pointer text-center",
-                                                                                data.status != 'Approved' ? 'hover:cursor-not-allowed bg-gray-400': 'bg-orange-600'
+                                                                                data.status != 'Approved' ? 'hover:cursor-not-allowed bg-gray-400': 'bg-blue-700'
                                                                             )}
 
                                                                             onClick={() => {
@@ -271,7 +317,7 @@ function ServicesPage(){
                                                                             disabled={data.status != 'Approved'}
                                                                             className={classNames(
                                                                                 "w-full text-white p-2 hover:opacity-75 rounded-md cursor-pointer text-center",
-                                                                                data.status != 'Approved' ? 'hover:cursor-not-allowed bg-gray-400': 'bg-orange-600'
+                                                                                data.status != 'Approved' ? 'hover:cursor-not-allowed bg-gray-400': 'bg-blue-700'
                                                                             )}
 
                                                                             >
@@ -299,7 +345,7 @@ function ServicesPage(){
                                 </div>
                                 
 
-                        <div className=" rounded-md p-5 h-1/2 ">
+                        {/* <div className=" rounded-md p-5 h-1/2 ">
                             <h1 className='font-bold text-xl'>Note:</h1>
 
                             <div className="flex flex-col gap-5">
@@ -313,7 +359,7 @@ function ServicesPage(){
                                     <h1>City Engineering Office</h1>
                                 </div>    
                             </div>
-                        </div>
+                        </div> */}
 
                        
 

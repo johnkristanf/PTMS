@@ -95,29 +95,55 @@ export const AssessmentCheckListModal = ({ applicationID, setAssessmentChecklist
                                 <h1 className='text-3xl font-semibold'>Assessments</h1>
                                 <h1 className='font-semibold text-lg'>Payment Status: <span className={statusColor}>{ assessments?.status.toUpperCase() }</span> </h1>
                             </div>
-                            {!isPaid && (
-                                <div className="flex gap-5">
-                                    <div className="flex flex-col gap-2">
-                                        <label className="font-semibold">Date Paid:</label>
-                                        <input 
-                                            type="date" 
-                                            {...register("datePaid", { required: true })} 
-                                            className={errors.datePaid ? "border-red-500" : ""}
-                                        />
-                                        {errors.datePaid && <span className="text-red-500">This field is required</span>}
+                            {
+                                !isPaid ? (
+                                    <div className="flex gap-5">
+                                        <div className="flex flex-col gap-2">
+                                            <label className="font-semibold">Date Paid:</label>
+                                            <input 
+                                                type="date" 
+                                                {...register("datePaid")} 
+                                                required
+                                                className={errors.datePaid ? "border-red-500" : ""} 
+                                            />
+                                            {!isPaid && errors.datePaid && <span className="text-red-500">This field is required</span>}
+                                        </div>
+
+                                        <div className="flex flex-col gap-2">
+                                            <label className="font-semibold">OR Number:</label>
+                                                <input 
+                                                type="number" 
+                                                placeholder="Enter OR Number" 
+                                                {...register("orNumber")} 
+                                                required
+                                                className={`bg-gray-400 rounded-md p-1 placeholder-black focus:outline-white text-white placeholder:text-white ${errors.orNumber ? "border-red-500" : ""}`} 
+                                            />
+                                            {!isPaid && errors.orNumber && <span className="text-red-500">This field is required</span>}
+                                        </div>
                                     </div>
-                                    <div className="flex flex-col gap-2">
-                                        <label className="font-semibold">OR Number:</label>
-                                        <input 
-                                            type="number" 
-                                            placeholder="Enter OR Number" 
-                                            {...register("orNumber", { required: true })} 
-                                            className={`bg-gray-400 rounded-md p-1 placeholder-black focus:outline-white text-white placeholder:text-white ${errors.orNumber ? "border-red-500" : ""}`} 
-                                        />
-                                        {errors.orNumber && <span className="text-red-500">This field is required</span>}
+
+                                ) : (
+                                    <div className="flex flex-col gap-5 font-semibold">
+
+                                        <div className="flex gap-2">
+                                            <label >Payor:</label>
+                                            <label >{assessments.full_name}</label>
+                                        </div>
+
+                                        <div className="flex gap-2">
+                                            <label >Date Paid:</label>
+                                            <label >{assessments.date_paid}</label>
+                                        </div>
+
+                                        <div className="flex gap-2">
+                                            <label>OR Number:</label>
+                                            <label>{assessments.or_number}</label>
+                                        </div>
+
                                     </div>
-                                </div>
-                            )}
+                                )
+                            }
+
                         </div>
 
 
@@ -166,7 +192,7 @@ export const AssessmentCheckListModal = ({ applicationID, setAssessmentChecklist
                                 {!isPaid && (
                                     <button
                                         type='submit'
-                                        className='bg-orange-500 rounded-md p-2 w-[50%] text-white hover:opacity-75'>
+                                        className='bg-blue-700 rounded-md p-2 w-[50%] text-white hover:opacity-75'>
                                         Save
                                     </button>
                                 )}

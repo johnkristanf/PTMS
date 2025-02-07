@@ -80,7 +80,7 @@ func (h *AccessHandler) OpenGrantedStaffHandler(c echo.Context) error {
 
 	admins := [3]string{"architectural", "electrical", "civil"}
 	
-	var userInfo *types.UserInfo 
+	var userInfo *types.StaffAccountInfo 
     var findUserErr error
 
 	if contains(admins, accessRoleData.AccessRole){

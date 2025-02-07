@@ -4,6 +4,14 @@ import '../../assets/scrollStyle.css'
 import { useState } from "react";
 import { ReleaseDateModal } from "../modal/staff/ReleaseModal";
 import { useFetchDisapprovedByStatus } from "../../hook/useFetchDisapprovedByStatus";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faFileExport } from "@fortawesome/free-solid-svg-icons";
+
+import {
+    HoverCard,
+    HoverCardContent,
+    HoverCardTrigger,
+} from "@/components/ui/hover-card"
 
 interface DisapprovedTableFC {
     searchTerm: string,
@@ -92,14 +100,25 @@ export function DisapprovedTable({searchTerm, selectedMonth, isReleaser}: Disapp
                                         isReleaser && item.release_date == "" && (
 
                                             <td className="whitespace-nowrap pl-4 py-4">
-                                                <button
-                                                    onClick={(e) =>
-                                                        onOpenReleaseModal(e, item.application_id, item.email, item.user_id)
-                                                    }
-                                                    className="bg-orange-500 text-white font-bold p-3 rounded-md hover:opacity-75"
-                                                >
-                                                Release
-                                                </button>
+
+                                                <HoverCard>
+                                                        <HoverCardTrigger>
+                                                            <button
+                                                                onClick={(e) =>
+                                                                    onOpenReleaseModal(e, item.application_id, item.email, item.user_id)
+                                                                }
+                                                                className="bg-orange-500 text-white font-bold p-3 rounded-md hover:opacity-75"
+                                                            >
+                                                                <FontAwesomeIcon icon={faFileExport}/>
+                                                            </button>
+                                                        </HoverCardTrigger>
+                                                        
+                                                        <HoverCardContent>
+                                                            Release Disapproved Documents Hover
+                                                        </HoverCardContent>
+                                                        
+                                                </HoverCard> 
+                                                
                                             </td>
                                         )
                                     }
