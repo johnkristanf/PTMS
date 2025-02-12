@@ -393,9 +393,9 @@ func SendActivationSignupLinkEmail(to string) error {
 
     defer Disconnection(client)
 
-	// CHANGE THIS SHIT TO PRODUCTION LATER ON https://web-ptms.com/activate?email
+	// CHANGE THIS SHIT TO PRODUCTION LATER ON https://ptms-alpha.vercel.app/activate?email
 
-	activationLink := fmt.Sprintf("http://localhost:9090/activate?email=%s", to)
+	activationLink := fmt.Sprintf("https://ptms-alpha.vercel.app/activate?email=%s", to)
 
 
 	body := fmt.Sprintf(`Dear %s,

@@ -74,7 +74,7 @@ export const StaffAccountModalForm: React.FC<StaffAccountModalFormProps> = ({ se
                                     key={data.registerName}
                                     type={data.inputType}
                                     placeholder={data.placeHolder}
-                                    className="bg-gray-400 placeholder-black font-semibold rounded-md p-2 focus:outline-orange-500 w-full"
+                                    className="bg-gray-400 placeholder-black font-semibold rounded-md p-2 focus:outline-blue-700 w-full"
                                     {...register(data.registerName as keyof StaffAccount)}
                                 />
                             ))}
@@ -82,7 +82,7 @@ export const StaffAccountModalForm: React.FC<StaffAccountModalFormProps> = ({ se
 
                         <select
                             {...register("role")}
-                            className="bg-gray-400 text-black font-semibold rounded-md p-2 focus:outline-orange-500 w-full"
+                            className="bg-gray-400 text-black font-semibold rounded-md p-2 focus:outline-blue-700 w-full"
                             onChange={(e) => handleRoleChange(e)}
                         >
                             <option value="">Select Role</option>
@@ -93,7 +93,7 @@ export const StaffAccountModalForm: React.FC<StaffAccountModalFormProps> = ({ se
 
                         <button
                             type="submit"
-                            className="bg-orange-500 rounded-md p-2 mt-3 text-white w-full font-semibold hover:opacity-75"
+                            className="bg-blue-700 rounded-md p-2 mt-3 text-white w-full font-semibold hover:opacity-75"
                         >
                             SUBMIT
                         </button>
