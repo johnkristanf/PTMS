@@ -116,9 +116,10 @@ export const EditStaffAccountModalForm: React.FC<EditStaffAccountModalFormProps>
 
                         <button
                             type="submit"
-                            className="bg-blue-700 rounded-md p-2 mt-3 text-white w-full font-semibold hover:opacity-75"
+                            className={`rounded-md p-2 mt-3 w-full font-semibold ${mutation.isPending ? "bg-gray-500 cursor-not-allowed" : "bg-blue-700 hover:opacity-75 text-white"}`}
+                            disabled={mutation.isPending}
                         >
-                            EDIT
+                            {mutation.isPending ? "Submitting..." : "EDIT"}
                         </button>
 
                         <button
