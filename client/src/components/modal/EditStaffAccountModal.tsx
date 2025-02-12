@@ -91,7 +91,7 @@ export const EditStaffAccountModalForm: React.FC<EditStaffAccountModalFormProps>
                                                 : data.inputType
                                         }
                                         defaultValue={data.value}
-                                        className="bg-gray-300 placeholder-black font-semibold rounded-md p-2 focus:outline-orange-500 w-full"
+                                        className="bg-gray-300 placeholder-black font-semibold rounded-md p-2 focus:outline-blue-700 w-full"
                                         {...register(data.registerName as keyof EditStaffAccountType)}
                                     />
 
@@ -116,7 +116,7 @@ export const EditStaffAccountModalForm: React.FC<EditStaffAccountModalFormProps>
 
                         <button
                             type="submit"
-                            className="bg-orange-400 rounded-md p-2 mt-3 text-white w-full font-semibold hover:opacity-75"
+                            className="bg-blue-700 rounded-md p-2 mt-3 text-white w-full font-semibold hover:opacity-75"
                         >
                             EDIT
                         </button>
