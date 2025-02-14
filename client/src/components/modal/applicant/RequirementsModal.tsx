@@ -28,7 +28,7 @@ function RequirementsModal({ setShowRequirements, role }: {
                           {({ url }) => (
 
                             url ? (
-                                <a href={url} download="requirements.pdf" className="w-[85%] text-center bg-orange-500 hover:opacity-75 text-white font-bold py-2 px-4 rounded w-1/2">
+                                <a href={url} download="requirements.pdf" className="w-[85%] text-center bg-blue-700 hover:opacity-75 text-white font-bold py-2 px-4 rounded w-1/2">
                                 Download PDF
                                 </a>
 

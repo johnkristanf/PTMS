@@ -13,6 +13,14 @@ import { AccessRoleTypes } from "../types/access";
 import { UploadProfilePicture } from "../http/post/document";
 import { GetProfilePicture } from "../http/get/document";
 
+
+import {
+  Collapsible,
+  CollapsibleContent,
+  CollapsibleTrigger,
+} from "@/components/ui/collapsible"
+
+
 import {
   Sheet,
   SheetContent,
@@ -46,7 +54,7 @@ export function SideBar({role}: {
 
             <button
               onClick={() => SignOut()}
-              className="bg-white text-gray-600 w-48 rounded-md p-3 font-bold hover:bg-blue-700 hover:text-white mt-4"
+              className="bg-white text-gray-600 w-full  rounded-md p-3 font-bold hover:bg-blue-700 hover:text-white mt-4"
             >
               <FontAwesomeIcon icon={faSignOut}/> SIGN OUT
             </button> 
@@ -253,11 +261,11 @@ function NavLinks({ role }: { role: string }) {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const navLinks: NavigationTypes[] = [];
   const admins: AdminSwitchRoleNavigation[] = [];
-  const accessStaffs: StaffSwitchRoleNavigation[] = [];
+  const staffs: StaffSwitchRoleNavigation[] = [];
 
-  const [isAdminModalVisible, setIsAdminModalVisible] = useState(false); 
+  // const [isAdminModalVisible, setIsAdminModalVisible] = useState(false); 
   const [toAccessRole, setToAccessRole] = useState<string>();
-  const toggleAdminModal = () => setIsAdminModalVisible((prevState) => !prevState);
+  // const toggleAdminModal = () => setIsAdminModalVisible((prevState) => !prevState);
   const queryClient = useQueryClient();
 
   const adminTypes = [
@@ -294,7 +302,7 @@ function NavLinks({ role }: { role: string }) {
   
 
   const handleRequestAccessRole = (role: string, user_id: number, access_role: string, isAdmin: boolean) => {
-    toggleAdminModal();
+    // toggleAdminModal();
     const accessRole: AccessRoleTypes = {
       role,
       user_id, 
@@ -372,8 +380,8 @@ function NavLinks({ role }: { role: string }) {
     navLinks.push({ name: "Pending", to: "/receiver/pending/applications", iconSrc: "/img/icons/services_option.png" });
     navLinks.push({ name: "Trash", to: "/receiver/trash/applications", iconSrc: "/img/icons/trash.png" });
 
-    accessStaffs.push({ name: "Scanner", role: "SCANNER", iconSrc: "/img/icons/scanner_icon.png" });
-    accessStaffs.push({ name: "Releaser", role: "RELEASER", iconSrc: "/img/icons/releaser_icon.png" });
+    staffs.push({ name: "Scanner", role: "SCANNER", iconSrc: "/img/icons/scanner_icon.png" });
+    staffs.push({ name: "Releaser", role: "RELEASER", iconSrc: "/img/icons/releaser_icon.png" });
     
     navLinks.push({ name: "Edit Account", to: "/edit/receiver", iconSrc: "/img/icons/edit_account.png" });
   }
@@ -381,8 +389,8 @@ function NavLinks({ role }: { role: string }) {
   if (role === "scanner") {
     navLinks.push({ name: "Approved", to: "/scanner/approved", iconSrc: "/img/icons/approved.png" });
 
-    accessStaffs.push({ name: "Receiver", role: "RECEIVER", iconSrc: "/img/icons/receiver_icon.png" });
-    accessStaffs.push({ name: "Releaser", role: "RELEASER", iconSrc: "/img/icons/releaser_icon.png" });
+    staffs.push({ name: "Receiver", role: "RECEIVER", iconSrc: "/img/icons/receiver_icon.png" });
+    staffs.push({ name: "Releaser", role: "RELEASER", iconSrc: "/img/icons/releaser_icon.png" });
     
     navLinks.push({ name: "Edit Account", to: "/edit/scanner", iconSrc: "/img/icons/edit_account.png" });
   }
@@ -393,8 +401,8 @@ function NavLinks({ role }: { role: string }) {
     navLinks.push({ name: "Disapproved", to: "/releaser/disapproved", iconSrc: "/img/icons/disapproved.png" });
     navLinks.push({ name: "Report", to: "/releaser/report", iconSrc: "/img/icons/approved.png" });
 
-    accessStaffs.push({ name: "Receiver", role: "RECEIVER", iconSrc: "/img/icons/receiver_icon.png" });
-    accessStaffs.push({ name: "Scanner", role: "SCANNER", iconSrc: "/img/icons/scanner_icon.png" });
+    staffs.push({ name: "Receiver", role: "RECEIVER", iconSrc: "/img/icons/receiver_icon.png" });
+    staffs.push({ name: "Scanner", role: "SCANNER", iconSrc: "/img/icons/scanner_icon.png" });
 
     navLinks.push({ name: "Edit Account", to: "/edit/releaser", iconSrc: "/img/icons/edit_account.png" });
   }
@@ -421,7 +429,7 @@ function NavLinks({ role }: { role: string }) {
 
 
   return (
-    <div className="flex flex-col items-center gap-8 text-white w-full">
+    <div className="flex flex-col gap-8 text-white w-full">
       {navLinks.map((item) => (
 
           <Link
@@ -443,95 +451,83 @@ function NavLinks({ role }: { role: string }) {
       ))}
 
       {adminTypes.includes(role) && (
+        
+          <Collapsible>
 
-          <div 
-            onClick={toggleAdminModal}
-            className="relative flex  justify-center text-lg p-2 rounded-md gap-2 text-gray-600 hover:bg-blue-700 hover:text-white"
-          >
-            <img 
-              src="/img/icons/staff_picture.png"             
-              className="rounded-full" 
-              width={20} 
-              height={20} 
-            />
+            <CollapsibleTrigger className="relative flex items-center w-full text-lg p-2 rounded-md gap-2 text-gray-600 hover:bg-blue-700 hover:text-white">
+              <img 
+                src="/img/icons/staff_picture.png"             
+                className="rounded-full" 
+                width={20} 
+                height={20} 
+              />
+              <button className="font-bold w-full text-start flex items-center gap-2">
+                Access Admin
+                <FontAwesomeIcon icon={faChevronRight}/>
+              </button>
 
-            <button
-              className="font-bold w-full text-center"
-            >
-              Switch Admin
-            </button>
+            </CollapsibleTrigger>
+            
+            <CollapsibleContent className="bg-blue-700 text-white mt-3 p-2 rounded-md w-full">
+              {admins.map((item) => (
+                <button
+                  key={item.name}
+                  onClick={() => {
+                    setActiveLink(item.admin_type);
+                    handleRequestAccessRole(loginAccount.adminType || "", loginAccount.id, item.admin_type, true)
+                    setToAccessRole(item.admin_type)
+                  }}
+                  className={classNames(
+                    "font-bold text-lg p-2 rounded-md w-full text-center flex items-center justify-center gap-1 hover:text-black"
+                  )}
+                  >
+                  {item.name}
+                </button>
+              ))}
+            </CollapsibleContent>
 
-            <FontAwesomeIcon icon={faChevronRight} className="text-black"/>
-
-            {isAdminModalVisible && (
-                <div className="absolute right-[-200px] top-[-20px] bg-gray-400 text-white p-2 rounded-md w-[180px] h-[100px] shadow-lg">
-                  {admins.map((item) => (
-                    <button
-                      key={item.name}
-                      onClick={() => {
-                        setActiveLink(item.admin_type);
-                        toggleAdminModal(); 
-                        handleRequestAccessRole(loginAccount.adminType || "", loginAccount.id, item.admin_type, true)
-                        setToAccessRole(item.admin_type)
-                      }}
-                      className={classNames(
-                        "font-bold text-lg p-2 rounded-md w-full text-center flex items-center justify-center gap-1 hover:text-black"
-                      )}
-                    >
-                      {item.name}
-                    </button>
-                  ))}
-                </div>
-            )}
-          </div>
-      )}
+          </Collapsible>
+        )}
 
 
       {staffTypes.includes(role) && (
         
-          <div 
-            onClick={toggleAdminModal}
-            className="relative flex gap-3 text-lg p-2 rounded-md text-gray-600 hover:bg-blue-700 hover:text-white"
-          >
-            <img 
-              src="/img/icons/staff_picture.png"             
-              className="rounded-full" 
-              width={20} 
-              height={20} 
-            />
+          <Collapsible>
 
-            <button
-              className="font-bold w-full text-center"
-            >
-              Access Staff
-            </button>
+            <CollapsibleTrigger className="relative flex items-center w-full text-lg p-2 rounded-md gap-2 text-gray-600 hover:bg-blue-700 hover:text-white">
+              <img 
+                src="/img/icons/staff_picture.png"             
+                className="rounded-full" 
+                width={20} 
+                height={20} 
+              />
+              <button className="font-bold w-full text-start flex items-center gap-2">
+                Access Staff
+                <FontAwesomeIcon icon={faChevronRight}/>
+              </button>
 
-            <FontAwesomeIcon icon={faChevronRight} className="text-black"/>
+            </CollapsibleTrigger>
+            
+            <CollapsibleContent className="bg-blue-700 text-white mt-3 p-2 rounded-md w-full">
+              {staffs.map((item) => (
+                <button
+                  key={item.name}
+                  onClick={() => {
+                    setActiveLink(item.role);
+                    handleRequestAccessRole(loginAccount.role || "", loginAccount.id, item.role, false)
+                    setToAccessRole("staff")
+                  }}
+                  className={classNames(
+                    "font-bold text-lg p-2 rounded-md w-full text-center flex items-center justify-center gap-1 hover:text-black"
+                  )}
+                  >
+                  {item.name}
+                </button>
+              ))}
+            </CollapsibleContent>
 
-            {isAdminModalVisible && (
-                <div className="absolute right-[-200px] top-[-20px] bg-gray-400 text-white p-2 rounded-md w-[180px] h-[100px] shadow-lg">
-                  
-                  {accessStaffs.map((item) => (
-                    <button
-                      key={item.name}
-                      onClick={() => {
-                        setActiveLink(item.role);
-                        toggleAdminModal(); 
-                        handleRequestAccessRole(loginAccount.role, loginAccount.id, item.role, false)
-                        setToAccessRole("staff")
-                      }}
-                      className={classNames(
-                        "font-bold text-lg p-2 rounded-md w-full text-center flex items-center justify-center gap-1 hover:text-black"
-                      )}
-                    >
-                      {item.name}
-                    </button>
-                  ))}
-
-                </div>
-            )}
-          </div>
-      )}
+          </Collapsible>
+        )}
 
       
     </div>

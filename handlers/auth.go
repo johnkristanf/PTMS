@@ -100,22 +100,17 @@ func (h *AuthHandler) StaffAccountLoginHandler(c echo.Context) error {
 			return err
 		}
 
-		// var webPhase http.SameSite
-
-		// if os.Getenv("WEB_PHASE") == "production" { 
-		// 	webPhase = http.SameSiteNoneMode 
-		// } else {
-		// 	webPhase = http. 
-		// }
+		// FOR PRODUCTION: secure: true, samesite: http.samesitenonemode
+		// FOR DEVELOPMENT: secure: false, samesite: http.samesitelaxmode
 
 		accessTokenCookie := &http.Cookie{
 			Name:     "access_token",
 			Value:    access_token,
 			Path:     "/",
-			SameSite: http.SameSiteNoneMode,
+			SameSite: http.SameSiteLaxMode,
 			Expires:  time.Now().Add(5 * time.Hour),
 			HttpOnly: true,
-			Secure:   true,
+			Secure:   false,
 
 		}
 	
@@ -123,10 +118,10 @@ func (h *AuthHandler) StaffAccountLoginHandler(c echo.Context) error {
 			Name:     "refresh_token",
 			Value:    refresh_token,
 			Path:     "/",
-			SameSite: http.SameSiteNoneMode,
+			SameSite: http.SameSiteLaxMode,
 			Expires:  time.Now().Add(3 * 24 * time.Hour),
 			HttpOnly: true,
-			Secure:   true,
+			Secure:   false,
 
 		}
 	
@@ -226,7 +221,7 @@ func (h *AuthHandler) ApplicantLoginHandler(c echo.Context) error {
 		// var webPhase http.SameSite
 
 		// if os.Getenv("WEB_PHASE") == "production" { 
-		// 	webPhase = http.SameSiteNoneMode 
+		// 	webPhase = http.SameSiteLaxMode 
 		// } else {
 		// 	webPhase = http. 
 		// }
@@ -235,10 +230,10 @@ func (h *AuthHandler) ApplicantLoginHandler(c echo.Context) error {
 			Name:     "access_token",
 			Value:    access_token,
 			Path:     "/",
-			SameSite: http.SameSiteNoneMode,
+			SameSite: http.SameSiteLaxMode,
 			Expires:  time.Now().Add(5 * time.Hour),
 			HttpOnly: true,
-			Secure:   true,
+			Secure:   false,
 
 		}
 	
@@ -246,10 +241,10 @@ func (h *AuthHandler) ApplicantLoginHandler(c echo.Context) error {
 			Name:     "refresh_token",
 			Value:    refresh_token,
 			Path:     "/",
-			SameSite: http.SameSiteNoneMode,
+			SameSite: http.SameSiteLaxMode,
 			Expires:  time.Now().Add(3 * 24 * time.Hour),
 			HttpOnly: true,
-			Secure:   true,
+			Secure:   false,
 
 		}
 	
@@ -378,7 +373,7 @@ func (h *AuthHandler) OauthGoogleCallback(c echo.Context) error {
 	// var webPhase http.SameSite
 
 	// if os.Getenv("WEB_PHASE") == "production" { 
-	// 	webPhase = http.SameSiteNoneMode 
+	// 	webPhase = http.SameSiteLaxMode 
 	// } else {
 	// 	webPhase = http.SameSiteLaxMode 
 	// }
@@ -387,10 +382,10 @@ func (h *AuthHandler) OauthGoogleCallback(c echo.Context) error {
 		Name:     "access_token",
 		Value:    access_token,
 		Path:     "/",
-		SameSite: http.SameSiteNoneMode,
+		SameSite: http.SameSiteLaxMode,
 		Expires:  time.Now().Add(5 * time.Hour),
 		HttpOnly: true,
-		Secure:   true,
+		Secure:   false,
 
 	}
 
@@ -398,10 +393,10 @@ func (h *AuthHandler) OauthGoogleCallback(c echo.Context) error {
 		Name:     "refresh_token",
 		Value:    refresh_token,
 		Path:     "/",
-		SameSite: http.SameSiteNoneMode,
+		SameSite: http.SameSiteLaxMode,
 		Expires:  time.Now().Add(3 * 24 * time.Hour),
 		HttpOnly: true,
-		Secure:   true,
+		Secure:   false,
 
 	}
 
@@ -604,7 +599,7 @@ func (h *AuthHandler) SignoutHandler(c echo.Context) error {
 	// var webPhase http.SameSite
 
 	// if os.Getenv("WEB_PHASE") == "production" { 
-	// 	webPhase = http.SameSiteNoneMode 
+	// 	webPhase = http.SameSiteLaxMode 
 	// } else {
 	// 	webPhase = http. 
 	// }
@@ -613,22 +608,22 @@ func (h *AuthHandler) SignoutHandler(c echo.Context) error {
 		Name:     "access_token",
 		Value:    "",
 		Path:     "/",
-		SameSite: http.SameSiteNoneMode,
+		SameSite: http.SameSiteLaxMode,
 		Expires:  time.Unix(0, 0),
 		MaxAge:   -1,
 		HttpOnly: true,
-		Secure:   true,
+		Secure:   false,
 	})
 
 	c.SetCookie(&http.Cookie{
 		Name:     "refresh_token",
-		SameSite: http.SameSiteNoneMode,
+		SameSite: http.SameSiteLaxMode,
 		Value:    "",
 		Path:     "/",
 		Expires:  time.Unix(0, 0),
 		MaxAge:   -1,
 		HttpOnly: true,
-		Secure:   true,
+		Secure:   false,
 	})
 
 

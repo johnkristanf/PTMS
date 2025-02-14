@@ -41,7 +41,7 @@ export function ApplicantInformationFormApplicant({ applicantInfo }: {
                         <div className="flex gap-2">
                             <input 
                                 type="text"
-                                className={classNames("bg-gray-400 placeholder-black font-semibold rounded-md p-2 focus:outline-orange-500")}
+                                className={classNames("bg-gray-400 placeholder-black font-semibold rounded-md p-2 focus:outline-blue-700")}
                                 value={applicantInfo?.applicationCode}
                                 readOnly
                                 disabled
@@ -71,7 +71,7 @@ export function ApplicantInformationFormApplicant({ applicantInfo }: {
                         <input 
                             type="text"
                             value={`${applicantInfo?.firstname} ${applicantInfo?.middleInitial} ${applicantInfo?.lastName}`} 
-                            className={classNames("bg-gray-400 placeholder-black font-semibold rounded-md p-2 focus:outline-orange-500 w-full")}
+                            className={classNames("bg-gray-400 placeholder-black font-semibold rounded-md p-2 focus:outline-blue-700 w-full")}
                             readOnly
 
                         />
@@ -88,7 +88,7 @@ export function ApplicantInformationFormApplicant({ applicantInfo }: {
                                 <input 
                                     type={data.inputType} 
                                     value={data.value} 
-                                    className={classNames("bg-gray-400 placeholder-black font-semibold rounded-md p-2 focus:outline-orange-500 w-full")}
+                                    className={classNames("bg-gray-400 placeholder-black font-semibold rounded-md p-2 focus:outline-blue-700 w-full")}
                                     readOnly
 
                                 />
@@ -104,7 +104,7 @@ export function ApplicantInformationFormApplicant({ applicantInfo }: {
                         <input 
                             type="text"
                             value={`${applicantInfo?.addressNo} ${applicantInfo?.barangay} ${applicantInfo?.street} ${applicantInfo?.municipality} ${applicantInfo?.zipCode}`} 
-                            className={classNames("bg-gray-400 placeholder-black font-semibold rounded-md p-2 focus:outline-orange-500 w-full")}
+                            className={classNames("bg-gray-400 placeholder-black font-semibold rounded-md p-2 focus:outline-blue-700 w-full")}
                             readOnly
 
                         />
@@ -115,7 +115,7 @@ export function ApplicantInformationFormApplicant({ applicantInfo }: {
                         <input 
                             type="text"
                             value={applicantInfo?.locationForConstruct_Install} 
-                            className={classNames("bg-gray-400 placeholder-black font-semibold rounded-md p-2 focus:outline-orange-500 w-full")}
+                            className={classNames("bg-gray-400 placeholder-black font-semibold rounded-md p-2 focus:outline-blue-700 w-full")}
                             readOnly
 
                         />
@@ -132,7 +132,7 @@ export function ApplicantInformationFormApplicant({ applicantInfo }: {
                                 <input 
                                     type={data.inputType} 
                                     value={data.value} 
-                                    className={classNames("bg-gray-400 placeholder-black font-semibold rounded-md p-2 focus:outline-orange-500 w-full")}
+                                    className={classNames("bg-gray-400 placeholder-black font-semibold rounded-md p-2 focus:outline-blue-700 w-full")}
                                     readOnly
                                 />
                             </div>
