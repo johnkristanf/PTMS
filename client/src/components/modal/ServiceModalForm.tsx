@@ -455,82 +455,83 @@ export const ServiceModalForm = ({ selectedService, setServiceModalOpen }: {
                         </div>
 
                         {
-    !excludedForScopeOccupancy.includes(selectedService) && (
-        <Tabs defaultValue={selectedService} className="w-full">
-        
-            <TabsList className={classNames(
-                selectedService == "Building" ? "mb-12": "mb-4",
-                `flex flex-wrap gap-2 pb-12`
-            )}>
-                {Object.keys(groupedScopeOptions).map((category) => {
-                    // At least one checkbox must be checked in Scope of Work
-                    const hasCheckedScope = groupedScopeOptions[category].some((item: string) => scopeTypes.includes(item));
-                    
-                    // At least one checkbox must be checked in Character of Occupancy
-                    const hasCheckedOccupancy = groupedOccupancyOptions[category]?.some((item: string) => occupancyTypes.includes(item)) || false;
+                            !excludedForScopeOccupancy.includes(selectedService) && (
+                                <Tabs defaultValue={selectedService} className="w-full">
+                                
+                                    <TabsList className={classNames(
+                                        selectedService == "Building" ? "mb-12": "mb-4",
+                                        `flex flex-wrap gap-2 pb-12`
+                                    )}>
+                                        {Object.keys(groupedScopeOptions).map((category) => {
+                                            // At least one checkbox must be checked in Scope of Work
+                                            const hasCheckedScope = groupedScopeOptions[category].some((item: string) => scopeTypes.includes(item));
+                                            
+                                            // At least one checkbox must be checked in Character of Occupancy
+                                            const hasCheckedOccupancy = groupedOccupancyOptions[category]?.some((item: string) => occupancyTypes.includes(item)) || false;
 
-                    // Show exclamation mark if BOTH sections are not checked
-                    const hasMissingSelections = !hasCheckedScope || !hasCheckedOccupancy;
+                                            const excludedCategories = ["Electronics", "Fencing"]; // Categories that should not require Character of Occupancy
 
-                    return (
-                        <TabsTrigger 
-                            key={category} 
-                            value={category}
-                            className="bg-gray-200 min-w-fit px-4 py-2 rounded-md data-[state=active]:bg-gray-300 data-[state=active]:text-blue-700 data-[state=active]:font-bold flex items-center gap-1"
-                        >
-                            {category} {hasMissingSelections && <span className="text-red-600 font-bold">❗</span>}
-                        </TabsTrigger>
-                    );
-                })}
-            </TabsList>
+                                            const hasMissingSelections = !hasCheckedScope || (!excludedCategories.includes(category) && !hasCheckedOccupancy);
 
-            {Object.keys(groupedScopeOptions).map((category) => (
-                <TabsContent key={category} value={category} className="space-y-4">
+                                            return (
+                                                <TabsTrigger 
+                                                    key={category} 
+                                                    value={category}
+                                                    className="bg-gray-200 min-w-fit px-4 py-2 rounded-md data-[state=active]:bg-gray-300 data-[state=active]:text-blue-700 data-[state=active]:font-bold flex items-center gap-1"
+                                                >
+                                                    {category} {hasMissingSelections && <span className="text-red-600 font-bold">❗</span>}
+                                                </TabsTrigger>
+                                            );
+                                        })}
+                                    </TabsList>
 
-                    {/* Scope of Work */}
-                    <div className="w-full border border-gray-300 p-3 rounded-md">
-                        <label className="font-semibold">Scope of Work</label>
-                        <div className="flex flex-col gap-2 mb-5">
-                            {groupedScopeOptions[category].map((item: string) => (
-                                <div className="flex gap-1 items-center" key={item}>
-                                    <input 
-                                        type="checkbox" 
-                                        id={item}
-                                        value={item} 
-                                        checked={scopeTypes.includes(item)} 
-                                        onChange={handleScopeChange}
-                                    />
-                                    <label htmlFor={item}>{item.replace(/^[^-]+-/, '')}</label>
-                                </div>
-                            ))}
-                        </div>
-                    </div>
+                                    {Object.keys(groupedScopeOptions).map((category) => (
+                                        <TabsContent key={category} value={category} className="space-y-4">
 
-                    {/* Character of Occupancy */}
-                    {groupedOccupancyOptions[category] && groupedOccupancyOptions[category].length > 0 && (
-                        <div className="w-full border border-gray-300 p-3 rounded-md">
-                            <label className="font-semibold">Character of Occupancy</label>
-                            <div className="flex flex-col gap-2 mb-5">
-                                {groupedOccupancyOptions[category].map((item: string) => (
-                                    <div className="flex gap-1 items-center" key={item}>
-                                        <input 
-                                            type="checkbox" 
-                                            id={item}
-                                            value={item} 
-                                            checked={occupancyTypes.includes(item)} 
-                                            onChange={handleOccupancyChange}
-                                        />
-                                        <label htmlFor={item}>{item.replace(/^[^-]+-/, '')}</label>
-                                    </div>
-                                ))}
-                            </div>
-                        </div>
-                    )}
-                </TabsContent>
-            ))}
-        </Tabs>
-    )
-}
+                                            {/* Scope of Work */}
+                                            <div className="w-full border border-gray-300 p-3 rounded-md">
+                                                <label className="font-semibold">Scope of Work</label>
+                                                <div className="flex flex-col gap-2 mb-5">
+                                                    {groupedScopeOptions[category].map((item: string) => (
+                                                        <div className="flex gap-1 items-center" key={item}>
+                                                            <input 
+                                                                type="checkbox" 
+                                                                id={item}
+                                                                value={item} 
+                                                                checked={scopeTypes.includes(item)} 
+                                                                onChange={handleScopeChange}
+                                                            />
+                                                            <label htmlFor={item}>{item.replace(/^[^-]+-/, '')}</label>
+                                                        </div>
+                                                    ))}
+                                                </div>
+                                            </div>
+
+                                            {/* Character of Occupancy */}
+                                            {groupedOccupancyOptions[category] && groupedOccupancyOptions[category].length > 0 && (
+                                                <div className="w-full border border-gray-300 p-3 rounded-md">
+                                                    <label className="font-semibold">Character of Occupancy</label>
+                                                    <div className="flex flex-col gap-2 mb-5">
+                                                        {groupedOccupancyOptions[category].map((item: string) => (
+                                                            <div className="flex gap-1 items-center" key={item}>
+                                                                <input 
+                                                                    type="checkbox" 
+                                                                    id={item}
+                                                                    value={item} 
+                                                                    checked={occupancyTypes.includes(item)} 
+                                                                    onChange={handleOccupancyChange}
+                                                                />
+                                                                <label htmlFor={item}>{item.replace(/^[^-]+-/, '')}</label>
+                                                            </div>
+                                                        ))}
+                                                    </div>
+                                                </div>
+                                            )}
+                                        </TabsContent>
+                                    ))}
+                                </Tabs>
+                            )
+                        }
 
 
 

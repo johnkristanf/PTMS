@@ -1,5 +1,7 @@
 import { AppliedServices } from "../../../types/application";
 import { classNames } from "../../../helpers/classNames";
+import { generateScopeAndOccupancyOptions, groupByClass } from "@/lib/utils";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 
 
@@ -10,8 +12,11 @@ export function ApplicantInformationFormApplicant({ applicantInfo }: {
     const scopeOfWorkArray = applicantInfo?.scopeType.split(',');
     const characterOccupancyArray = applicantInfo?.characterOfOccupancy.split(',');
 
-    console.log("scopeOfWorkArray", scopeOfWorkArray)
-    console.log("characterOccupancyArray", characterOccupancyArray)
+    const scopeOfWorkArraySafe = scopeOfWorkArray ?? [];
+    const characterOccupancyArraySafe = characterOccupancyArray ?? [];
+
+    console.log("scopeOfWorkArraySafe", scopeOfWorkArraySafe)
+    console.log("characterOccupancyArraySafe", characterOccupancyArraySafe)
 
 
    
@@ -27,6 +32,19 @@ export function ApplicantInformationFormApplicant({ applicantInfo }: {
     
     ]
 
+
+    const { scopeOptions, occupancyOptions } = generateScopeAndOccupancyOptions(applicantInfo?.permit_type || "")
+    
+    console.log("applicantInfo?.serviceType:", applicantInfo?.serviceType);
+    console.log("scopeOptions:", scopeOptions);
+    console.log("occupancyOptions:", occupancyOptions);
+
+    const groupedScopeOptions = groupByClass(scopeOptions);
+    const groupedOccupancyOptions = groupByClass(occupancyOptions);
+
+    console.log("groupedScopeOptions:", groupedScopeOptions);
+    console.log("groupedOccupancyOptions:", groupedOccupancyOptions);
+    
 
    
     return(
@@ -141,37 +159,81 @@ export function ApplicantInformationFormApplicant({ applicantInfo }: {
                     }
                 </div>
 
-                        <label className="font-semibold">Scope of Work</label>
-                        <div className="flex flex-col gap-2  mb-5">
-                            {scopeOptions.map((scope) => (
-                                <div className="flex gap-1 items-center" key={scope}>
-                                    <input 
-                                        type="checkbox" 
-                                        name="scopeType" 
-                                        value={scope} 
-                                        checked={scopeOfWorkArray?.includes(scope)} 
-                                        readOnly  
-                                    />
-                                    <label>{scope}</label>
-                                </div>
-                            ))}
-                        </div>
+                <Tabs defaultValue={applicantInfo?.permit_type} className="w-full">
+                                
+                                <TabsList className={classNames(
+                                    applicantInfo?.serviceType == "Building" ? "mb-12": "mb-4",
+                                    `flex flex-wrap gap-2 pb-[5rem] pt-[1rem]`
+                                )}>
+                                    {Object.keys(groupedScopeOptions).map((category) => {
+                                        // At least one checkbox must be checked in Scope of Work
+                                        const hasCheckedScope = groupedScopeOptions[category].some((item: string) => scopeOfWorkArraySafe.includes(item));
+                                        
+                                        // At least one checkbox must be checked in Character of Occupancy
+                                        const hasCheckedOccupancy = groupedOccupancyOptions[category]?.some((item: string) => characterOccupancyArraySafe.includes(item)) || false;
 
-                        <label className="font-semibold">Character of Occupancy</label>
-                        <div className="flex flex-col gap-2 mb-5 ">
-                            {occupancyOptions.map((occupancy) => (
-                                <div className="flex gap-1 items-center" key={occupancy}>
-                                    <input 
-                                        type="checkbox" 
-                                        name="occupancyType" 
-                                        value={occupancy} 
-                                        checked={characterOccupancyArray?.includes(occupancy)}  
-                                        readOnly  
-                                    />
-                                    <label>{occupancy}</label>
-                                </div>
-                            ))}
-                        </div>
+                                        const excludedCategories = ["Electronics", "Fencing"]; // Categories that should not require Character of Occupancy
+
+                                        const hasMissingSelections = !hasCheckedScope || (!excludedCategories.includes(category) && !hasCheckedOccupancy);
+
+                                        return (
+                                            <TabsTrigger 
+                                                key={category} 
+                                                value={category}
+                                                className="bg-gray-200 min-w-fit px-4 py-2 rounded-md data-[state=active]:bg-gray-300 data-[state=active]:text-blue-700 data-[state=active]:font-bold flex items-center gap-1"
+                                            >
+                                                {category} {hasMissingSelections && <span className="text-red-600 font-bold">❗</span>}
+                                            </TabsTrigger>
+                                        );
+                                    })}
+                                </TabsList>
+
+                                {Object.keys(groupedScopeOptions).map((category) => (
+                                    <TabsContent key={category} value={category} className="space-y-4">
+
+                                        {/* Scope of Work */}
+                                        <div className="w-full border border-gray-300 p-3 rounded-md">
+                                            <label className="font-semibold">Scope of Work</label>
+                                            <div className="flex flex-col gap-2 mb-5">
+                                                {groupedScopeOptions[category].map((item: string) => (
+                                                    <div className="flex gap-1 items-center" key={item}>
+                                                        <input 
+                                                            type="checkbox" 
+                                                            id={item}
+                                                            value={item} 
+                                                            checked={scopeOfWorkArraySafe.map(item => item.trim().toLowerCase()).includes(item.trim().toLowerCase())}
+                                                            readOnly
+                                                        />
+                                                        <label htmlFor={item}>{item.replace(/^[^-]+-/, '')}</label>
+                                                    </div>
+                                                ))}
+                                            </div>
+                                        </div>
+
+
+                                        {/* Character of Occupancy */}
+                                        {groupedOccupancyOptions[category] && groupedOccupancyOptions[category].length > 0 && (
+                                            <div className="w-full border border-gray-300 p-3 rounded-md">
+                                                <label className="font-semibold">Character of Occupancy</label>
+                                                <div className="flex flex-col gap-2 mb-5">
+                                                    {groupedOccupancyOptions[category].map((item: string) => (
+                                                        <div className="flex gap-1 items-center" key={item}>
+                                                            <input 
+                                                                type="checkbox" 
+                                                                id={item}
+                                                                value={item} 
+                                                                checked={characterOccupancyArraySafe.map(item => item.trim().toLowerCase()).includes(item.trim().toLowerCase())}
+                                                                readOnly
+                                                            />
+                                                            <label htmlFor={item}>{item.replace(/^[^-]+-/, '')}</label>
+                                                        </div>
+                                                    ))}
+                                                </div>
+                                            </div>
+                                        )}
+                                    </TabsContent>
+                                ))}
+                            </Tabs>
             </form>
 
         </div>
@@ -180,22 +242,22 @@ export function ApplicantInformationFormApplicant({ applicantInfo }: {
 }
 
 
-const scopeOptions = [
-    "NEW CONSTRUCTION", "ERECTION", "ADDITION", "ALTERATION", "RENOVATION", 
-    "CONVERSION", "REPAIR", "MOVING", "RAISING", "ACCESSORY BUILDING STRUCTURE"
-];
+// const scopeOptions = [
+//     "NEW CONSTRUCTION", "ERECTION", "ADDITION", "ALTERATION", "RENOVATION", 
+//     "CONVERSION", "REPAIR", "MOVING", "RAISING", "ACCESSORY BUILDING STRUCTURE"
+// ];
 
-const occupancyOptions = [
-    "GROUP A - RESIDENTIAL DWELLING", 
-    "GROUP B - RESIDENTIAL HOTEL APARTMENT", 
-    "GROUP C - EDUCATIONAL RECREATIONAL", 
-    "GROUP D - INSTITUTIONAL", 
-    "GROUP E - BUSINESS AND MERCANTILE", 
-    "GROUP F - INDUSTRIAL", 
-    "GROUP G - INDUSTRIAL STORAGE AND HAZARDOUS", 
-    "GROUP H - RECREATIONAL ASSEMBLY OCCUPANT LOAD LESS THAN 1000", 
-    "GROUP I - RECREATIONAL ASSEMBLY OCCUPANT LOAD 1000 OR MORE", 
-    "GROUP J - AGRICULTURAL ACCESSORY"
-];
+// const occupancyOptions = [
+//     "GROUP A - RESIDENTIAL DWELLING", 
+//     "GROUP B - RESIDENTIAL HOTEL APARTMENT", 
+//     "GROUP C - EDUCATIONAL RECREATIONAL", 
+//     "GROUP D - INSTITUTIONAL", 
+//     "GROUP E - BUSINESS AND MERCANTILE", 
+//     "GROUP F - INDUSTRIAL", 
+//     "GROUP G - INDUSTRIAL STORAGE AND HAZARDOUS", 
+//     "GROUP H - RECREATIONAL ASSEMBLY OCCUPANT LOAD LESS THAN 1000", 
+//     "GROUP I - RECREATIONAL ASSEMBLY OCCUPANT LOAD 1000 OR MORE", 
+//     "GROUP J - AGRICULTURAL ACCESSORY"
+// ];
 
 
