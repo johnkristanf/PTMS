@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { View, Text } from '@react-pdf/renderer';
 import styles from '../styles/box2';
 

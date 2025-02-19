@@ -229,27 +229,26 @@ function ScopeOfWork({scopeOfWork}: {
 
     const scopeOfWorkArray = scopeOfWork.split(',');
 
-    console.log("scopeOfWorkArray", scopeOfWorkArray)
+    console.log("building scopeOfWorkArray", scopeOfWorkArray)
 
     const firstBoxes = [
-        {name: "NEW CONSTRUCTION"},
-        {name: "ERECTION"},
-        {name: "ADDITION"},
-        {name: "ALTERATION"},
+        {name: "Building-NEW CONSTRUCTION"},
+        {name: "Building-ERECTION"},
+        {name: "Building-ADDITION"},
+        {name: "Building-ALTERATION"},
     ]
 
     const secondBoxes = [
-        {name: "RENOVATION"},
-        {name: "CONVERSION"},
-        {name: "REPAIR"},
-        {name: "MOVING"},
+        {name: "Building-RENOVATION"},
+        {name: "Building-CONVERSION"},
+        {name: "Building-REPAIR"},
+        {name: "Building-MOVING"},
     ]
 
 
     const thirdBoxes = [
-        {name: "RAISING"},
-        {name: "ACCESSORY BUILDING STRUCTURE"},
-        {name: "OTHERS (SPECIFY)"},
+        {name: "Building-RAISING"},
+        {name: "Building-ACCESSORY BUILDING STRUCTURE"},
     ]
 
     return(
@@ -273,7 +272,7 @@ function ScopeOfWork({scopeOfWork}: {
                                     </Svg>
                             )}
                         </View>
-                        <Text style={styles.boxes_text}>{data.name}</Text>
+                        <Text style={styles.boxes_text}>{data.name.replace(/^[^-]+-/, '')}</Text>
                     </View>
                    
                 ))}
@@ -296,7 +295,7 @@ function ScopeOfWork({scopeOfWork}: {
                                     </Svg>
                             )}
                         </View>
-                        <Text style={styles.boxes_text}>{data.name}</Text>
+                        <Text style={styles.boxes_text}>{data.name.replace(/^[^-]+-/, '')}</Text>
                     </View>
                    
                 ))}
@@ -320,7 +319,7 @@ function ScopeOfWork({scopeOfWork}: {
                                     </Svg>
                             )}
                         </View>
-                        <Text style={styles.boxes_text}>{data.name}</Text>
+                        <Text style={styles.boxes_text}>{data.name.replace(/^[^-]+-/, '')}</Text>
                     </View>
                    
                 ))}
@@ -338,14 +337,14 @@ function ScopeOfWork({scopeOfWork}: {
 function OccupancyOFBuilding(){
 
     const firstBoxes = [
-        {name: "RESIDENTIAL"},
-        {name: "INDUSTRIAL"},
-        {name: "AGRICULTURAL"},
+        {name: "Building-RESIDENTIAL"},
+        {name: "Building-INDUSTRIAL"},
+        {name: "Building-AGRICULTURAL"},
     ]
 
     const secondBoxes = [
-        {name: "COMMERCIAL"},
-        {name: "INSTITUTIONAL"},
+        {name: "Building-COMMERCIAL"},
+        {name: "Building-INSTITUTIONAL"},
     ]
 
 
@@ -366,7 +365,7 @@ function OccupancyOFBuilding(){
                     {firstBoxes.map((data) => (
                         <View style={styles.smallboxes_container}>
                             <View key={data.name} style={styles.checkbox}></View>
-                            <Text style={styles.boxes_text}>{data.name}</Text>
+                            <Text style={styles.boxes_text}>{data.name.replace(/^[^-]+-/, '')}</Text>
                         </View>
                     
                     ))}
@@ -378,7 +377,7 @@ function OccupancyOFBuilding(){
                 {secondBoxes.map((data) => (
                     <View style={styles.smallboxes_container}>
                         <View key={data.name} style={styles.checkbox}></View>
-                        <Text style={styles.boxes_text}>{data.name}</Text>
+                        <Text style={styles.boxes_text}>{data.name.replace(/^[^-]+-/, '')}</Text>
                     </View>
                    
                 ))}
@@ -391,7 +390,7 @@ function OccupancyOFBuilding(){
                 {thirdBoxes.map((data) => (
                     <View style={styles.smallboxes_container}>
                         <View key={data.name} style={styles.checkbox}></View>
-                        <Text style={styles.boxes_text}>{data.name}</Text>
+                        <Text style={styles.boxes_text}>{data.name.replace(/^[^-]+-/, '')}</Text>
                     </View>
                    
                 ))}
@@ -415,19 +414,19 @@ function OccupancyOFCharacter({ characterOccupancy }: { characterOccupancy: stri
     console.log("characterOccupancyArray", characterOccupancyArray);
 
     const firstBoxes = [
-        { name: "GROUP A - RESIDENTIAL DWELLING" },
-        { name: "GROUP B - RESIDENTIAL HOTEL APARTMENT" },
-        { name: "GROUP C - EDUCATIONAL RECREATIONAL" },
-        { name: "GROUP D - INSTITUTIONAL" },
-        { name: "GROUP E - BUSINESS AND MERCANTILE" },
+        { name: "Building-GROUP A - RESIDENTIAL DWELLING" },
+        { name: "Building-GROUP B - RESIDENTIAL HOTEL APARTMENT" },
+        { name: "Building-GROUP C - EDUCATIONAL RECREATIONAL" },
+        { name: "Building-GROUP D - INSTITUTIONAL" },
+        { name: "Building-GROUP E - BUSINESS AND MERCANTILE" },
     ];
 
     const secondBoxes = [
-        { name: "GROUP F - INDUSTRIAL" },
-        { name: "GROUP G - INDUSTRIAL STORAGE AND HAZARDOUS" },
-        { name: "GROUP H - RECREATIONAL ASSEMBLY OCCUPANT LOAD LESS THAN 1000" },
-        { name: "GROUP I - RECREATIONAL ASSEMBLY OCCUPANT LOAD 1000 OR MORE" },
-        { name: "GROUP J - AGRICULTURAL ACCESSORY" },
+        { name: "Building-GROUP F - INDUSTRIAL" },
+        { name: "Building-GROUP G - INDUSTRIAL STORAGE AND HAZARDOUS" },
+        { name: "Building-GROUP H - RECREATIONAL ASSEMBLY OCCUPANT LOAD LESS THAN 1000" },
+        { name: "Building-GROUP I - RECREATIONAL ASSEMBLY OCCUPANT LOAD 1000 OR MORE" },
+        { name: "Building-GROUP J - AGRICULTURAL ACCESSORY" },
     ];
 
     const thirdBoxes = [
@@ -457,7 +456,7 @@ function OccupancyOFCharacter({ characterOccupancy }: { characterOccupancy: stri
                                     </Svg>
                                 )}
                             </View>
-                            <Text style={styles.boxes_text}>{data.name}</Text>
+                            <Text style={styles.boxes_text}>{data.name.replace(/^[^-]+-/, '')}</Text>
                         </View>
                     ))}
 
@@ -608,10 +607,7 @@ const styles = StyleSheet.create({
         padding: 10
     },
 
-    boxes_text: {
-        fontSize: 8
-    },
-
+   
     labelValue_container: {
         flexDirection: 'column',
         gap: 5,
@@ -633,17 +629,23 @@ const styles = StyleSheet.create({
         gap: 2
     },
 
+    boxes_text: {
+        fontSize: 8
+    },
+
+    checkbox: {
+        width: 10,
+        height: 10,
+        border: '2px solid black',
+    },
+
     linesboxes_container: {
         flexDirection: 'row', 
         alignItems: 'center',
         gap: 50
     },
     
-    checkbox: {
-        width: 10,
-        height: 10,
-        border: '2px solid black',
-    },
+    
 
     underline: {
         border: '1px solid black',

@@ -57,5 +57,7 @@ func ApplicationRoutes(e *echo.Echo, h *handlers.ApplicationHandler) {
 	g.GET("/by/permit_type", h.FetchApplicationByPermitTypeHandler, h.JWT_METHOD.StaffAdminAutheticationMiddleware)
 
 
+	g.GET("/fetch/occupancy/:application_id", h.FetchOccupancyDataHandler, h.JWT_METHOD.AutheticationMiddleware)
+	
 	
 }

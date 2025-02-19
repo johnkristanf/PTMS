@@ -1,6 +1,22 @@
 import { StyleSheet } from '@react-pdf/renderer';
 
 const styles = StyleSheet.create({
+    boxes_text: {
+        fontSize: 8
+    },
+    
+    smallboxes_container: {
+        flexDirection: 'row', 
+        alignItems: 'center',
+        gap: 2
+    },
+
+    checkbox: {
+        width: 10,
+        height: 10,
+        border: '2px solid black',
+    },
+    
     formNo: {
         justifyContent: "center",
         alignItems: "center",

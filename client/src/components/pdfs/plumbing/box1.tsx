@@ -229,23 +229,24 @@ function ScopeOfWork({scopeOfWork}: {
     console.log("scopeOfWorkArray", scopeOfWorkArray)
 
     const firstBoxes = [
-        {name: "NEW CONSTRUCTION"},
-        {name: "ERECTION"},
-        {name: "ADDITION"},
-        {name: "ALTERATION"},
+        {name: "Plumbing-NEW CONSTRUCTION"},
+        {name: "Plumbing-ERECTION"},
+        {name: "Plumbing-ADDITION"},
+        {name: "Plumbing-ALTERATION"},
     ]
 
     const secondBoxes = [
-        {name: "RENOVATION"},
-        {name: "CONVERSION"},
-        {name: "REPAIR"},
-        {name: "MOVING"},
+        {name: "Plumbing-RENOVATION"},
+        {name: "Plumbing-CONVERSION"},
+        {name: "Plumbing-REPAIR"},
+        {name: "Plumbing-MOVING"},
     ]
 
 
     const thirdBoxes = [
-        {name: "RAISING"},
-        {name: "ACCESSORY BUILDING STRUCTURE"},
+        {name: "Plumbing-RAISING"},
+        {name: "Plumbing-DEMOLITION"},
+        {name: "Plumbing-ACCESSORY BUILDING STRUCTURE"},
         {name: "OTHERS (SPECIFY)"},
     ]
 
@@ -270,7 +271,7 @@ function ScopeOfWork({scopeOfWork}: {
                                     </Svg>
                             )}
                         </View>
-                        <Text style={styles.boxes_text}>{data.name}</Text>
+                        <Text style={styles.boxes_text}>{data.name.replace(/^[^-]+-/, '')}</Text>
                     </View>
                    
                 ))}
@@ -293,7 +294,7 @@ function ScopeOfWork({scopeOfWork}: {
                                     </Svg>
                             )}
                         </View>
-                        <Text style={styles.boxes_text}>{data.name}</Text>
+                        <Text style={styles.boxes_text}>{data.name.replace(/^[^-]+-/, '')}</Text>
                     </View>
                    
                 ))}
@@ -317,7 +318,7 @@ function ScopeOfWork({scopeOfWork}: {
                                     </Svg>
                             )}
                         </View>
-                        <Text style={styles.boxes_text}>{data.name}</Text>
+                        <Text style={styles.boxes_text}>{data.name.replace(/^[^-]+-/, '')}</Text>
                     </View>
                    
                 ))}
@@ -409,22 +410,20 @@ function ScopeOfWork({scopeOfWork}: {
 function OccupancyOFCharacter({ characterOccupancy }: { characterOccupancy: string }) {
 
     const characterOccupancyArray = characterOccupancy.split(',');
-    console.log("characterOccupancyArray", characterOccupancyArray);
+    console.log("plumbing characterOccupancyArray", characterOccupancyArray);
 
     const firstBoxes = [
-        { name: "GROUP A - RESIDENTIAL DWELLING" },
-        { name: "GROUP B - RESIDENTIAL HOTEL APARTMENT" },
-        { name: "GROUP C - EDUCATIONAL RECREATIONAL" },
-        { name: "GROUP D - INSTITUTIONAL" },
-        { name: "GROUP E - BUSINESS AND MERCANTILE" },
+        { name: "Plumbing-Residential" },
+        { name: "Plumbing-Commercial" },
+        { name: "Plumbing-Industrial" },
+        { name: "Plumbing-Institutional" },
+        { name: "Plumbing-Agricultural" },
+
     ];
 
     const secondBoxes = [
-        { name: "GROUP F - INDUSTRIAL" },
-        { name: "GROUP G - INDUSTRIAL STORAGE AND HAZARDOUS" },
-        { name: "GROUP H - RECREATIONAL ASSEMBLY OCCUPANT LOAD LESS THAN 1000" },
-        { name: "GROUP I - RECREATIONAL ASSEMBLY OCCUPANT LOAD 1000 OR MORE" },
-        { name: "GROUP J - AGRICULTURAL ACCESSORY" },
+        { name: "Plumbing-Parks, Plazas, Monuments" },
+        { name: "Plumbing-Recreational" },
     ];
 
     const thirdBoxes = [
@@ -454,7 +453,7 @@ function OccupancyOFCharacter({ characterOccupancy }: { characterOccupancy: stri
                                     </Svg>
                                 )}
                             </View>
-                            <Text style={styles.boxes_text}>{data.name}</Text>
+                            <Text style={styles.boxes_text}>{data.name.replace(/^[^-]+-/, '')}</Text>
                         </View>
                     ))}
 
@@ -476,7 +475,7 @@ function OccupancyOFCharacter({ characterOccupancy }: { characterOccupancy: stri
                                     </Svg>
                                 )}
                             </View>
-                            <Text style={styles.boxes_text}>{data.name}</Text>
+                            <Text style={styles.boxes_text}>{data.name.replace(/^[^-]+-/, '')}</Text>
                         </View>
                     ))}
 
@@ -502,7 +501,7 @@ function OccupancyOFCharacter({ characterOccupancy }: { characterOccupancy: stri
                                     </Svg>
                                 )}
                             </View>
-                            <Text style={styles.boxes_text}>{data.name}</Text>
+                            <Text style={styles.boxes_text}>{data.name.replace(/^[^-]+-/, '')}</Text>
                         </View>
                     ))}
 

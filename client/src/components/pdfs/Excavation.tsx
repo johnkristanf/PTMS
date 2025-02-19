@@ -59,7 +59,7 @@ function ExcavationPermit({ permitInfo, setPermitsInfo }: {
     );
 }
 
-function ExcavationPermitComponent({ permitInfo }: { 
+export function ExcavationPermitComponent({ permitInfo }: { 
     permitInfo: AppliedServices 
   }) {
 
@@ -72,7 +72,12 @@ function ExcavationPermitComponent({ permitInfo }: {
 
     return (
         <>
-        <ApplicationLetter applicationLetterInfo={applicationLetterInfo}/>
+        
+        {
+            permitInfo && permitInfo.permit_type != "Building" && (
+                <ApplicationLetter applicationLetterInfo={applicationLetterInfo}/>
+            )
+        }
 
         <Page size="A4" style={styles.page}>
             <View style={styles.pageContainer}>

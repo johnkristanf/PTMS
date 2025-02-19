@@ -129,6 +129,13 @@ export const FetchAppliedServices = async () => {
     });
 }
 
+
+export const FetchOccupancyData = async (applicationID: number) => {
+    return axios.get(`${DOMAIN_NAME}/application/fetch/occupancy/${applicationID}`, {
+            withCredentials: true
+    });
+}
+
 export const FetchCheckedRequirements = async (applicationID: number) => {
     return axios.get(`${DOMAIN_NAME}/application/fetch/requirements/${applicationID}`, {
         withCredentials: true

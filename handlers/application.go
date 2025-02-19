@@ -739,3 +739,23 @@ func (h *ApplicationHandler) DeleteInboxHandler(c echo.Context) error {
 
 	return c.JSON(http.StatusOK, "Inbox Deleted")
 }
+
+
+func (h *ApplicationHandler) FetchOccupancyDataHandler(c echo.Context) error {
+
+	applicationIDStr := c.Param("application_id")
+	applicationID, err := strconv.ParseInt(applicationIDStr, 10, 64)
+	if err != nil {
+		return err
+	}
+
+	occupancyData, err := h.DB_METHOD.FetchOccupancyData(applicationID)
+	if err != nil {
+		return err
+	}
+
+	return c.JSON(http.StatusOK, map[string]interface{}{
+		"occupancy_data": occupancyData,
+	})
+
+}

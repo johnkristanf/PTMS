@@ -1,8 +1,8 @@
 import { useState } from 'react';
 import { SideBar } from "../../components/SideBar"
 import { ApplicantInformationModalApplicant } from '../../components/modal/applicant/ApplicantInformationModal';
-import { FetchAppliedServices } from '../../http/get/application';
-import { AppliedServices } from '../../types/application';
+import { FetchAppliedServices, FetchOccupancyData } from '../../http/get/application';
+import { AppliedServices, OccupancyData } from '../../types/application';
 import { useQuery } from '@tanstack/react-query';
 import RequirementsModal from '../../components/modal/applicant/RequirementsModal';
 import BuildingPDF from '../../components/pdfs/Building';
@@ -10,6 +10,14 @@ import BuildingPDF from '../../components/pdfs/Building';
 import '../../assets/scrollStyle.css'
 import { ApplicationNoteSubHeader, PTMSHeader } from '../../components/PtmsHeader';
 import { classNames } from '../../helpers/classNames';
+
+import {
+    Popover,
+    PopoverContent,
+    PopoverTrigger,
+} from "@/components/ui/popover"
+
+  
 import PlumbingPDF from '../../components/pdfs/Plumbing';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faAddressCard, faEllipsisVertical, faFileLines, faRectangleList } from '@fortawesome/free-solid-svg-icons';
@@ -36,6 +44,8 @@ import {
     HoverCardContent,
     HoverCardTrigger,
 } from "@/components/ui/hover-card"
+import OccupancyModal from '@/components/modal/applicant/Occupancy';
+import { PopoverClose } from '@radix-ui/react-popover';
 
 function ServicesPage(){
 
@@ -43,6 +53,7 @@ function ServicesPage(){
     const [applicantInfo, setApplicantInfo] = useState<AppliedServices>();
     const [informationModal, setInformationModal] = useState<boolean>();
     const [showRequirements, setShowRequirements] = useState<boolean>(false);
+    const [showOccupancy, setshowOccupancy] = useState<boolean>(false);
 
     const [openCompletion, setOpenCompletion] = useState<boolean>(false);
 
@@ -56,12 +67,35 @@ function ServicesPage(){
 
     const appliedServices: AppliedServices[] = response?.data;
 
-    console.log("appliedServices: ", appliedServices)
-
     const openApplicationModal = (data: AppliedServices) => {
         setApplicantInfo(data)
         setInformationModal(true)
     }
+
+
+
+    // MAKE THE MODAL OF THE OCCUPANCY THEN IBALHIN NI NA REACT QUERY DDTO HANTOD CONSOLE LOG NA CODE
+    const { data: responseOccupancy } = useQuery({
+        queryKey: ["occupancy_data", showOptionsId],
+
+        queryFn: ({ queryKey }) => {
+            
+            const application_id = Number(queryKey[1]); 
+
+            if (isNaN(application_id) || application_id <= 0){
+                return Promise.reject(new Error("Invalid application ID")); 
+            } 
+
+            return FetchOccupancyData(application_id);
+        },
+
+        enabled: !!showOptionsId
+    });
+
+    const occupancy_data: OccupancyData[] = responseOccupancy?.data.occupancy_data;
+    console.log("occupancy_data gawas modal: ", occupancy_data);
+    
+    
 
     if(isLoading) return <div className="text-white font-bold text-3xl">Fetching Staff Accounts.......</div>
 
@@ -117,6 +151,16 @@ function ServicesPage(){
 
             {
                 showRequirements && <RequirementsModal setShowRequirements={setShowRequirements} role='applicant'/>
+            }
+
+
+            {
+                showOccupancy && (
+                    <OccupancyModal 
+                        setshowOccupancy={setshowOccupancy} 
+                        occupancyData={occupancy_data && occupancy_data[0]}
+                    />
+                ) 
             }
 
 
@@ -281,50 +325,60 @@ function ServicesPage(){
                                                                 </HoverCard>
 
 
+                                                                <Popover>
+                                                                    <PopoverTrigger>
+                                                                        <FontAwesomeIcon 
+                                                                            icon={faEllipsisVertical} 
+                                                                            className='text-2xl mt-1 p-1 hover:cursor-pointer hover:opacity-75'
+                                                                            onClick={() => setShowOptionsId(showOptionsId === data.application_id ? null : data.application_id)}
+                                                                        />
+                                                                    </PopoverTrigger>
+                                                                    <PopoverContent>
+                                                                        {showOptionsId === data.application_id && (
+                                                                            <div className="font-semibold flex flex-col gap-3 text-blackz-10">
+
+                                                                                <button 
+                                                                                    disabled={data.status !== 'Approved'}
+                                                                                    className={classNames(
+                                                                                        "w-full text-white p-2 hover:opacity-75 rounded-md cursor-pointer text-center",
+                                                                                        data.status !== 'Approved' ? 'hover:cursor-not-allowed bg-gray-400' : 'bg-blue-700'
+                                                                                    )}
+                                                                                    onClick={() => {
+                                                                                        setShowOptionsId(null); // Keep data fetching logic intact
+                                                                                        setOpenCompletion(true);
+                                                                                        setPermits(data);
+                                                                                    }}
+                                                                                >
+                                                                                    Completion
+                                                                                </button>
+                                                                                
+                                                                                {/* CLOSE THE POPOVER WHEN CLICKED */}
+                                                                                <PopoverClose asChild>
+                                                                                    <button 
+                                                                                        disabled={data.status !== 'Approved'}
+                                                                                        className={classNames(
+                                                                                            "w-full text-white p-2 hover:opacity-75 rounded-md cursor-pointer text-center",
+                                                                                            data.status !== 'Approved' ? 'hover:cursor-not-allowed bg-gray-400' : 'bg-blue-700'
+                                                                                        )}
+                                                                                        onClick={() => {
+                                                                                            setShowOptionsId(data.application_id); // Keep ID for query
+                                                                                            setshowOccupancy(true); // Open modal
+                                                                                        }}
+                                                                                    >
+                                                                                        Occupancy
+                                                                                    </button>
+                                                                                </PopoverClose>
+
+                                                                            </div>
+                                                                        )}
+                                                                    </PopoverContent>
+                                                                </Popover>
+
                                                                 
+
+                                                               
+
                                                                 
-
-                                                                <FontAwesomeIcon 
-                                                                    icon={faEllipsisVertical} 
-                                                                    className='text-2xl mt-1 p-1 hover:cursor-pointer hover:opacity-75'
-                                                                    onClick={() =>
-                                                                        setShowOptionsId(showOptionsId === data.application_id ? null : data.application_id)
-                                                                    }
-                                                                />
-
-                                                                {showOptionsId === data.application_id && (
-                                                                    <div 
-                                                                            className="font-semibold w-[200px] absolute top-1/2 right-[18rem] flex flex-col gap-3 ml-2 p-4 bg-gray-300 text-black p-2 rounded-md shadow-md z-10"
-                                                                        >
-
-                                                                        <button 
-                                                                            disabled={data.status != 'Approved'}
-                                                                            className={classNames(
-                                                                                "w-full text-white p-2 hover:opacity-75 rounded-md cursor-pointer text-center",
-                                                                                data.status != 'Approved' ? 'hover:cursor-not-allowed bg-gray-400': 'bg-blue-700'
-                                                                            )}
-
-                                                                            onClick={() => {
-                                                                                    setShowOptionsId(null)
-                                                                                    setOpenCompletion(true)
-                                                                                    setPermits(data)
-                                                                                }}
-                                                                            >
-                                                                                Completion
-                                                                        </button>
-                                                                        
-                                                                        <button 
-                                                                            disabled={data.status != 'Approved'}
-                                                                            className={classNames(
-                                                                                "w-full text-white p-2 hover:opacity-75 rounded-md cursor-pointer text-center",
-                                                                                data.status != 'Approved' ? 'hover:cursor-not-allowed bg-gray-400': 'bg-blue-700'
-                                                                            )}
-
-                                                                            >
-                                                                                Occupancy
-                                                                        </button>
-                                                                    </div>
-                                                                )}
 
                                                                 
                                                             </div>

@@ -32,7 +32,11 @@ export function PlumbingPermitComponent({ permitInfo }: {
     return (
 
       <>
-        <ApplicationLetter applicationLetterInfo={applicationLetterInfo}/>
+         {
+            permitInfo && permitInfo.permit_type != "Building" && (
+                <ApplicationLetter applicationLetterInfo={applicationLetterInfo}/>
+            )
+        }
 
         <Page size="A4" style={styles.page}>
   

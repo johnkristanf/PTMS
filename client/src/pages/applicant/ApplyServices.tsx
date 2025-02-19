@@ -27,7 +27,7 @@ function ApplyServicesPage() {
         { name: "Electronics Permit", permit_type: "Electronics" },
         { name: "Excavation Permit", permit_type: "Excavation" },
         { name: "Mechanical Permit", permit_type: "Mechanical" },
-        { name: "Fence Permit", permit_type: "Fence" }
+        { name: "Fencing Permit", permit_type: "Fencing" }
     ];
 
     const individual_permit = [
@@ -68,9 +68,9 @@ function ApplyServicesPage() {
 
                             <div className="flex flex-col items-center w-full text-md">
                                 <h1> - Applying building permit includes: </h1>
-                                <h1>Plumbing | Sanitary</h1>
+                                <h1>Excavation | Plumbing</h1>
                                 <h1>Electronics | Electrical</h1>
-                                <h1>Mechanical | Fence</h1>
+                                <h1>Mechanical | Fencing</h1>
                             </div>
                         </div>
 

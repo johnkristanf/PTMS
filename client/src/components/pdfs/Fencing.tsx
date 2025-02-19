@@ -69,14 +69,22 @@ function FencingPermit({ permitInfo, setPermitsInfo }: {
 export function FencingPermitComponent({ permitInfo }: { 
     permitInfo: AppliedServices 
   }) {
+
+   
+
     return (
         <>
 
-        <Page size="A4" style={styles.page}>
-            <View style={styles.pageContainer2}>
-                <PermitBodyBox13 permitInfo={permitInfo} />
-            </View>
-        </Page>
+        {
+            permitInfo && permitInfo.permit_type != "Building" && (
+                <Page size="A4" style={styles.page}>
+                    <View style={styles.pageContainer2}>
+                        <PermitBodyBox13 permitInfo={permitInfo} />
+                    </View>
+                </Page>
+            )
+        }
+        
         
         <Page size="A4" style={styles.page}>
             <View style={styles.pageContainer}>

@@ -164,7 +164,7 @@ function ApplicantLoginForm({setAuthType}: {
         console.log("loginResult: ", loginResult);
 
         if(loginResult === "success"){
-            window.location.href = "/applied/services"
+            window.location.href = "/services/option"
         }else if(loginResult === "unauthorized"){
             setInvalidCredentials(true)
             Swal.close();

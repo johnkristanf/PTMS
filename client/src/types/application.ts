@@ -347,3 +347,22 @@ export type  ElectricalRequirementFormData = {
     Design_Analysis: boolean;
     One_Line_Diagram: boolean;
 }
+
+
+
+export type OccupancyData = {
+    assessment_id: number,
+    date_paid:     string,
+    or_number:     string,
+    receipt_number:     string,
+    project_proposed:     string,
+    character_occupancy: string,
+
+    fee_paid:           number,
+    location:           string,
+
+    first_name:         string,
+    middle_initial:     string,
+    last_name:          string,
+
+}

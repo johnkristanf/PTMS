@@ -1,9 +1,17 @@
-import { View, Text } from '@react-pdf/renderer';
+import { View, Text, Svg, Path} from '@react-pdf/renderer';
 import styles from '../styles/box1'; // Import the styles
 import { AppliedServices } from '../../../../types/application';
 
 // Define the permit layout component
 export function PermitBodyBox1({ permitInfo }: { permitInfo: AppliedServices }) {
+
+    const firstBoxes = [
+        {name: "Electronics-NEW INSTALLATION"},
+        {name: "Electronics-ANNUAL INSPECTION"},
+        {name: "OTHERS (Specify)"},
+    ]
+
+    const scopeOfWorkArray = permitInfo.scopeType.split(',');
     
     const data = permitInfo;
     return (
@@ -200,25 +208,26 @@ export function PermitBodyBox1({ permitInfo }: { permitInfo: AppliedServices }) 
                 <Text style={styles.scopeTitle}>SCOPE OF WORKS</Text>
 
                 <View style={styles.row}>
-                    <View style={styles.rowOption}>
-                        <View style={styles.checkBox}>
-                            <Text style={styles.checkBoxText}>{data.checkboxData || ' '}</Text>
-                        </View>
-                        <Text style={styles.boxLabel}>NEW INSTALLATION</Text>
-                    </View>
-                    <View style={styles.rowOption2}>
-                        <View style={styles.checkBox}>
-                            <Text style={styles.checkBoxText}>{data.checkboxData || ' '}</Text>
-                        </View>
-                        <Text style={styles.boxLabel}>ANNUAL INSPECTION</Text>
-                    </View>
-                    <View style={styles.rowOption3}>
-                        <View style={styles.checkBox}>
-                            <Text style={styles.checkBoxText}>{data.checkboxData || ' '}</Text>
-                        </View>
-                        <Text style={styles.boxLabel}>OTHERS (Specify)</Text>
-                        <Text style={styles.blankLine}>{data.labelData || ' '} </Text>
-                    </View>
+                    
+                    
+                    {firstBoxes.map((data) => (
+                                            <View style={styles.rowOption} key={data.name}>
+                                                <View style={[styles.checkBox]}>
+                                                    {scopeOfWorkArray.includes(data.name) && (
+                                                        <Svg viewBox="0 0 24 24" >
+                                                            <Path
+                                                                d="M20.285 6.287l-11.314 11.314-5.657-5.657 1.414-1.414 4.243 4.243 9.9-9.9z"
+                                                                fill="none"
+                                                                stroke="black"
+                                                                strokeWidth="2"
+                                                            />
+                                                        </Svg>
+                                                    )}
+                                                </View>
+                                                <Text style={styles.boxes_text}>{data.name.replace(/^[^-]+-/, '')}</Text>
+                                            </View>
+                                        ))}
+                    
                 </View>
             </View>
             {/* End of Row Box 5 */}

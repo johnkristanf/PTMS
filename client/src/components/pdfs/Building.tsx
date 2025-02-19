@@ -19,6 +19,7 @@ import { ElectronicsPermitComponent } from './Electronics';
 import { ElectricalComponentPermit } from './Electrical';
 import { MechanicalPermitComponent } from './Mechanical';
 import { FencingPermitComponent } from './Fencing';
+import { ExcavationPermitComponent } from './Excavation';
 
 function BuildingPDF({ permitInfo, setPermitsInfo }: { 
   permitInfo: AppliedServices,
@@ -69,11 +70,12 @@ function BuildingPDF({ permitInfo, setPermitsInfo }: {
               <Document>
                 <ApplicationLetter applicationLetterInfo={applicationLetterInfo}/>
                 <BuildingPermit permitInfo={permitInfo} />
-                <PlumbingPermitComponent permitInfo={permitInfo} />
-                <ElectronicsPermitComponent permitInfo={permitInfo} />
                 <ElectricalComponentPermit permitInfo={permitInfo} />
+                <PlumbingPermitComponent permitInfo={permitInfo} />
                 <MechanicalPermitComponent permitInfo={permitInfo} />
+                <ElectronicsPermitComponent permitInfo={permitInfo} />
                 <FencingPermitComponent permitInfo={permitInfo} />
+                <ExcavationPermitComponent permitInfo={permitInfo} />
                 
               </Document>
             </PDFViewer>

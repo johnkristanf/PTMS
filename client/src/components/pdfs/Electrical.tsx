@@ -68,10 +68,18 @@ export function ElectricalComponentPermit({ permitInfo }: {
         permit_type: permitInfo.permit_type
     }
 
+    console.log("permitInfo electrical: ", permitInfo);
+    
+
     return (
         <>
 
-        <ApplicationLetter applicationLetterInfo={applicationLetterInfo}/>
+        {
+            permitInfo && permitInfo.permit_type != "Building" && (
+                <ApplicationLetter applicationLetterInfo={applicationLetterInfo}/>
+            )
+        }
+
 
         <Page size="A4" style={styles.page}>
             <View style={styles.pageContainer}>

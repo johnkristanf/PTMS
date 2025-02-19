@@ -1,4 +1,4 @@
-import { View, Text } from '@react-pdf/renderer';
+import { View, Text, Svg, Path } from '@react-pdf/renderer';
 import styles from '../styles/box1'; // Import the styles
 import { AppliedServices } from '../../../../types/application';
 
@@ -6,6 +6,49 @@ import { AppliedServices } from '../../../../types/application';
 export function PermitBodyBox1({ permitInfo }: { permitInfo: AppliedServices }) {
     
     const data = permitInfo;
+
+    const scopeOfWorkArray = data.scopeType.split(',');
+    const occupancyArray = data.characterOfOccupancy.split(',');
+
+    const firstBoxesScope = [
+        {name: "Excavation-NEW CONSTRUCTION"},
+        {name: "Excavation-ERECTION"},
+        {name: "Excavation-ADDITION"},
+    ]
+
+    const secondBoxesScope = [
+        {name: "Excavation-REPAIR"},
+        {name: "Excavation-DEMOLITION"},
+    ]
+
+
+    const thirdBoxesScope = [
+        {name: "OTHERS (specify)"},
+    ]
+
+
+    const firstBoxesOccupancy = [
+        {name: "Excavation-GROUP A RESIDENTIAL DWELLINGS"},
+        {name: "Excavation-GROUP B RESIDENTIAL HOTEL APARTMENT"},
+        {name: "Excavation-GROUP C EDUCATIONAL RECREATIONAL"},
+        {name: "Excavation-GROUP D INSTITUTIONAL"},
+        {name: "Excavation-GROUP E BUSINESS AND MERCANTILE"},
+    ]
+
+    const secondBoxesOccupancy = [
+        {name: "Excavation-GROUP F INDUSTRIAL"},
+        {name: "Excavation-GROUP G INDUSTRIAL STORAGE AND HAZARDOUS"},
+        {name: "Excavation-GROUP H RECREATIONAL ASSEMBLY OCCUPANT LOAD LESS THAN 1000"},
+        {name: "Excavation-GROUP I RECREATIONAL ASSEMBLY OCCUPANT LOAD 1000 OR MORE"},
+        {name: "Excavation-GROUP J AGRICULTURAL ACCESSORY"},
+    ]
+
+
+    const thirdBoxesOccupancy = [
+        {name: "OTHERS (specify)"},
+    ]
+
+
     return (
         <View style={styles.formNo}>
             {/* Title Section */}
@@ -197,68 +240,84 @@ export function PermitBodyBox1({ permitInfo }: { permitInfo: AppliedServices }) 
             <View style={styles.container5}>
                 {/* Row for SCOPE OF WORKS */} 
                 <Text style={styles.box4label}>SCOPE OF WORKS : </Text>
+
                 <View style={styles.boxStyleContainer4}>
                     <View style={styles.columnBox}>
-                        {/* Create a flex row to arrange both sets side by side */}
-                        <View style={styles.scopeOfWorkRow}>
-                            {/* Left column for NEW CONSTRUCTION, ERECTION, etc. */}
-                            <View style={styles.scopeColumn1}>
-                                <View style={styles.rowOption}>
-                                    <View style={styles.checkBox}>
-                                        <Text style={styles.checkBoxText}>{data.checkboxData || ' '}</Text>
-                                    </View>
-                                    {/* Check NEW CONSTRUCTION box here */}
-                                    <Text style={styles.box4label1}>NEW CONSTRUCTION</Text>
-                                </View>
-                                <View style={styles.rowOption}>
-                                    <View style={styles.checkBox}>
-                                        <Text style={styles.checkBoxText}>{data.checkboxData || ' '}</Text>
-                                    </View>
-                                    {/* Check NEW CONSTRUCTION box here */}
-                                    <Text style={styles.box4label1}>ERECTION</Text>
-                                </View>
-                                <View style={styles.rowOption}>
-                                    <View style={styles.checkBox}>
-                                        <Text style={styles.checkBoxText}>{data.checkboxData || ' '}</Text>
-                                    </View>
-                                    {/* Check NEW CONSTRUCTION box here */}
-                                    <Text style={styles.box4label1}>ADDITION</Text>
-                                </View>
-                            </View>
 
-                            {/* Right column for RENOVATION, CONVERSION, etc. */}
-                            <View style={styles.scopeColumn}>
-                                <View style={styles.rowOption2}>
-                                    <View style={styles.checkBox}>
-                                        <Text style={styles.checkBoxText}>{data.checkboxData || ' '}</Text>
-                                    </View>
-                                    {/* Check RENOVATION box here */}
-                                    <Text style={styles.box4label2}>REPAIR</Text>
-                                    <Text style={styles.blankLineData}>{data.labelData || ' '} </Text>
-                                </View>
-                                <View style={styles.rowOption2}>
-                                    <View style={styles.checkBox}>
-                                        <Text style={styles.checkBoxText}>{data.checkboxData || ' '}</Text>
-                                    </View>
-                                    {/* Check RENOVATION box here */}
-                                    <Text style={styles.box4label2}>DEMOLITION</Text>
-                                    <Text style={styles.blankLineData}>{data.labelData || ' '} </Text>
-                                </View>
-                            </View>
-                             {/* Right column for RENOVATION, CONVERSION, etc. */}
-                             <View style={styles.scopeColumn}>
-                                <View style={styles.column}>
-                                    <View style={styles.rowOption2}>
-                                        <View style={styles.checkBox}>
-                                            <Text style={styles.checkBoxText}>{data.checkboxData || ' '}</Text>
-                                        </View>
-                                        {/* Check RENOVATION box here */}
-                                        <Text style={styles.box4label2}>OTHERS (specify)</Text>
-                                        <Text style={styles.blankLineData}>{data.labelData || ' '} </Text>
-                                    </View>
-                                    <Text style={styles.blankLineDataExtra}>{data.labelData || ' '} </Text>
-                                </View>
-                            </View>
+                        <View style={styles.scopeOfWorkRow}>
+
+                        <View style={styles.scopeColumn1}>
+                                 {firstBoxesScope.map((data) => (
+                                                    <View style={styles.smallboxes_container}>
+                                                        <View key={data.name} style={styles.checkbox}>
+                                                            {scopeOfWorkArray.includes(data.name) && (
+                                                                    <Svg viewBox="0 0 24 24" >
+                                                                        <Path
+                                                                            d="M20.285 6.287l-11.314 11.314-5.657-5.657 1.414-1.414 4.243 4.243 9.9-9.9z"
+                                                                            fill="none"
+                                                                            stroke="black"
+                                                                            strokeWidth="2"
+                                                                        />
+                                                                    </Svg>
+                                                            )}
+                                                        </View>
+                                                        <Text style={styles.boxes_text}>{data.name.replace(/^[^-]+-/, '')}</Text>
+                                                    </View>
+                                                   
+                                                ))}
+
+                          
+                        </View>
+
+
+                        <View style={styles.scopeColumn1}>
+                                 {secondBoxesScope.map((data) => (
+                                                    <View style={styles.smallboxes_container}>
+                                                        <View key={data.name} style={styles.checkbox}>
+                                                            {scopeOfWorkArray.includes(data.name) && (
+                                                                    <Svg viewBox="0 0 24 24" >
+                                                                        <Path
+                                                                            d="M20.285 6.287l-11.314 11.314-5.657-5.657 1.414-1.414 4.243 4.243 9.9-9.9z"
+                                                                            fill="none"
+                                                                            stroke="black"
+                                                                            strokeWidth="2"
+                                                                        />
+                                                                    </Svg>
+                                                            )}
+                                                        </View>
+                                                        <Text style={styles.boxes_text}>{data.name.replace(/^[^-]+-/, '')}</Text>
+                                                    </View>
+                                                   
+                                                ))}
+
+                          
+                        </View>
+
+
+                        <View style={styles.scopeColumn1}>
+                                 {thirdBoxesScope.map((data) => (
+                                                    <View style={styles.smallboxes_container}>
+                                                        <View key={data.name} style={styles.checkbox}>
+                                                            {scopeOfWorkArray.includes(data.name) && (
+                                                                    <Svg viewBox="0 0 24 24" >
+                                                                        <Path
+                                                                            d="M20.285 6.287l-11.314 11.314-5.657-5.657 1.414-1.414 4.243 4.243 9.9-9.9z"
+                                                                            fill="none"
+                                                                            stroke="black"
+                                                                            strokeWidth="2"
+                                                                        />
+                                                                    </Svg>
+                                                            )}
+                                                        </View>
+                                                        <Text style={styles.boxes_text}>{data.name.replace(/^[^-]+-/, '')}</Text>
+                                                    </View>
+                                                   
+                                                ))}
+
+                          
+                        </View>
+
+                          
                         </View>
                     </View>
                 </View>
@@ -266,95 +325,77 @@ export function PermitBodyBox1({ permitInfo }: { permitInfo: AppliedServices }) 
             {/* End of Row Box 5 */}
 
             {/* Row Box 6 */}
-            {/* Container for nature of installation */}
             <View style={styles.container6}>
                 <Text style={styles.box6label}>USE OR TYPE OF OCCUPANCY</Text>
                 
-                {/* Columns layout */}
                 <View style={styles.columnsContainer}>
                     
-                    {/* First Column */}
+                    {/* FIRST COLUMN */}
                     <View style={styles.column6}>
-                        <View style={styles.checkboxRow}>
-                            <View style={styles.checkBox}>
-                                        <Text style={styles.checkBoxText}>{data.checkboxData || ' '}</Text>
-                                    </View>
-                            <Text style={styles.checkboxLabel}>GROUP A RESIDENTIAL DWELLINGS</Text>
-                        </View>
-                        <View style={styles.checkboxRow}>
-                            <View style={styles.checkBox}>
-                                        <Text style={styles.checkBoxText}>{data.checkboxData || ' '}</Text>
-                                    </View>
-                            <Text style={styles.checkboxLabel}>GROUP B RESIDENTIAL HOTEL APARTMENT</Text>
-                        </View>
-                        <View style={styles.checkboxRow}>
-                            <View style={styles.checkBox}>
-                                        <Text style={styles.checkBoxText}>{data.checkboxData || ' '}</Text>
-                                    </View>
-                            <Text style={styles.checkboxLabel}>GROUP C EDUCATIONAL RECREATIONAL </Text>
-                        </View>
-                        <View style={styles.checkboxRow}>
-                            <View style={styles.checkBox}>
-                                        <Text style={styles.checkBoxText}>{data.checkboxData || ' '}</Text>
-                                    </View>
-                            <Text style={styles.checkboxLabel}>GROUP D INSTITUTIONAL </Text>
-                        </View>
-                        <View style={styles.checkboxRow}>
-                            <View style={styles.checkBox}>
-                                        <Text style={styles.checkBoxText}>{data.checkboxData || ' '}</Text>
-                                    </View>
-                            <Text style={styles.checkboxLabel}>GROUP E BUSINESS AND MERCANTILE</Text>
-                        </View>
+                            {firstBoxesOccupancy.map((data) => (
+                                                    <View style={styles.smallboxes_container}>
+                                                        <View key={data.name} style={styles.checkbox}>
+                                                            {occupancyArray.includes(data.name) && (
+                                                                    <Svg viewBox="0 0 24 24" >
+                                                                        <Path
+                                                                            d="M20.285 6.287l-11.314 11.314-5.657-5.657 1.414-1.414 4.243 4.243 9.9-9.9z"
+                                                                            fill="none"
+                                                                            stroke="black"
+                                                                            strokeWidth="2"
+                                                                        />
+                                                                    </Svg>
+                                                            )}
+                                                        </View>
+                                                        <Text style={styles.boxes_text}>{data.name.replace(/^[^-]+-/, '')}</Text>
+                                                    </View>
+                                                   
+                                                ))}
                     </View>
 
-                    {/* Second Column */}
+                    {/* SECOND COLUMN */}
+
                     <View style={styles.column6}>
-                        <View style={styles.checkboxRow}>
-                            <View style={styles.checkBox}>
-                                        <Text style={styles.checkBoxText}>{data.checkboxData || ' '}</Text>
-                                    </View>
-                            <Text style={styles.checkboxLabel}>GROUP F INDUSTRIAL</Text>
-                        </View>
-                        <View style={styles.checkboxRow}>
-                            <View style={styles.checkBox}>
-                                        <Text style={styles.checkBoxText}>{data.checkboxData || ' '}</Text>
-                                    </View>
-                            <Text style={styles.checkboxLabel}>GROUP G INDUSTRIAL STORAGE AND HAZARDOUS</Text>
-                        </View>
-                        <View style={styles.checkboxRow}>
-                            <View style={styles.checkBox}>
-                                        <Text style={styles.checkBoxText}>{data.checkboxData || ' '}</Text>
-                                    </View>
-                            <Text style={styles.checkboxLabel2}>GROUP H RECREATIONAL ASSEMBLY OCCUPANT LOAD LESS THAN 1000
-                            </Text>
-                        </View>
-                        <View style={styles.checkboxRow}>
-                            <View style={styles.checkBox}>
-                                        <Text style={styles.checkBoxText}>{data.checkboxData || ' '}</Text>
-                                    </View>
-                            <Text style={styles.checkboxLabel2}>GROUP I RECREATIONAL ASSEMBLY OCCUPANT LOAD 1000 OR MORE
-                            </Text>
-                        </View>
-                        <View style={styles.checkboxRow}>
-                            <View style={styles.checkBox}>
-                                        <Text style={styles.checkBoxText}>{data.checkboxData || ' '}</Text>
-                                    </View>
-                            <Text style={styles.checkboxLabel}>GROUP J AGRICULTURAL ACCESSORY</Text>
-                        </View>
+                            {secondBoxesOccupancy.map((data) => (
+                                                    <View style={styles.smallboxes_container}>
+                                                        <View key={data.name} style={styles.checkbox}>
+                                                            {occupancyArray.includes(data.name) && (
+                                                                    <Svg viewBox="0 0 24 24" >
+                                                                        <Path
+                                                                            d="M20.285 6.287l-11.314 11.314-5.657-5.657 1.414-1.414 4.243 4.243 9.9-9.9z"
+                                                                            fill="none"
+                                                                            stroke="black"
+                                                                            strokeWidth="2"
+                                                                        />
+                                                                    </Svg>
+                                                            )}
+                                                        </View>
+                                                        <Text style={styles.boxes_text}>{data.name.replace(/^[^-]+-/, '')}</Text>
+                                                    </View>
+                                                   
+                                                ))}
                     </View>
 
-                        {/* Third Column */}
-                        <View style={styles.column6}>
-                            <View style={styles.checkboxRow}>
-                                <View style={styles.checkBox}>
-                                    <Text style={styles.checkBoxText}>{data.checkboxData || ' '}</Text>
-                                </View>
-                                    <Text style={styles.checkboxLabel}>OTHER (SPECIFY)</Text>
-                                    <Text style={styles.blankLineData2}>{data.labelData || ' '} </Text>
-                            </View>
-                            <Text style={styles.blankLineDataExtra2}>{data.labelData || ' '} </Text>
-                        </View>
-
+                    {/* THIRD COLUMN */}
+                    <View style={styles.column6}>
+                            {thirdBoxesOccupancy.map((data) => (
+                                                    <View style={styles.smallboxes_container}>
+                                                        <View key={data.name} style={styles.checkbox}>
+                                                            {occupancyArray.includes(data.name) && (
+                                                                    <Svg viewBox="0 0 24 24" >
+                                                                        <Path
+                                                                            d="M20.285 6.287l-11.314 11.314-5.657-5.657 1.414-1.414 4.243 4.243 9.9-9.9z"
+                                                                            fill="none"
+                                                                            stroke="black"
+                                                                            strokeWidth="2"
+                                                                        />
+                                                                    </Svg>
+                                                            )}
+                                                        </View>
+                                                        <Text style={styles.boxes_text}>{data.name.replace(/^[^-]+-/, '')}</Text>
+                                                    </View>
+                                                   
+                                                ))}
+                    </View>
                 </View>
             </View>
             

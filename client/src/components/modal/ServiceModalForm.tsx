@@ -11,6 +11,11 @@ import Swal from "sweetalert2";
 import '../../assets/scrollStyle.css';
 import { IsApplicationExists } from '../../http/get/application';
 
+import { generateScopeAndOccupancyOptions, groupByClass } from '@/lib/utils';
+
+import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
+
+
 export const ServiceModalForm = ({ selectedService, setServiceModalOpen }: {
     selectedService: string,
     setServiceModalOpen: React.Dispatch<React.SetStateAction<boolean>>
@@ -25,7 +30,9 @@ export const ServiceModalForm = ({ selectedService, setServiceModalOpen }: {
 
     // const [value, setValue] = useState('');
 
+
     const [serviceType, setServiceType] = useState<string>("RENEWAL");
+    
     const [scopeTypes, setScopeTypes] = useState<string[]>([]);
     const [occupancyTypes, setOccupancyTypes] = useState<string[]>([]);
     const [isFormValid, setIsFormValid] = useState<boolean>(false); 
@@ -37,15 +44,25 @@ export const ServiceModalForm = ({ selectedService, setServiceModalOpen }: {
         .filter(([key]) => key !== "constructOwnbyEnterprise") 
         .every(([, field]) => field !== "");
 
-        const scopesSelected = scopeTypes.length > 0;
-        const occupancySelected = occupancyTypes.length > 0;
-
-        if (requiredFieldsFilled && scopesSelected && occupancySelected) {
-            setIsFormValid(true);
+        if (selectedService === "Signed" || selectedService === "Demolition") {
+            setIsFormValid(requiredFieldsFilled); // Only validate required fields
+        } else if (selectedService === "Fencing" || selectedService === "Electronics") {
+            // Exempt Fencing and Electronics from occupancy validation
+            setIsFormValid(requiredFieldsFilled && scopeTypes.length > 0);
         } else {
-            setIsFormValid(false);
+            // Normal validation for other services
+            const scopesSelected = scopeTypes.length > 0;
+            const occupancySelected = occupancyTypes.length > 0;
+    
+            if (requiredFieldsFilled && scopesSelected && occupancySelected) {
+                setIsFormValid(true);
+            } else {
+                setIsFormValid(false);
+            }
         }
-    }, [watchFields, scopeTypes, occupancyTypes]);
+
+       
+    }, [watchFields, scopeTypes, occupancyTypes, selectedService]);
 
     const { data: response } = useQuery({
         queryKey: ["login_applicant"],
@@ -55,10 +72,9 @@ export const ServiceModalForm = ({ selectedService, setServiceModalOpen }: {
     const login_applicant: { user_id: number, email: string } = response?.data;
 
     const onSubmit: SubmitHandler<ApplicantInfo> = (data) => {
-        console.log("selectedService: ", selectedService);
-        
-        data.firstName
-        data.lastName
+        console.log("data: ", data);
+        console.log("scopeTypes: ", scopeTypes);
+        console.log("occupancyTypes: ", scopeTypes);
 
         IsApplicationExists(data.firstName, data.lastName, selectedService).
             then(res => {
@@ -152,11 +168,23 @@ export const ServiceModalForm = ({ selectedService, setServiceModalOpen }: {
 
 
     const applicantNumber = [
-        { registerName: "taxAccountNo", placeHolder: "Tax Account No.", inputType: "number",},
+        { registerName: "taxAccountNo", placeHolder: "Tax Account No. (optional)", inputType: "number",},
         { registerName: "telNo", placeHolder: "Cell/Tel No.", inputType: "tel", maxLength: 11}, 
-        { registerName: "tctNo", placeHolder: "TCT No.", inputType: "number",},
+        { registerName: "tctNo", placeHolder: "TCT No. (optional)", inputType: "number",},
     ];
+
+
+    const excludedForScopeOccupancy = ["Signed", "Demolition"];
+
+    const { scopeOptions, occupancyOptions } = generateScopeAndOccupancyOptions(selectedService)
+
+    const groupedScopeOptions = groupByClass(scopeOptions);
+    const groupedOccupancyOptions = groupByClass(occupancyOptions);
+
+    console.log("scopeTypes: ", scopeTypes);
+    console.log("occupancyTypes: ", occupancyTypes);
     
+
 
     return (
         <>
@@ -334,50 +362,68 @@ export const ServiceModalForm = ({ selectedService, setServiceModalOpen }: {
                             </h1>
                         </div>
 
-                        <div className="w-full border border-gray-300 p-3 rounded-md">
-                        
-                            <label className="font-semibold">Scope of Work</label>
-                            <div className="flex flex-col gap-2 mb-5">
-                                {
-                                    scopeOptions.map((scope) => (
-                                        <div className="flex gap-1 items-center" key={scope}>
-                                            <input 
-                                                type="checkbox" 
-                                                name="scopeType" 
-                                                id={scope}
-                                                value={scope} 
-                                                checked={scopeTypes.includes(scope)} 
-                                                onChange={handleScopeChange}
-                                            />
-                                            <label htmlFor={scope}>{scope}</label>
-                                        </div>
-                                    ))
-                                }
-                            </div>
+                        {
+                            !excludedForScopeOccupancy.includes(selectedService) && (
+                                <Tabs defaultValue={selectedService} className="w-full">
+                            
+                                    <TabsList className={classNames(
+                                        selectedService == "Building" ? "mb-12": "mb-4",
+                                        `flex flex-wrap gap-2`
+                                    )}>
+                                        {Object.keys(groupedScopeOptions).map((category) => (
+                                            <TabsTrigger key={category} value={category}>
+                                                {category}
+                                            </TabsTrigger>
+                                        ))}
+                                    </TabsList>
 
-                        </div>
+                                    {Object.keys(groupedScopeOptions).map((category) => (
+                                        <TabsContent key={category} value={category} className="space-y-4">
 
-                        <div className="w-full border border-gray-300 p-3 rounded-md">
-                        
-                            <label className="font-semibold">Character of Occupancy</label>
-                            <div className="flex flex-col gap-2 mb-5 ">
-                                {
-                                    occupancyOptions.map((occupancy) => (
-                                        <div className="flex gap-1 items-center" key={occupancy}>
-                                            <input 
-                                                type="checkbox" 
-                                                name="occupancyType" 
-                                                id={occupancy}
-                                                value={occupancy} 
-                                                checked={occupancyTypes.includes(occupancy)} 
-                                                onChange={handleOccupancyChange}
-                                            />
-                                            <label htmlFor={occupancy}>{occupancy}</label>
-                                        </div>
-                                    ))
-                                }
-                            </div>
-                        </div>
+                                            {/* Scope of Work */}
+                                            <div className="w-full border border-gray-300 p-3 rounded-md">
+                                                <label className="font-semibold">Scope of Work</label>
+                                                <div className="flex flex-col gap-2 mb-5">
+                                                    {groupedScopeOptions[category].map((item: string) => (
+                                                        <div className="flex gap-1 items-center" key={item}>
+                                                            <input 
+                                                                type="checkbox" 
+                                                                id={item}
+                                                                value={item} 
+                                                                checked={scopeTypes.includes(item)} 
+                                                                onChange={handleScopeChange}
+                                                            />
+                                                            <label htmlFor={item}>{item.replace(/^[^-]+-/, '')}</label>
+                                                        </div>
+                                                    ))}
+                                                </div>
+                                            </div>
+
+                                            {/* Character of Occupancy */}
+                                            {groupedOccupancyOptions[category] && groupedOccupancyOptions[category].length > 0 && (
+                                                <div className="w-full border border-gray-300 p-3 rounded-md">
+                                                    <label className="font-semibold">Character of Occupancy</label>
+                                                    <div className="flex flex-col gap-2 mb-5">
+                                                        {groupedOccupancyOptions[category].map((item: string) => (
+                                                            <div className="flex gap-1 items-center" key={item}>
+                                                                <input 
+                                                                    type="checkbox" 
+                                                                    id={item}
+                                                                    value={item} 
+                                                                    checked={occupancyTypes.includes(item)} 
+                                                                    onChange={handleOccupancyChange}
+                                                                />
+                                                                <label htmlFor={item}>{item.replace(/^[^-]+-/, '')}</label>
+                                                            </div>
+                                                        ))}
+                                                    </div>
+                                                </div>
+                                            )}
+                                        </TabsContent>
+                                    ))}
+                                </Tabs>
+                            )
+                        }
 
                         <button
                             type="submit"
@@ -421,25 +467,6 @@ const applicantAddress = [
 ];
 
 
-
-
-const scopeOptions = [
-    "NEW CONSTRUCTION", "ERECTION", "ADDITION", "ALTERATION", "RENOVATION", 
-    "CONVERSION", "REPAIR", "MOVING", "RAISING", "ACCESSORY BUILDING STRUCTURE"
-];
-
-const occupancyOptions = [
-    "GROUP A - RESIDENTIAL DWELLING", 
-    "GROUP B - RESIDENTIAL HOTEL APARTMENT", 
-    "GROUP C - EDUCATIONAL RECREATIONAL", 
-    "GROUP D - INSTITUTIONAL", 
-    "GROUP E - BUSINESS AND MERCANTILE", 
-    "GROUP F - INDUSTRIAL", 
-    "GROUP G - INDUSTRIAL STORAGE AND HAZARDOUS", 
-    "GROUP H - RECREATIONAL ASSEMBLY OCCUPANT LOAD LESS THAN 1000", 
-    "GROUP I - RECREATIONAL ASSEMBLY OCCUPANT LOAD 1000 OR MORE", 
-    "GROUP J - AGRICULTURAL ACCESSORY"
-];
 
 const barangayOptions = [
     "A. O. Floirendo", 

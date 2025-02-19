@@ -70,11 +70,16 @@ export function MechanicalPermitComponent({ permitInfo }: {
     return (
         <>
 
-            <Page size="A4" style={styles.page}>
-                <View style={styles.pageContainer2}>
-                    <PermitBodyBox11 permitInfo={permitInfo} />
-                </View>
-            </Page>
+            {
+                permitInfo && permitInfo.permit_type != "Building" && (
+                    <Page size="A4" style={styles.page}>
+                        <View style={styles.pageContainer2}>
+                            <PermitBodyBox11 permitInfo={permitInfo} />
+                        </View>
+                    </Page>
+                )
+            }
+            
 
             <Page size="A4" style={styles.page}>
                 <View style={styles.pageContainer}>
@@ -111,12 +116,19 @@ export function MechanicalPermitComponent({ permitInfo }: {
 
             {/* COMPLETION NI SA MECHANICAL */}
 
-            <Page size="A4" style={styles.page}>
-                <View style={styles.pageContainer}>
-                <Image src="/img/no_to_fixer-mono.jpg" style={styles.headerImage} />
-                    <PermitBodyBox12 permitInfo={permitInfo} />
-                </View>
-            </Page>
+
+            {
+                permitInfo && permitInfo.permit_type != "Building" && (
+                    <Page size="A4" style={styles.page}>
+                        <View style={styles.pageContainer}>
+                        <Image src="/img/no_to_fixer-mono.jpg" style={styles.headerImage} />
+                            <PermitBodyBox12 permitInfo={permitInfo} />
+                        </View>
+                    </Page>
+                )
+            }
+
+           
         </>
     );
 }

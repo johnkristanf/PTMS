@@ -159,6 +159,7 @@ type Assessment struct {
 	ID        					int64			`gorm:"primaryKey;autoIncrement:true;uniqueIndex:idx_assesmentID"`
 	DatePaid					string			`gorm:"not null"`
 	ORNumber					string			`gorm:"not null"`
+	ReceiptNumber				string			`gorm:"not null"`
 
 	AssControlNumber  			string			`gorm:"not null"`
 	Date						string			`gorm:"not null"`
@@ -257,6 +258,8 @@ type APPLICATION_DB_METHOD interface {
 
 	UpdateInboxStatus(int64) error
 	DeleteInbox(string) error
+
+	FetchOccupancyData(int64) ([]*types.OccupancyData, error)
 }
 
 
@@ -357,6 +360,7 @@ func (sql *SQL) SetPaidAsssesment(assessments types.AssessmentsPaidFormData) err
 		DatePaid: formattedDate,
 		ORNumber: assessments.ORNumber,
 		Status: "paid",
+		ReceiptNumber: helpers.GenerateRandomNumber(),
 	})
 
 	if result.Error != nil{
@@ -1409,4 +1413,24 @@ func (sql *SQL) ApplicationByPermitType() (results []*types.ApplicationByPermitT
 	}
 
 	return results, nil
+}
+
+
+
+
+func (sql *SQL) FetchOccupancyData(applicationID int64) ([]*types.OccupancyData, error) {
+
+	occupancyData := make([]*types.OccupancyData, 0)
+
+	if err := sql.DB.Table("assessments").
+		Select("assessments.id, assessments.date_paid, assessments.or_number, assessments.receipt_number, assessments.project_proposed, assessments.location, assessments.total_assesment, applications.character_of_occupancy, applications.first_name, applications.middle_initial, applications.last_name").
+		Joins("INNER JOIN applications ON applications.id = assessments.application_id").
+		Where("assessments.application_id = ?", applicationID).
+		Order("applications.created_at DESC").
+		Find(&occupancyData).Error; err != nil {
+		return nil, err
+	}
+
+
+	return occupancyData, nil
 }

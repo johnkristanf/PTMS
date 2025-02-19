@@ -402,3 +402,21 @@ type ElectricalRequirements struct{
 	Design_Analysis                       bool    `json:"Design_Analysis"`
 	One_Line_Diagram                      bool    `json:"One_Line_Diagram"`
 }
+
+
+
+type OccupancyData struct {
+	ID							int64			`json:"assessment_id"`
+	DatePaid					string			`json:"date_paid"`
+	ORNumber					string			`json:"or_number"`
+	ReceiptNumber				string			`json:"receipt_number"`
+	ProjectProposed  			string			`json:"project_proposed"`
+
+	CharacterOfOccupancy        string 			`json:"character_occupancy"`
+	TotalAssesment  			float64			`json:"fee_paid"`
+	Location  					string			`json:"location"`
+
+	FirstName  					string			`json:"first_name"`
+	MiddleInitial  				string			`json:"middle_initial"`
+	LastName  					string			`json:"last_name"`
+}
