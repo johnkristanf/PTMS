@@ -9,9 +9,9 @@ function RequirementsModal({ setShowRequirements, role }: {
     <>
       <div className="fixed top-0 left-0 w-full h-full bg-gray-800 opacity-75"></div>
 
-      <div className="w-full fixed top-24 left-0 h-screen flex justify-center">
+      <div className="w-full fixed top-[9rem] left-0 h-screen flex justify-center">
 
-          <div className="flex flex-col items-center h-[83%] py-4 w-[55%] bg-white rounded-md">
+          <div className="flex flex-col items-center h-[74%] py-4 w-[55%] bg-white rounded-md">
 
               <h1 className='text-black text-2xl font-bold'>FIRST STEP REQUIREMENTS</h1>
               <div className="w-full h-[90%] p-5">

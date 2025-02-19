@@ -74,7 +74,6 @@ function ServicesPage(){
 
 
 
-    // MAKE THE MODAL OF THE OCCUPANCY THEN IBALHIN NI NA REACT QUERY DDTO HANTOD CONSOLE LOG NA CODE
     const { data: responseOccupancy } = useQuery({
         queryKey: ["occupancy_data", showOptionsId],
 
@@ -219,7 +218,7 @@ function ServicesPage(){
 
                     <div className="flex flex-col">
                         <h1 className='font-bold text-xl text-gray-600 mb-5'>Step 3:</h1>
-                        <h1 className="text-4xl font-bold text-blue-700">Applied Services</h1>
+                        <h1 className="text-[2rem] font-bold">Applied Services</h1>
                     </div>
 
                     <div className="flex gap-3 pr-12 bg-blue-100">

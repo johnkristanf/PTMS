@@ -41,6 +41,9 @@ function ApplyServicesPage() {
         setServiceModalOpen(true);
     };
 
+
+    // FONT SIZE FOLLOW FORMAT TITLE, MENU, DESCRIPTION
+
     return (
         <div className='flex justify-between items-start h-[120vh] w-full bg-white'>
             <SideBar role='applicant' />
@@ -50,7 +53,7 @@ function ApplyServicesPage() {
 
                 <div className="flex w-full font-bold ">
                     {/* <h1 className='text-xl text-gray-600'>Step 1:</h1> */}
-                    <h1 className='text-2xl flex-1'>Apply Services: </h1>
+                    <h1 className='text-[2rem] flex-1'>Apply Services: </h1>
                 </div>
 
                 
@@ -61,7 +64,7 @@ function ApplyServicesPage() {
                         <div className="flex w-full mt-5 font-semibold">
                             <button
                                 onClick={() => clickService("Building")}
-                                className={classNames("p-2 w-full h-[70%] bg-blue-700 rounded-md text-white font-bold hover:bg-gray-400")}
+                                className={classNames("p-2 w-full h-[70%] bg-sky-800 rounded-md text-white font-bold hover:opacity-75")}
                             >
                                 Building Permit
                             </button>
@@ -80,7 +83,7 @@ function ApplyServicesPage() {
                                     key={permit.name}
                                     onClick={() => clickService(permit.permit_type)}
                                     className={classNames(
-                                        "p-2 w-[80%] h-full bg-blue-700 rounded-md text-white font-bold hover:bg-gray-400"
+                                        "p-2 w-[80%] h-full  bg-sky-500 rounded-md text-white font-bold hover:opacity-75"
                                     )}
                                 >
                                     {permit.name}
@@ -105,7 +108,7 @@ function ApplyServicesPage() {
                                 >
                                     <button
                                         onClick={() => clickService(permit.permit_type)}
-                                        className={classNames("p-2 w-[90%] h-full bg-blue-700 rounded-md text-white font-bold hover:bg-gray-400")}
+                                        className={classNames("p-2 w-[90%] h-full  bg-sky-700 rounded-md text-white font-bold hover:opacity-75")}
                                     >
                                         {permit.name}
                                     </button>

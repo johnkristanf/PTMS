@@ -2,10 +2,10 @@
 
 export function PTMSHeader(){
     return(
-        <div className="fixed top-0 w-full bg-blue-700 h-[12vh] flex items-center justify-center gap-2 z-[999]">
+        <div className="fixed top-0 w-full bg-blue-700 h-[12vh] flex items-center justify-center gap-2 z-[999] pl-10">
             <img src="/img/PTMS_LOGO.jpg" width={50} height={50} className="rounded-full" />
 
-            <h1 className="text-white text-xl font-semibold">
+            <h1 className="text-white text-2xl font-semibold">
                 Panabo City Engineer's Office Transaction Management System for Issuance of Permits Application Services.
             </h1>
         </div>
@@ -15,7 +15,7 @@ export function PTMSHeader(){
 
 export function ApplicationNoteSubHeader(){
     return(
-        <div className="fixed top-[75px] w-full bg-blue-700 h-[12vh] flex justify-center gap-2 z-[999] font-semibold text-white border border-t-white">
+        <div className="fixed top-[75px] w-full bg-sky-900 h-[10vh] flex justify-center gap-2 z-[999] font-semibold text-white border border-t-white">
             {/* <h1 className='text-xl'>Note:</h1> */}
 
             <div className="flex gap-3">

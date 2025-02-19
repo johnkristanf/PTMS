@@ -19,7 +19,7 @@ export function ApplicantInformationModalApplicant({setInformationModal, applica
 
             <div className="fixed top-0 bg-gray-600 opacity-75 w-full h-screen"></div>
 
-            <div className="flex flex-col bg-white rounded-md p-8 fixed top-20 mt-1 w-1/2 h-[85%] overflow-auto custom-scrollbar">
+            <div className="flex flex-col bg-white rounded-md p-8 fixed top-[9rem] mt-1 w-1/2 h-[75%] overflow-auto custom-scrollbar">
 
                 <div className="flex flex-col justify-between items-center mb-3">
 

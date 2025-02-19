@@ -1,9 +1,9 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { SubmitHandler, useForm } from "react-hook-form";
 import { classNames } from "../../helpers/classNames";
 import { ApplicantInfo, Application } from "../../types/application";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faX } from "@fortawesome/free-solid-svg-icons";
+import { faCircleInfo, faX } from "@fortawesome/free-solid-svg-icons";
 import { FetchLoginApplicant } from "../../http/get/auth";
 import { useQuery } from "@tanstack/react-query";
 import { Apply } from "../../http/post/application";
@@ -14,6 +14,7 @@ import { IsApplicationExists } from '../../http/get/application';
 import { generateScopeAndOccupancyOptions, groupByClass } from '@/lib/utils';
 
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
+import { HoverCard, HoverCardContent, HoverCardTrigger } from '../ui/hover-card';
 
 
 export const ServiceModalForm = ({ selectedService, setServiceModalOpen }: {
@@ -21,7 +22,7 @@ export const ServiceModalForm = ({ selectedService, setServiceModalOpen }: {
     setServiceModalOpen: React.Dispatch<React.SetStateAction<boolean>>
 }) => {
 
-    const { register, handleSubmit, reset, watch } = useForm<ApplicantInfo>({
+    const { register, handleSubmit, reset, clearErrors, setError, formState: { errors } } = useForm<ApplicantInfo>({
         defaultValues: {
             municipality: "Panabo City Davao Del Norte",
             zipCode: "8105"
@@ -35,34 +36,34 @@ export const ServiceModalForm = ({ selectedService, setServiceModalOpen }: {
     
     const [scopeTypes, setScopeTypes] = useState<string[]>([]);
     const [occupancyTypes, setOccupancyTypes] = useState<string[]>([]);
-    const [isFormValid, setIsFormValid] = useState<boolean>(false); 
+    // const [isFormValid, setIsFormValid] = useState<boolean>(false); 
 
-    const watchFields = watch();
+    // const watchFields = watch();
     
-    useEffect(() => {
-        const requiredFieldsFilled = Object.entries(watchFields)
-        .filter(([key]) => key !== "constructOwnbyEnterprise") 
-        .every(([, field]) => field !== "");
+    // useEffect(() => {
+    //     const requiredFieldsFilled = Object.entries(watchFields)
+    //     .filter(([key]) => key !== "constructOwnbyEnterprise") 
+    //     .every(([, field]) => field !== "");
 
-        if (selectedService === "Signed" || selectedService === "Demolition") {
-            setIsFormValid(requiredFieldsFilled); // Only validate required fields
-        } else if (selectedService === "Fencing" || selectedService === "Electronics") {
-            // Exempt Fencing and Electronics from occupancy validation
-            setIsFormValid(requiredFieldsFilled && scopeTypes.length > 0);
-        } else {
-            // Normal validation for other services
-            const scopesSelected = scopeTypes.length > 0;
-            const occupancySelected = occupancyTypes.length > 0;
+    //     if (selectedService === "Signed" || selectedService === "Demolition") {
+    //         setIsFormValid(requiredFieldsFilled); // Only validate required fields
+    //     } else if (selectedService === "Fencing" || selectedService === "Electronics") {
+    //         // Exempt Fencing and Electronics from occupancy validation
+    //         setIsFormValid(requiredFieldsFilled && scopeTypes.length > 0);
+    //     } else {
+    //         // Normal validation for other services
+    //         const scopesSelected = scopeTypes.length > 0;
+    //         const occupancySelected = occupancyTypes.length > 0;
     
-            if (requiredFieldsFilled && scopesSelected && occupancySelected) {
-                setIsFormValid(true);
-            } else {
-                setIsFormValid(false);
-            }
-        }
+    //         if (requiredFieldsFilled && scopesSelected && occupancySelected) {
+    //             setIsFormValid(true);
+    //         } else {
+    //             setIsFormValid(false);
+    //         }
+    //     }
 
        
-    }, [watchFields, scopeTypes, occupancyTypes, selectedService]);
+    // }, [watchFields, scopeTypes, occupancyTypes, selectedService]);
 
     const { data: response } = useQuery({
         queryKey: ["login_applicant"],
@@ -72,9 +73,50 @@ export const ServiceModalForm = ({ selectedService, setServiceModalOpen }: {
     const login_applicant: { user_id: number, email: string } = response?.data;
 
     const onSubmit: SubmitHandler<ApplicantInfo> = (data) => {
-        console.log("data: ", data);
-        console.log("scopeTypes: ", scopeTypes);
-        console.log("occupancyTypes: ", scopeTypes);
+       
+        //------------------- INPUT VALIDATION ---------------
+
+        const missingFields: string[] = [];
+        clearErrors();
+
+        Object.entries(data).forEach(([key, value]) => {
+            if (value === "" || value === undefined) {
+                missingFields.push(key);
+                setError(key as keyof ApplicantInfo, { type: "manual", message: "This field is required" });
+            }
+        });
+
+        if (selectedService !== "Signed" && selectedService !== "Demolition") {
+            if (scopeTypes.length === 0) {
+                missingFields.push("Scope of Work");
+                setError("scopeTypes" as keyof ApplicantInfo, { type: "manual", message: "Select at least one scope" });
+            }
+            if (selectedService !== "Fencing" && selectedService !== "Electronics" && occupancyTypes.length === 0) {
+                missingFields.push("Character of Occupancy");
+                setError("occupancyTypes" as keyof ApplicantInfo, { type: "manual", message: "Select at least one occupancy type" });
+            }
+        }
+
+        if (missingFields.length > 0) return;
+
+        const hasMissingSelections = Object.keys(groupedScopeOptions).some(category => 
+            !(groupedScopeOptions[category].some((item: string) => scopeTypes.includes(item)) && 
+              (groupedOccupancyOptions[category]?.some((item: string) => occupancyTypes.includes(item)) || false))
+        );
+    
+        if (hasMissingSelections) {
+            Swal.fire({
+                icon: "info",
+                title: "Incomplete Selection",
+                text: "Please check at least one option in both Scope of Work and Character of Occupancy before submitting.",
+                confirmButtonColor: "#3085d6",
+                confirmButtonText: "Okay",
+            });
+
+            return;
+        }
+
+        //------------------- END OF INPUT VALIDATION ---------------
 
         IsApplicationExists(data.firstName, data.lastName, selectedService).
             then(res => {
@@ -90,6 +132,7 @@ export const ServiceModalForm = ({ selectedService, setServiceModalOpen }: {
             }).
             catch(err => console.error("error in checking application exists: ", err))
 
+        // BLUE SUBMIT BUTTON AND RED CANCEL
         Swal.fire({
             text: "Are you sure you want to submit this Information?",
             icon: "warning",
@@ -133,6 +176,8 @@ export const ServiceModalForm = ({ selectedService, setServiceModalOpen }: {
         
                 Apply(applyData).catch(err => console.error(err));
         
+                // BLUE CONFIRM BUTTON AND RED CANCEL
+
                 Swal.fire({
                     icon: "success",
                     title: "Permit Applied Successfully",
@@ -168,11 +213,10 @@ export const ServiceModalForm = ({ selectedService, setServiceModalOpen }: {
 
 
     const applicantNumber = [
-        { registerName: "taxAccountNo", placeHolder: "Tax Account No. (optional)", inputType: "number",},
-        { registerName: "telNo", placeHolder: "Cell/Tel No.", inputType: "tel", maxLength: 11}, 
-        { registerName: "tctNo", placeHolder: "TCT No. (optional)", inputType: "number",},
+        { label: "Tax Account No.", registerName: "taxAccountNo", placeHolder: "(optional)", inputType: "number",},
+        { label: "Cell/Tel No.", registerName: "telNo",  inputType: "tel", maxLength: 11}, 
+        { label: "TCT No.", registerName: "tctNo", placeHolder: "(optional)", inputType: "number",},
     ];
-
 
     const excludedForScopeOccupancy = ["Signed", "Demolition"];
 
@@ -199,8 +243,9 @@ export const ServiceModalForm = ({ selectedService, setServiceModalOpen }: {
                         <div className="flex-col flex">
                             <h1 className='font-bold text-xl text-gray-600 mb-5'>Step 2:</h1>
 
-                            <h1 className="text-black font-semibold text-xl mb-2">{selectedService} Permit</h1>
                             <h1 className="text-black font-bold text-3xl">Application Form</h1>
+                            <h1 className="text-black font-semibold text-md my-2">{selectedService} Permit</h1>
+
                         </div>
 
                         <FontAwesomeIcon 
@@ -212,17 +257,6 @@ export const ServiceModalForm = ({ selectedService, setServiceModalOpen }: {
                     </div>
 
                     <div className="flex justify-center w-full gap-5 font-semibold mb-5">
-
-                        {/* <div className="flex gap-1">
-                            <input 
-                                type="radio" 
-                                name="serviceType" 
-                                value="NEW" 
-                                checked={serviceType === "NEW"} 
-                                onChange={(e) => setServiceType(e.target.value)}
-                            />
-                            <label>NEW</label>
-                        </div> */}
 
                         {
                             selectedService == "Electrical" && (
@@ -257,10 +291,15 @@ export const ServiceModalForm = ({ selectedService, setServiceModalOpen }: {
                                             <input 
                                                 key={data.registerName}
                                                 type={data.inputType} 
-                                                required
                                                 className={classNames("bg-gray-200 placeholder-black font-semibold rounded-md p-2 focus:outline-slate-800 w-full")}
-                                                {...register(data.registerName as keyof ApplicantInfo)}
+                                                {...register(data.registerName as keyof ApplicantInfo, { required: `${data.placeHolder} is required` })}
                                             />
+
+                                            {errors[data.registerName as keyof ApplicantInfo] && (
+                                                <p className="text-red-500 text-sm mt-1">
+                                                    {errors[data.registerName as keyof ApplicantInfo]?.message}
+                                                </p>
+                                            )}
                                         </div>
                                         
                                     ))
@@ -273,17 +312,6 @@ export const ServiceModalForm = ({ selectedService, setServiceModalOpen }: {
 
                             {/* <label className="font-semibold">Enter Ownership</label> */}
                             <div className="flex gap-5">
-                                {/* <select 
-                                    className="bg-gray-200 placeholder-black font-semibold rounded-md p-2 focus:outline-slate-800"
-                                    {...register("formOwnership")}
-                                >
-                                    <option value="" disabled selected>Form of Ownership</option>
-                                    <option value="Joint Tenancy">Joint Tenancy</option>
-                                    <option value="Tenancy in Common">Tenancy in Common</option>
-                                    <option value="Tenants by Entirety">Tenants by Entirety</option>
-                                    <option value="Sole Ownership">Sole Ownership</option>
-                                    <option value="Community Property">Community Property</option>
-                                </select> */}
                                 {
                                     applicantOwnership.map((data) => (
                                         <div className='flex flex-col font-semibold w-full'>
@@ -292,8 +320,15 @@ export const ServiceModalForm = ({ selectedService, setServiceModalOpen }: {
                                                 key={data.registerName}
                                                 type={data.inputType} 
                                                 className={classNames("bg-gray-200 placeholder-black font-semibold rounded-md p-2 focus:outline-slate-800 w-full")}
-                                                {...register(data.registerName as keyof ApplicantInfo)}
+                                                {...register(data.registerName as keyof ApplicantInfo, { required: `${data.placeHolder} is required` })}
                                             />
+
+                                            {errors[data.registerName as keyof ApplicantInfo] && (
+                                                <p className="text-red-500 text-sm mt-1">
+                                                    {errors[data.registerName as keyof ApplicantInfo]?.message}
+                                                </p>
+                                            )}
+
                                         </div>
                                     ))
                                 }
@@ -306,16 +341,23 @@ export const ServiceModalForm = ({ selectedService, setServiceModalOpen }: {
                             {/* <label className="font-semibold">Enter Address</label> */}
                             <div className="flex flex-col gap-5 font-semibold">
 
+
+                                {/* SUNOD NI SA SA CITY ANG BARANGAY */}
                                 <select 
                                     className="bg-gray-200 placeholder-black font-semibold rounded-md p-2 focus:outline-slate-800 w-full"
-                                    {...register("barangay")}
-                                    required
+                                    {...register("barangay", { required: `${"Barangay"} is required` })}
                                 >
                                     <option disabled selected>Select Barangay</option>
                                     {barangayOptions.map((barangay, index) => (
                                         <option key={index} value={barangay}>{barangay}</option>
                                     ))}
                                 </select>
+
+                                {errors["barangay" as keyof ApplicantInfo] && (
+                                    <p className="text-red-500 text-sm mt-1">
+                                        {errors["barangay" as keyof ApplicantInfo]?.message}
+                                    </p>
+                                )}
 
                                 {
                                     applicantAddress.map((data) => (
@@ -326,112 +368,180 @@ export const ServiceModalForm = ({ selectedService, setServiceModalOpen }: {
                                                 type={data.inputType} 
                                                 defaultValue={data.value}
                                                 disabled={data.disabled}
-                                                required
                                                 className={classNames(`${data.value ? "bg-gray-400 text-white": "bg-gray-200"} placeholder-black font-semibold rounded-md p-2 focus:outline-slate-800 w-full`)}
-                                                {...register(data.registerName as keyof ApplicantInfo)}
+                                                {...register(data.registerName as keyof ApplicantInfo, { required: `${data.placeHolder.replace(/([A-Z])/g, ' $1')} is required` })}
                                             />
+
+                                            {errors[data.registerName as keyof ApplicantInfo] && (
+                                                <p className="text-red-500 text-sm mt-1">
+                                                    {errors[data.registerName as keyof ApplicantInfo]?.message}
+                                                </p>
+                                            )}
                                         </div>
                                     ))
                                 }
+
+                                
                                 
                             </div>
                         </div>
 
                         <div className="w-full border border-gray-300 p-3 rounded-md">
                             {/* <label className="font-semibold">Enter Numbers</label> */}
+
+
+                            {/* THE OPTIONAL PLACEHOLDER IS BLURRY */}
                             <div className="flex gap-2">
                                 {
                                     applicantNumber.map((data) => (
+                                        
                                         <div className='flex flex-col font-semibold w-full'>
-                                            <label>{data.placeHolder}</label>
+
+                                            <div className="flex items-center gap-2">
+                                                <label>{data.label}</label>
+                                                
+                                                {
+                                                    data.label == "TCT No." && (
+                                                        <HoverCard>
+                                                            <HoverCardTrigger>
+                                                                <FontAwesomeIcon icon={faCircleInfo} className='hover:cursor-pointer'/>
+                                                            </HoverCardTrigger>
+                                                            
+                                                            <HoverCardContent>
+                                                                <h1 
+                                                                    className='mt-5 text-gray-600 text-sm font-semibold'
+                                                                >
+                                                                    TCT No. (Transfer Certificate of Title Number) is a unique land title number proving property ownership. 
+                                                                </h1>
+                                                            </HoverCardContent>
+                                                        </HoverCard>
+
+                                                    )
+                                                }
+
+                                            </div>
+
                                             <input 
                                                 key={data.registerName}
                                                 type={data.inputType} 
                                                 maxLength={data.maxLength}
-                                                required
-                                                className={classNames("bg-gray-200 placeholder-black font-semibold rounded-md p-2 focus:outline-slate-800 w-full")}
-                                                {...register(data.registerName as keyof ApplicantInfo)}
+                                                placeholder={data.placeHolder}
+                                                className={classNames("bg-gray-200 placeholder-black placeholder-gray-600 opacity-70 font-semibold rounded-md p-2 focus:outline-slate-800 w-full")}
+                                                {...register(
+                                                    data.registerName as keyof ApplicantInfo,
+                                                    data.label !== "Tax Account No." && data.label !== "TCT No."
+                                                        ? { required: `${data.label} is required` }
+                                                        : {} // Exclude validation
+                                                )}
                                             />
+
+                                            {errors[data.registerName as keyof ApplicantInfo] && (
+                                                <p className="text-red-500 text-sm mt-1">
+                                                    {errors[data.registerName as keyof ApplicantInfo]?.message}
+                                                </p>
+                                            )}
+
                                         </div>
+
+
                                     ))
+
                                 }
+
                             </div>
 
-                            <h1 className='mt-5 text-gray-600 text-sm font-semibold'>Note: TCT No. (Transfer Certificate of Title Number) is a unique land title number proving property ownership. 
-                                It’s required for permits to verify the applicant's right to use the land.
-                            </h1>
+                            
+
                         </div>
 
                         {
-                            !excludedForScopeOccupancy.includes(selectedService) && (
-                                <Tabs defaultValue={selectedService} className="w-full">
-                            
-                                    <TabsList className={classNames(
-                                        selectedService == "Building" ? "mb-12": "mb-4",
-                                        `flex flex-wrap gap-2`
-                                    )}>
-                                        {Object.keys(groupedScopeOptions).map((category) => (
-                                            <TabsTrigger key={category} value={category}>
-                                                {category}
-                                            </TabsTrigger>
-                                        ))}
-                                    </TabsList>
+    !excludedForScopeOccupancy.includes(selectedService) && (
+        <Tabs defaultValue={selectedService} className="w-full">
+        
+            <TabsList className={classNames(
+                selectedService == "Building" ? "mb-12": "mb-4",
+                `flex flex-wrap gap-2 pb-12`
+            )}>
+                {Object.keys(groupedScopeOptions).map((category) => {
+                    // At least one checkbox must be checked in Scope of Work
+                    const hasCheckedScope = groupedScopeOptions[category].some((item: string) => scopeTypes.includes(item));
+                    
+                    // At least one checkbox must be checked in Character of Occupancy
+                    const hasCheckedOccupancy = groupedOccupancyOptions[category]?.some((item: string) => occupancyTypes.includes(item)) || false;
 
-                                    {Object.keys(groupedScopeOptions).map((category) => (
-                                        <TabsContent key={category} value={category} className="space-y-4">
+                    // Show exclamation mark if BOTH sections are not checked
+                    const hasMissingSelections = !hasCheckedScope || !hasCheckedOccupancy;
 
-                                            {/* Scope of Work */}
-                                            <div className="w-full border border-gray-300 p-3 rounded-md">
-                                                <label className="font-semibold">Scope of Work</label>
-                                                <div className="flex flex-col gap-2 mb-5">
-                                                    {groupedScopeOptions[category].map((item: string) => (
-                                                        <div className="flex gap-1 items-center" key={item}>
-                                                            <input 
-                                                                type="checkbox" 
-                                                                id={item}
-                                                                value={item} 
-                                                                checked={scopeTypes.includes(item)} 
-                                                                onChange={handleScopeChange}
-                                                            />
-                                                            <label htmlFor={item}>{item.replace(/^[^-]+-/, '')}</label>
-                                                        </div>
-                                                    ))}
-                                                </div>
-                                            </div>
+                    return (
+                        <TabsTrigger 
+                            key={category} 
+                            value={category}
+                            className="bg-gray-200 min-w-fit px-4 py-2 rounded-md data-[state=active]:bg-gray-300 data-[state=active]:text-blue-700 data-[state=active]:font-bold flex items-center gap-1"
+                        >
+                            {category} {hasMissingSelections && <span className="text-red-600 font-bold">❗</span>}
+                        </TabsTrigger>
+                    );
+                })}
+            </TabsList>
 
-                                            {/* Character of Occupancy */}
-                                            {groupedOccupancyOptions[category] && groupedOccupancyOptions[category].length > 0 && (
-                                                <div className="w-full border border-gray-300 p-3 rounded-md">
-                                                    <label className="font-semibold">Character of Occupancy</label>
-                                                    <div className="flex flex-col gap-2 mb-5">
-                                                        {groupedOccupancyOptions[category].map((item: string) => (
-                                                            <div className="flex gap-1 items-center" key={item}>
-                                                                <input 
-                                                                    type="checkbox" 
-                                                                    id={item}
-                                                                    value={item} 
-                                                                    checked={occupancyTypes.includes(item)} 
-                                                                    onChange={handleOccupancyChange}
-                                                                />
-                                                                <label htmlFor={item}>{item.replace(/^[^-]+-/, '')}</label>
-                                                            </div>
-                                                        ))}
-                                                    </div>
-                                                </div>
-                                            )}
-                                        </TabsContent>
-                                    ))}
-                                </Tabs>
-                            )
-                        }
+            {Object.keys(groupedScopeOptions).map((category) => (
+                <TabsContent key={category} value={category} className="space-y-4">
+
+                    {/* Scope of Work */}
+                    <div className="w-full border border-gray-300 p-3 rounded-md">
+                        <label className="font-semibold">Scope of Work</label>
+                        <div className="flex flex-col gap-2 mb-5">
+                            {groupedScopeOptions[category].map((item: string) => (
+                                <div className="flex gap-1 items-center" key={item}>
+                                    <input 
+                                        type="checkbox" 
+                                        id={item}
+                                        value={item} 
+                                        checked={scopeTypes.includes(item)} 
+                                        onChange={handleScopeChange}
+                                    />
+                                    <label htmlFor={item}>{item.replace(/^[^-]+-/, '')}</label>
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+
+                    {/* Character of Occupancy */}
+                    {groupedOccupancyOptions[category] && groupedOccupancyOptions[category].length > 0 && (
+                        <div className="w-full border border-gray-300 p-3 rounded-md">
+                            <label className="font-semibold">Character of Occupancy</label>
+                            <div className="flex flex-col gap-2 mb-5">
+                                {groupedOccupancyOptions[category].map((item: string) => (
+                                    <div className="flex gap-1 items-center" key={item}>
+                                        <input 
+                                            type="checkbox" 
+                                            id={item}
+                                            value={item} 
+                                            checked={occupancyTypes.includes(item)} 
+                                            onChange={handleOccupancyChange}
+                                        />
+                                        <label htmlFor={item}>{item.replace(/^[^-]+-/, '')}</label>
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+                    )}
+                </TabsContent>
+            ))}
+        </Tabs>
+    )
+}
+
+
+
+                        {/* BEFORE SUBMISSION PUT RED WARNING EACH INPUT NEAR TABS EACH CHECKBOXES IF NOT YET COMPLETED */}
 
                         <button
                             type="submit"
                             className={classNames(
                                 "rounded-md p-2 mt-3 text-white w-full font-semibold",
-                                isFormValid ? "bg-blue-700 hover:opacity-75" : "bg-gray-500 cursor-not-allowed"
+                                "bg-blue-700 hover:opacity-75" 
                             )}
-                            disabled={!isFormValid}
                         >
                             SUBMIT
                         </button>
@@ -460,10 +570,10 @@ const applicantOwnership = [
 ];
 
 const applicantAddress = [
-    { registerName: "street", placeHolder: "Street", inputType: "text" },
     { registerName: "municipality", placeHolder: "City/Municipality", inputType: "text", value: "Panabo City Davao Del Norte", disabled: true },
-    { registerName: "zipCode", placeHolder: "Zip Code", inputType: "number", value: "8105", disabled: true },
+    { registerName: "street", placeHolder: "Street", inputType: "text" },
     { registerName: "locationForConstruct_Install", placeHolder: "Location of Construction/Installation", inputType: "text" },
+    { registerName: "zipCode", placeHolder: "Zip Code", inputType: "number", value: "8105", disabled: true },
 ];
 
 
