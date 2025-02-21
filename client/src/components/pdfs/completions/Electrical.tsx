@@ -37,7 +37,7 @@ function ElectricalCompletionPDF({ permitInfo, setPermitsInfo }: {
                     <div className="flex flex-col items-center w-full gap-4 mt-5">
                         <button 
                             onClick={downloadPDF} 
-                            className="w-[85%] bg-blue-700 hover:opacity-75 text-white font-bold py-2 px-4 rounded w-1/2"
+                            className="w-[85%] bg-orange-700 hover:opacity-75 text-white font-bold py-2 px-4 rounded w-1/2"
                         >
                             Download PDF
                         </button>

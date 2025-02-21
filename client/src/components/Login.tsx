@@ -70,7 +70,7 @@ export function LoginForm({ setRole }: {
                 <label className="font-semibold">Email</label>
                 <input
                     type="email"
-                    className="bg-gray-300 rounded-md p-2 focus:outline-blue-500"
+                    className="bg-gray-300 rounded-md p-2 focus:outline-orange-500"
                     {...register("email", { required: true })}
                 />
 
@@ -79,7 +79,7 @@ export function LoginForm({ setRole }: {
                 <div className="relative">
                     <input
                         type={showPassword ? "text" : "password"}
-                        className="bg-gray-300 rounded-md p-2 focus:outline-blue-500 pr-10 w-full"
+                        className="bg-gray-300 rounded-md p-2 focus:outline-orange-500 pr-10 w-full"
                         {...register("password", { required: true })}
                     />
                     <FontAwesomeIcon
@@ -99,7 +99,7 @@ export function LoginForm({ setRole }: {
 
                     <button
                         type="submit"
-                        className="bg-blue-700 rounded-md p-2 text-white w-[30%] font-semibold hover:opacity-75"
+                        className="bg-orange-700 rounded-md p-2 text-white w-[30%] font-semibold hover:opacity-75"
                     >
                         LOGIN
                     </button>
@@ -182,7 +182,7 @@ function ApplicantLoginForm({setAuthType}: {
         <>
             <h1 className="font-bold text-3xl">Login to PTMS</h1>
 
-            <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col mt-5 gap-2 w-full ">
+            <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-2 w-full ">
 
                 <div className="flex gap-1">
                     {errors.email && <span className="text-red-800 font-bold">Email is required.</span>}
@@ -196,7 +196,7 @@ function ApplicantLoginForm({setAuthType}: {
                 <label className="font-semibold">Email</label>
                 <input
                     type="email"
-                    className="bg-gray-300 rounded-md p-2 focus:outline-blue-500"
+                    className="bg-gray-300 rounded-md p-2 focus:outline-orange-500"
                     {...register("email", { required: true })}
                 />
 
@@ -205,7 +205,7 @@ function ApplicantLoginForm({setAuthType}: {
                 <div className="relative">
                     <input
                         type={showPassword ? "text" : "password"}
-                        className="bg-gray-300 rounded-md p-2 focus:outline-blue-500 pr-10 w-full"
+                        className="bg-gray-300 rounded-md p-2 focus:outline-orange-500 pr-10 w-full"
                         {...register("password", { required: true })}
                     />
                     <FontAwesomeIcon
@@ -221,7 +221,7 @@ function ApplicantLoginForm({setAuthType}: {
                     >
                             Don't have an account? 
                             <a 
-                                className="ml-1 text-blue-800 hover:opacity-75 hover:cursor-pointer" 
+                                className="ml-1 text-orange-800 hover:opacity-75 hover:cursor-pointer" 
                                 onClick={() => setAuthType("signup")}>
                                 Signup
                             </a> 
@@ -231,7 +231,7 @@ function ApplicantLoginForm({setAuthType}: {
 
                     <button
                         type="submit"
-                        className="bg-blue-700 rounded-md p-2 text-white w-[30%] font-semibold hover:opacity-75"
+                        className="bg-orange-700 rounded-md p-2 text-white w-[30%] font-semibold hover:opacity-75"
                     >
                         LOGIN
                     </button>
@@ -245,20 +245,16 @@ function ApplicantLoginForm({setAuthType}: {
 
 
 
-function ApplicantSignupForm({setAuthType}: {
-    setAuthType: React.Dispatch<React.SetStateAction<string>>
-}) {
-
-    const { register, handleSubmit, reset, formState: { errors } } = useForm<SignupCredentials>()
-
+function ApplicantSignupForm({ setAuthType }: { setAuthType: React.Dispatch<React.SetStateAction<string>> }) {
+    const { register, handleSubmit, reset, formState: { errors } } = useForm<SignupCredentials>();
     const [showPassword, setShowPassword] = useState<boolean>(false);
-    
+
     const togglePasswordVisibility = () => setShowPassword(!showPassword);
 
     const onSubmit: SubmitHandler<SignupCredentials> = async (data) => {
         Swal.fire({
-            title: 'Signing Up...',
-            text: 'Your request is being processed',
+            title: "Signing Up...",
+            text: "Your request is being processed",
             allowOutsideClick: false,
             showConfirmButton: false,
             willOpen: () => {
@@ -266,57 +262,65 @@ function ApplicantSignupForm({setAuthType}: {
             },
         });
 
-        const signupResult = await SignupApplicant(data)
+        const signupResult = await SignupApplicant(data);
         console.log("signupResult: ", signupResult);
 
-        if(signupResult === "need_verification"){
+        if (signupResult === "need_verification") {
             Swal.close();
-
             Swal.fire({
-                title: 'Account Activation Needed',
-                text: 'Check your email for activation link',
+                title: "Account Activation Needed",
+                text: "Check your email for the activation link",
             });
-    
-        } 
+        }
 
         reset();
-
-    }
+    };
 
     return (
         <>
             <h1 className="font-bold text-3xl">Signup to PTMS</h1>
 
             <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col mt-5 gap-2 w-full">
-
+                {/* Display validation errors */}
                 <div className="flex gap-1">
                     {errors.full_name && <span className="text-red-800 font-bold">Full Name is required.</span>}
                     {errors.email && <span className="text-red-800 font-bold">Email is required.</span>}
-                    {errors.password && <span className="text-red-800 font-bold">Password is required.</span>}
                 </div>
 
-
+                {/* Full Name Input */}
                 <label className="font-semibold">Full Name</label>
                 <input
                     type="text"
-                    className="bg-gray-300 rounded-md p-2 focus:outline-blue-500"
+                    className="bg-gray-300 rounded-md p-2 focus:outline-orange-500"
                     {...register("full_name", { required: true })}
                 />
 
+                {/* Email Input */}
                 <label className="font-semibold">Email</label>
                 <input
                     type="email"
-                    className="bg-gray-300 rounded-md p-2 focus:outline-blue-500"
+                    className="bg-gray-300 rounded-md p-2 focus:outline-orange-500"
                     {...register("email", { required: true })}
                 />
 
-
+                {/* Password Input with Validation */}
                 <label className="font-semibold">Password</label>
                 <div className="relative">
                     <input
                         type={showPassword ? "text" : "password"}
-                        className="bg-gray-300 rounded-md p-2 focus:outline-blue-500 pr-10 w-full"
-                        {...register("password", { required: true })}
+                        className="bg-gray-300 rounded-md p-2 focus:outline-orange-500 pr-10 w-full"
+                        {...register("password", {
+                            required: "Password is required",
+                            minLength: {
+                                value: 8,
+                                message: "Password must be at least 8 characters",
+                            },
+                            pattern: {
+                                value: /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/,
+                                message:
+                                    "Must include 1 uppercase, 1 lowercase, 1 number, and 1 special character",
+                            },
+                        })}
                     />
                     <FontAwesomeIcon
                         icon={showPassword ? faEyeSlash : faEye}
@@ -325,32 +329,30 @@ function ApplicantSignupForm({setAuthType}: {
                     />
                 </div>
 
-                <div className="flex justify-between items-center mt-5">
-                    <h1 
-                        className="font-semibold "
-                    >
-                            Already have an account? 
-                            <a 
-                                className="ml-1 text-blue-800 hover:opacity-75 hover:cursor-pointer" 
-                                onClick={() => setAuthType("login")}>
-                                Login
-                            </a> 
+                {/* Password Validation Messages */}
+                {errors.password && <span className="text-red-800 font-bold">{errors.password.message}</span>}
 
-                            
+                <div className="flex justify-between items-center">
+                    <h1 className="font-semibold">
+                        Already have an account?{" "}
+                        <a
+                            className="ml-1 text-orange-800 hover:opacity-75 hover:cursor-pointer"
+                            onClick={() => setAuthType("login")}
+                        >
+                            Login
+                        </a>
                     </h1>
 
                     <button
                         type="submit"
-                        className="bg-blue-700 rounded-md p-2 text-white w-[30%] font-semibold hover:opacity-75"
+                        className="bg-orange-700 rounded-md p-2 text-white w-[30%] font-semibold hover:opacity-75"
                     >
                         SIGNUP
                     </button>
                 </div>
-
             </form>
-
         </>
-    )
+    );
 }
 
 // export function ApplicantLogin({setRole}: {

@@ -83,7 +83,7 @@ export function DisapprovedModal({ disapprovalData, setOpenDisapprovedModal }: {
                     </div>
 
                     <button
-                        className={`bg-orange-500 text-white font-bold rounded-md p-2 mt-5 hover:opacity-75`}
+                        className={`bg-orange-700 text-white font-bold rounded-md p-2 mt-5 hover:opacity-75`}
                         type="submit"
                     >
                         SEND

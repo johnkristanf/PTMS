@@ -48,7 +48,7 @@ export function TrashTable({ searchTerm, selectedMonth }: dropDownSelectType){
                     />
             )}
 
-            <div className="flex flex-col bg-blue-100 w-full h-[70%] rounded-md">
+            <div className="flex flex-col bg-orange-100 w-full h-[70%] rounded-md">
 
                 <div className="overflow-x-auto p-5">
                     <div className="inline-block min-w-full py-2 ">
@@ -101,7 +101,7 @@ export function TrashTable({ searchTerm, selectedMonth }: dropDownSelectType){
                                                         <HoverCard>
                                                             <HoverCardTrigger>
                                                                 <button 
-                                                                    className="bg-blue-700 rounded-md p-3 text-white hover:opacity-75"
+                                                                    className="bg-orange-700 rounded-md p-3 text-white hover:opacity-75"
                                                                     onClick={() => handleViewDocuments(data.applicationCode)}
 
                                                                 >

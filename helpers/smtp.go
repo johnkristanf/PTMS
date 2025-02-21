@@ -16,8 +16,11 @@ var (
 	// password = "qhub gqap gbyu capy"
 	// from="panabocityengineeringptms07@gmail.com"
 
-	password = "nwmv kqis ixjg vcqs"
-	from="jkpogz4@gmail.com"
+	// password = "nwmv kqis ixjg vcqs"
+	// from="jkpogz4@gmail.com"
+
+	password = "kjax vqfj zbhi carp"
+	from="panabocityengineeringoffice@gmail.com"
 )
 
 func Connection() (*smtp.Client, error) {

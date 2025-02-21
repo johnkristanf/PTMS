@@ -108,7 +108,7 @@ export function PendingTable({ searchTerm, selectedMonth }: dropDownSelectType) 
 
             )}
 
-        <div className="flex flex-col bg-blue-100 w-[99%] h-[70%] rounded-md">
+        <div className="flex flex-col bg-orange-100 w-[99%] h-[70%] rounded-md">
                 <div className=" p-3">
                     <div className="inline-block min-w-full py-2">
                         <div className="overflow-hidden overflow-y-auto h-[400px] custom-scrollbar">
@@ -199,7 +199,7 @@ export function PendingTable({ searchTerm, selectedMonth }: dropDownSelectType) 
                                                                 <HoverCardTrigger>
                                                                     <button
                                                                         onClick={() => openApplicationInformationModal(data)}
-                                                                        className="bg-blue-700 rounded-md p-3 text-white font-bold hover:opacity-75"
+                                                                        className="bg-orange-700 rounded-md p-3 text-white font-bold hover:opacity-75"
                                                                     >
                                                                         <FontAwesomeIcon icon={faAddressCard}/>
                                                                     </button>

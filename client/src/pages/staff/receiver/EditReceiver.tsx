@@ -14,7 +14,7 @@ function EditReceiverAccountPage(){
                 <div className="flex flex-col gap-2 w-full h-[80%] mr-5 p-8">
 
                     <div className="flex justify-between">
-                        <h1 className="text-blue-700 text-4xl font-bold">Edit Account</h1>
+                        <h1 className="text-orange-700 text-4xl font-bold">Edit Account</h1>
                     </div>
 
                     <EditAccountForm />

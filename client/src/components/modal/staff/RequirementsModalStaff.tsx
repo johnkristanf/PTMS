@@ -92,11 +92,14 @@ function RequirementsModalStaff({ applicationID, setShowRequirements }: {
     const [selectAll, setSelectAll] = useState<boolean>(false);
 
     const handleCheckboxChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-        const key = itemKeyMapping[event.target.name];
-        setCheckRequirements({
-            ...checkRequirements,
-            [key]: event.target.checked,
-        });
+        const key = itemKeyMapping[event.target.name] as keyof RequirementsWithoutID;
+    
+        if (key in checkRequirements) {
+            setCheckRequirements((prev) => ({
+                ...prev,
+                [key]: event.target.checked,
+            }));
+        }
     };
 
     const mutation = useMutation({
@@ -199,8 +202,16 @@ function RequirementsModalStaff({ applicationID, setShowRequirements }: {
         </div>
     );
 
-    const allRequirementsChecked = Object.values(checkRequirements).every(Boolean);
-    const disableIfallRequirementsChecked = Object.values(disabledRequirements).every(Boolean);
+    const excludedKeys = [...notRegisteredLotOwner, ...dulySignedSealed].map(item => itemKeyMapping[item]);
+
+    const allRequirementsChecked = Object.entries(checkRequirements)
+        .filter(([key]) => !excludedKeys.includes(key)) 
+        .every(([, value]) => value); 
+
+    const disableIfallRequirementsChecked = Object.entries(disabledRequirements)
+        .filter(([key]) => !excludedKeys.includes(key)) 
+        .every(([, value]) => value);
+
 
 
     const toggleSelectAll = () => {
@@ -227,29 +238,26 @@ function RequirementsModalStaff({ applicationID, setShowRequirements }: {
                         </span> 
                     </h1>
 
-                    <div className="flex justify-end mb-5 w-full">
-                       
-                        <button
-                            type="button"
-                            onClick={toggleSelectAll}
-                            className="bg-orange-400 text-white p-2 rounded-md "
-                        >
-                            {
-                                selectAll 
-                                    ? (
-                                        <>
-                                            <FontAwesomeIcon icon={faX} /> Unselect All
-                                        </>
+                    {!allRequirementsChecked && (
+                        <div className="flex justify-end mb-5 w-full">
+                            <button
+                                type="button"
+                                onClick={toggleSelectAll}
+                                className="bg-orange-400 text-white p-2 rounded-md"
+                            >
+                                {selectAll ? (
+                                    <>
+                                        <FontAwesomeIcon icon={faX} /> Unselect All
+                                    </>
+                                ) : (
+                                    <>
+                                        <FontAwesomeIcon icon={faCheck} /> Select All
+                                    </>
+                                )}
+                            </button>
+                        </div>
+                    )}
 
-                                    ) : (
-                                        <>
-                                            <FontAwesomeIcon icon={faCheck} /> Select All  
-                                        </>
-                                    )
-                            }
-                        </button>
-                       
-                    </div>
 
                     <form onSubmit={handleSubmit}>
                         {renderCheckboxes(fullyAccomplished, 'Fully Accomplished Application Form')}
@@ -262,7 +270,7 @@ function RequirementsModalStaff({ applicationID, setShowRequirements }: {
                         {!disableIfallRequirementsChecked && (
                             <button
                                 type="submit"
-                                disabled={!allRequirementsChecked}
+                                disabled={!allRequirementsChecked} // Excludes Not Registered Lot Owner & Duly Signed/Sealed
                                 className={classNames(
                                     "text-white font-bold rounded-md p-2 mt-4 w-full hover:opacity-75",
                                     !allRequirementsChecked ? "bg-gray-600 cursor-not-allowed" : "bg-orange-500"
@@ -270,7 +278,8 @@ function RequirementsModalStaff({ applicationID, setShowRequirements }: {
                             >
                                 Submit
                             </button>
-                        )} 
+                        )}
+
 
                         
                     </form>

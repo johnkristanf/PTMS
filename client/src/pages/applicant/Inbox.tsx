@@ -99,7 +99,7 @@ function InboxPage() {
                                     onClick={() => setSelectedFilter(item.filterType as FilterType)}
                                     className={classNames(
                                         "rounded-md p-2 text-white font-bold w-[15%] hover:opacity-75",
-                                        selectedFilter === item.filterType ? "bg-gray-500" : "bg-blue-700"
+                                        selectedFilter === item.filterType ? "bg-gray-500" : "bg-orange-700"
                                     )}
                                     key={item.name}
                                 >

@@ -22,7 +22,7 @@ export const ServiceModalForm = ({ selectedService, setServiceModalOpen }: {
     setServiceModalOpen: React.Dispatch<React.SetStateAction<boolean>>
 }) => {
 
-    const { register, handleSubmit, reset, clearErrors, setError, formState: { errors } } = useForm<ApplicantInfo>({
+    const { register, handleSubmit, reset } = useForm<ApplicantInfo>({
         defaultValues: {
             municipality: "Panabo City Davao Del Norte",
             zipCode: "8105"
@@ -76,45 +76,47 @@ export const ServiceModalForm = ({ selectedService, setServiceModalOpen }: {
        
         //------------------- INPUT VALIDATION ---------------
 
-        const missingFields: string[] = [];
-        clearErrors();
+        // const missingFields: string[] = [];
+        // clearErrors();
 
-        Object.entries(data).forEach(([key, value]) => {
-            if (value === "" || value === undefined) {
-                missingFields.push(key);
-                setError(key as keyof ApplicantInfo, { type: "manual", message: "This field is required" });
-            }
-        });
+        // Object.entries(data).forEach(([key, value]) => {
+        //     if (value === "" || value === undefined) {
+        //         missingFields.push(key);
+        //         setError(key as keyof ApplicantInfo, { type: "manual", message: "This field is required" });
+        //     }
+        // });
 
-        if (selectedService !== "Signed" && selectedService !== "Demolition") {
-            if (scopeTypes.length === 0) {
-                missingFields.push("Scope of Work");
-                setError("scopeTypes" as keyof ApplicantInfo, { type: "manual", message: "Select at least one scope" });
-            }
-            if (selectedService !== "Fencing" && selectedService !== "Electronics" && occupancyTypes.length === 0) {
-                missingFields.push("Character of Occupancy");
-                setError("occupancyTypes" as keyof ApplicantInfo, { type: "manual", message: "Select at least one occupancy type" });
-            }
-        }
+        // THIS COMMENTED CODE IS FOR SCOPE AND OCCUPANCY VALIDATION (REMOVAL)
 
-        if (missingFields.length > 0) return;
+        // if (selectedService !== "Signed" && selectedService !== "Demolition") {
+        //     if (scopeTypes.length === 0) {
+        //         missingFields.push("Scope of Work");
+        //         setError("scopeTypes" as keyof ApplicantInfo, { type: "manual", message: "Select at least one scope" });
+        //     }
+        //     if (selectedService !== "Fencing" && selectedService !== "Electronics" && occupancyTypes.length === 0) {
+        //         missingFields.push("Character of Occupancy");
+        //         setError("occupancyTypes" as keyof ApplicantInfo, { type: "manual", message: "Select at least one occupancy type" });
+        //     }
+        // }
 
-        const hasMissingSelections = Object.keys(groupedScopeOptions).some(category => 
-            !(groupedScopeOptions[category].some((item: string) => scopeTypes.includes(item)) && 
-              (groupedOccupancyOptions[category]?.some((item: string) => occupancyTypes.includes(item)) || false))
-        );
+        // if (missingFields.length > 0) return;
+
+        // const hasMissingSelections = Object.keys(groupedScopeOptions).some(category => 
+        //     !(groupedScopeOptions[category].some((item: string) => scopeTypes.includes(item)) && 
+        //       (groupedOccupancyOptions[category]?.some((item: string) => occupancyTypes.includes(item)) || false))
+        // );
     
-        if (hasMissingSelections) {
-            Swal.fire({
-                icon: "info",
-                title: "Incomplete Selection",
-                text: "Please check at least one option in both Scope of Work and Character of Occupancy before submitting.",
-                confirmButtonColor: "#3085d6",
-                confirmButtonText: "Okay",
-            });
+        // if (hasMissingSelections) {
+        //     Swal.fire({
+        //         icon: "info",
+        //         title: "Incomplete Selection",
+        //         text: "Please check at least one option in both Scope of Work and Character of Occupancy before submitting.",
+        //         confirmButtonColor: "#3085d6",
+        //         confirmButtonText: "Okay",
+        //     });
 
-            return;
-        }
+        //     return;
+        // }
 
         //------------------- END OF INPUT VALIDATION ---------------
 
@@ -137,8 +139,8 @@ export const ServiceModalForm = ({ selectedService, setServiceModalOpen }: {
             text: "Are you sure you want to submit this Information?",
             icon: "warning",
             showCancelButton: true,
-            confirmButtonColor: "#ff981a",
-            cancelButtonColor: "#000000",
+            confirmButtonColor: "#c2410c",
+            cancelButtonColor: "#8b0000",
             confirmButtonText: "Submit"
         }).then((result) => {
             if (result.isConfirmed) {
@@ -183,7 +185,7 @@ export const ServiceModalForm = ({ selectedService, setServiceModalOpen }: {
                     title: "Permit Applied Successfully",
                     text: "See the Applied Services for Application Instruction",
                     showConfirmButton: true,
-                    confirmButtonColor: "#ff981a",
+                    confirmButtonColor: "#c2410c",
 
                 }).then((result) => {
                     if (result.isConfirmed) {
@@ -292,14 +294,14 @@ export const ServiceModalForm = ({ selectedService, setServiceModalOpen }: {
                                                 key={data.registerName}
                                                 type={data.inputType} 
                                                 className={classNames("bg-gray-200 placeholder-black font-semibold rounded-md p-2 focus:outline-slate-800 w-full")}
-                                                {...register(data.registerName as keyof ApplicantInfo, { required: `${data.placeHolder} is required` })}
+                                                {...register(data.registerName as keyof ApplicantInfo)}
                                             />
 
-                                            {errors[data.registerName as keyof ApplicantInfo] && (
+                                            {/* {errors[data.registerName as keyof ApplicantInfo] && (
                                                 <p className="text-red-500 text-sm mt-1">
                                                     {errors[data.registerName as keyof ApplicantInfo]?.message}
                                                 </p>
-                                            )}
+                                            )} */}
                                         </div>
                                         
                                     ))
@@ -320,14 +322,14 @@ export const ServiceModalForm = ({ selectedService, setServiceModalOpen }: {
                                                 key={data.registerName}
                                                 type={data.inputType} 
                                                 className={classNames("bg-gray-200 placeholder-black font-semibold rounded-md p-2 focus:outline-slate-800 w-full")}
-                                                {...register(data.registerName as keyof ApplicantInfo, { required: `${data.placeHolder} is required` })}
+                                                {...register(data.registerName as keyof ApplicantInfo)}
                                             />
 
-                                            {errors[data.registerName as keyof ApplicantInfo] && (
+                                            {/* {errors[data.registerName as keyof ApplicantInfo] && (
                                                 <p className="text-red-500 text-sm mt-1">
                                                     {errors[data.registerName as keyof ApplicantInfo]?.message}
                                                 </p>
-                                            )}
+                                            )} */}
 
                                         </div>
                                     ))
@@ -341,49 +343,69 @@ export const ServiceModalForm = ({ selectedService, setServiceModalOpen }: {
                             {/* <label className="font-semibold">Enter Address</label> */}
                             <div className="flex flex-col gap-5 font-semibold">
 
-
-                                {/* SUNOD NI SA SA CITY ANG BARANGAY */}
-                                <select 
-                                    className="bg-gray-200 placeholder-black font-semibold rounded-md p-2 focus:outline-slate-800 w-full"
-                                    {...register("barangay", { required: `${"Barangay"} is required` })}
-                                >
-                                    <option disabled selected>Select Barangay</option>
-                                    {barangayOptions.map((barangay, index) => (
-                                        <option key={index} value={barangay}>{barangay}</option>
-                                    ))}
-                                </select>
-
-                                {errors["barangay" as keyof ApplicantInfo] && (
-                                    <p className="text-red-500 text-sm mt-1">
-                                        {errors["barangay" as keyof ApplicantInfo]?.message}
-                                    </p>
-                                )}
-
-                                {
-                                    applicantAddress.map((data) => (
-                                        <div className='flex flex-col w-full'>
+                            {applicantAddress.map((data) => (
+                                <div key={data.registerName} className="flex flex-col w-full">
+                                    {/* Render Municipality first */}
+                                    {data.registerName === "municipality" && (
+                                        <>
                                             <label>{data.placeHolder}</label>
+
                                             <input 
-                                                key={data.registerName}
                                                 type={data.inputType} 
                                                 defaultValue={data.value}
                                                 disabled={data.disabled}
                                                 className={classNames(`${data.value ? "bg-gray-400 text-white": "bg-gray-200"} placeholder-black font-semibold rounded-md p-2 focus:outline-slate-800 w-full`)}
-                                                {...register(data.registerName as keyof ApplicantInfo, { required: `${data.placeHolder.replace(/([A-Z])/g, ' $1')} is required` })}
+                                                {...register(data.registerName as keyof ApplicantInfo)}
                                             />
-
-                                            {errors[data.registerName as keyof ApplicantInfo] && (
+                                            {/* {errors[data.registerName as keyof ApplicantInfo] && (
                                                 <p className="text-red-500 text-sm mt-1">
                                                     {errors[data.registerName as keyof ApplicantInfo]?.message}
                                                 </p>
-                                            )}
-                                        </div>
-                                    ))
-                                }
+                                            )} */}
 
-                                
-                                
-                            </div>
+                                            {/* Insert Barangay Select Right After Municipality */}
+                                            <label className='mt-3'>Barangay</label>
+
+                                            <select 
+                                                className="bg-gray-200 placeholder-black font-semibold rounded-md p-2 focus:outline-slate-800 w-full"
+                                                {...register("barangay")}
+                                            >
+                                                <option disabled selected>Select Barangay</option>
+                                                {barangayOptions.map((barangay, index) => (
+                                                    <option key={index} value={barangay}>{barangay}</option>
+                                                ))}
+                                            </select>
+
+                                            {/* {errors["barangay" as keyof ApplicantInfo] && (
+                                                <p className="text-red-500 text-sm mt-1">
+                                                    {errors["barangay" as keyof ApplicantInfo]?.message}
+                                                </p>
+                                            )} */}
+                                        </>
+                                    )}
+
+                                    {/* Render Other Fields Normally */}
+                                    {data.registerName !== "municipality" && (
+                                        <>
+                                            <label>{data.placeHolder}</label>
+                                            <input 
+                                                type={data.inputType} 
+                                                defaultValue={data.value}
+                                                disabled={data.disabled}
+                                                className={classNames(`${data.value ? "bg-gray-400 text-white": "bg-gray-200"} placeholder-black font-semibold rounded-md p-2 focus:outline-slate-800 w-full`)}
+                                                {...register(data.registerName as keyof ApplicantInfo)}
+                                            />
+                                            {/* {errors[data.registerName as keyof ApplicantInfo] && (
+                                                <p className="text-red-500 text-sm mt-1">
+                                                    {errors[data.registerName as keyof ApplicantInfo]?.message}
+                                                </p>
+                                            )} */}
+                                        </>
+                                    )}
+                                </div>
+                            ))}
+                        </div>
+
                         </div>
 
                         <div className="w-full border border-gray-300 p-3 rounded-md">
@@ -429,17 +451,17 @@ export const ServiceModalForm = ({ selectedService, setServiceModalOpen }: {
                                                 className={classNames("bg-gray-200 placeholder-black placeholder-gray-600 opacity-70 font-semibold rounded-md p-2 focus:outline-slate-800 w-full")}
                                                 {...register(
                                                     data.registerName as keyof ApplicantInfo,
-                                                    data.label !== "Tax Account No." && data.label !== "TCT No."
-                                                        ? { required: `${data.label} is required` }
-                                                        : {} // Exclude validation
+                                                    // data.label !== "Tax Account No." && data.label !== "TCT No."
+                                                    //     ? { required: `${data.label} is required` }
+                                                    //     : {} // Exclude validation
                                                 )}
                                             />
 
-                                            {errors[data.registerName as keyof ApplicantInfo] && (
+                                            {/* {errors[data.registerName as keyof ApplicantInfo] && (
                                                 <p className="text-red-500 text-sm mt-1">
                                                     {errors[data.registerName as keyof ApplicantInfo]?.message}
                                                 </p>
-                                            )}
+                                            )} */}
 
                                         </div>
 
@@ -463,23 +485,28 @@ export const ServiceModalForm = ({ selectedService, setServiceModalOpen }: {
                                         `flex flex-wrap gap-2 pb-12`
                                     )}>
                                         {Object.keys(groupedScopeOptions).map((category) => {
+
+                                            // KANING GI COMMENT MAO NING MO DYNAMIC OG ADD EXCLAMATION IF KULANG 
+
                                             // At least one checkbox must be checked in Scope of Work
-                                            const hasCheckedScope = groupedScopeOptions[category].some((item: string) => scopeTypes.includes(item));
+                                            // const hasCheckedScope = groupedScopeOptions[category].some((item: string) => scopeTypes.includes(item));
                                             
                                             // At least one checkbox must be checked in Character of Occupancy
-                                            const hasCheckedOccupancy = groupedOccupancyOptions[category]?.some((item: string) => occupancyTypes.includes(item)) || false;
+                                            // const hasCheckedOccupancy = groupedOccupancyOptions[category]?.some((item: string) => occupancyTypes.includes(item)) || false;
 
-                                            const excludedCategories = ["Electronics", "Fencing"]; // Categories that should not require Character of Occupancy
+                                            // const excludedCategories = ["Electronics", "Fencing"]; // Categories that should not require Character of Occupancy
 
-                                            const hasMissingSelections = !hasCheckedScope || (!excludedCategories.includes(category) && !hasCheckedOccupancy);
+                                            // const hasMissingSelections = !hasCheckedScope || (!excludedCategories.includes(category) && !hasCheckedOccupancy);
 
                                             return (
                                                 <TabsTrigger 
                                                     key={category} 
                                                     value={category}
-                                                    className="bg-gray-200 min-w-fit px-4 py-2 rounded-md data-[state=active]:bg-gray-300 data-[state=active]:text-blue-700 data-[state=active]:font-bold flex items-center gap-1"
+                                                    className="bg-gray-200 min-w-fit px-4 py-2 rounded-md data-[state=active]:bg-gray-300 data-[state=active]:text-orange-600 data-[state=active]:font-bold flex items-center gap-1"
                                                 >
-                                                    {category} {hasMissingSelections && <span className="text-red-600 font-bold">❗</span>}
+                                                    {category}
+
+                                                    {/* {hasMissingSelections && <span className="text-red-600 font-bold">❗</span>} */}
                                                 </TabsTrigger>
                                             );
                                         })}
@@ -541,7 +568,7 @@ export const ServiceModalForm = ({ selectedService, setServiceModalOpen }: {
                             type="submit"
                             className={classNames(
                                 "rounded-md p-2 mt-3 text-white w-full font-semibold",
-                                "bg-blue-700 hover:opacity-75" 
+                                "bg-orange-800 hover:opacity-75" 
                             )}
                         >
                             SUBMIT

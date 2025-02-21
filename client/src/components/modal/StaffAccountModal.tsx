@@ -25,7 +25,6 @@ export const StaffAccountModalForm: React.FC<StaffAccountModalFormProps> = ({ se
             setOpenModalForm(false);
 
             Swal.fire({
-                position: "top-end",
                 icon: "success",
                 title: "Staff Account Created!",
                 showConfirmButton: false,

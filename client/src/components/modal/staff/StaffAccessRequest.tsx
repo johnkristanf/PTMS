@@ -17,7 +17,6 @@ const StaffRequestAccessModal = () => {
             
             queryClient.invalidateQueries({ queryKey: ['staff_access_request'] })
             Swal.fire({
-              position: "top-end",
               icon: "success",
               title: `Request Deleted Successfully`,
             });

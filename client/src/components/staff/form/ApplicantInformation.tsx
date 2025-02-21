@@ -4,6 +4,8 @@ import { SubmitHandler, useForm } from "react-hook-form";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { UpdateApplicationCode } from "../../../http/put/application";
 import Swal from "sweetalert2";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faX } from "@fortawesome/free-solid-svg-icons";
 
 export function ApplicantInformationFormStaff({ applicantInfo, setInformationModal }: {
   applicantInfo: Application,
@@ -90,6 +92,15 @@ export function ApplicantInformationFormStaff({ applicantInfo, setInformationMod
 
   return (
     <div className="w-full rounded-md p-8">
+
+      <button 
+        type="button"
+        className="absolute top-3 right-5 font-bold text-xl p-2 hover:opacity-75 mt-1" 
+        onClick={() => setInformationModal(false)}
+      >
+          <FontAwesomeIcon icon={faX} /> 
+      </button>
+
       <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-3 w-full">
         <div className="flex items-center justify-between">
           <div className="flex flex-col">
@@ -100,7 +111,7 @@ export function ApplicantInformationFormStaff({ applicantInfo, setInformationMod
                 maxLength={5}
                 className={classNames(
                   isPending ? "hover:cursor-not-allowed": "",
-                  "bg-gray-400 placeholder-black font-semibold rounded-md p-2 focus:outline-blue-500"
+                  "bg-gray-400 placeholder-black font-semibold rounded-md p-2 focus:outline-orange-500"
                 )}
                 {...register("application_code")}
                 defaultValue={applicantInfo?.applicationCode}
@@ -115,7 +126,7 @@ export function ApplicantInformationFormStaff({ applicantInfo, setInformationMod
           <input 
             type="text"
             value={`${applicantInfo?.firstname} ${applicantInfo?.middleInitial} ${applicantInfo?.lastName}`} 
-            className={classNames("bg-gray-400 placeholder-black font-semibold rounded-md p-2 focus:outline-blue-500 w-full")}
+            className={classNames("bg-gray-400 placeholder-black font-semibold rounded-md p-2 focus:outline-orange-500 w-full")}
             readOnly
           />
         </div>
@@ -127,7 +138,7 @@ export function ApplicantInformationFormStaff({ applicantInfo, setInformationMod
               <input 
                 type={data.inputType} 
                 value={data.value} 
-                className={classNames("bg-gray-400 placeholder-black font-semibold rounded-md p-2 focus:outline-blue-500 w-full")}
+                className={classNames("bg-gray-400 placeholder-black font-semibold rounded-md p-2 focus:outline-orange-500 w-full")}
                 readOnly
               />
             </div>
@@ -139,7 +150,7 @@ export function ApplicantInformationFormStaff({ applicantInfo, setInformationMod
           <input 
             type="text"
             value={`${applicantInfo?.barangay} ${applicantInfo?.street} ${applicantInfo?.municipality} ${applicantInfo?.zipCode}`} 
-            className={classNames("bg-gray-400 placeholder-black font-semibold rounded-md p-2 focus:outline-blue-500 w-full")}
+            className={classNames("bg-gray-400 placeholder-black font-semibold rounded-md p-2 focus:outline-orange-500 w-full")}
             readOnly
           />
         </div>
@@ -149,7 +160,7 @@ export function ApplicantInformationFormStaff({ applicantInfo, setInformationMod
           <input 
             type="text"
             value={applicantInfo?.locationForConstruct_Install} 
-            className={classNames("bg-gray-400 placeholder-black font-semibold rounded-md p-2 focus:outline-blue-500 w-full")}
+            className={classNames("bg-gray-400 placeholder-black font-semibold rounded-md p-2 focus:outline-orange-500 w-full")}
             readOnly
           />
         </div>
@@ -161,7 +172,7 @@ export function ApplicantInformationFormStaff({ applicantInfo, setInformationMod
               <input 
                 type={data.inputType} 
                 value={data.value} 
-                className={classNames("bg-gray-400 placeholder-black font-semibold rounded-md p-2 focus:outline-blue-500 w-full")}
+                className={classNames("bg-gray-400 placeholder-black font-semibold rounded-md p-2 focus:outline-orange-500 w-full")}
                 readOnly
               />
             </div>
@@ -172,7 +183,7 @@ export function ApplicantInformationFormStaff({ applicantInfo, setInformationMod
 
           {!isPending && (
             <button
-              className="bg-blue-700 text-white font-bold rounded-md p-2 mt-1 hover:opacity-75"
+              className="bg-orange-700 text-white font-bold rounded-md p-2 mt-1 hover:opacity-75"
               type="submit"
             >
               Submit

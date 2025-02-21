@@ -132,8 +132,8 @@ export const AssessmentsModal: React.FC<AssessmentModalProps> = ({ applicantAsse
             text: "Setting the assessment for this application",
             icon: "warning",
             showCancelButton: true,
-            confirmButtonColor: "#3085d6",
-            cancelButtonColor: "#d33",
+            confirmButtonColor: "#c2410c",
+            cancelButtonColor: "#8b0000",
             confirmButtonText: "Yes"
           }).then((result) => {
             if (result.isConfirmed) {
@@ -203,7 +203,7 @@ export const AssessmentsModal: React.FC<AssessmentModalProps> = ({ applicantAsse
                                             disabled={data.disabled}
                                             {...register(data.registerName as keyof AssessmentTypes)}
                                             className={
-                                                `${data.disabled ? 'bg-gray-500 text-white': 'bg-gray-300 hover:opacity-75'} p-3 font-bold rounded-md placeholder-gray-600 focus:outline-blue-500`
+                                                `${data.disabled ? 'bg-gray-500 text-white': 'bg-gray-300 hover:opacity-75'} p-3 font-bold rounded-md placeholder-gray-600 focus:outline-orange-500`
                                             }
                                         />
                                         
@@ -231,7 +231,7 @@ export const AssessmentsModal: React.FC<AssessmentModalProps> = ({ applicantAsse
 
                             <div className="flex flex-col gap-3">
                                 <button 
-                                    className="bg-blue-700 text-white font-bold rounded-md p-2 mt-1 hover:opacity-75"
+                                    className="bg-orange-700 text-white font-bold rounded-md p-2 mt-1 hover:opacity-75"
                                     type="submit"
                                 >
                                     Save

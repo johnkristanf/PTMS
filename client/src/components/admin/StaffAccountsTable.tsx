@@ -54,7 +54,7 @@ const StaffAccountsTable: React.FC<StaffAccountCardProps> = ({ setStaffData }) =
 
     return (
         <>
-            <div className="flex flex-col bg-blue-100 w-[95%] h-full rounded-md overflow-y-auto overflow-x-hidden max-h-[80vh]">
+            <div className="flex flex-col bg-orange-100 w-[95%] h-full rounded-md overflow-y-auto overflow-x-hidden max-h-[80vh]">
                 <div className="sm:-mx-6 lg:-mx-8">
                     <div className="inline-block min-w-full py-2 sm:px-6 lg:px-8">
                         <div className="overflow-hidden">
@@ -77,13 +77,13 @@ const StaffAccountsTable: React.FC<StaffAccountCardProps> = ({ setStaffData }) =
                                             <td className="flex gap-3 whitespace-nowrap pl-6 py-4">
                                                 <button
                                                     onClick={() => setStaffData(data)}
-                                                    className="w-1/4 bg-blue-700 rounded-md p-2 text-white hover:opacity-75"
+                                                    className="w-1/4 bg-orange-700 rounded-md p-2 text-white hover:opacity-75"
                                                 >
                                                     Edit
                                                 </button>
                                                 <button
                                                     onClick={() => deleteStaffAccount(data.id)}
-                                                    className="w-1/4 bg-red-600 rounded-md p-2 text-white hover:opacity-75"
+                                                    className="w-1/4 bg-red-700 rounded-md p-2 text-white hover:opacity-75"
                                                 >
                                                     Delete
                                                 </button>

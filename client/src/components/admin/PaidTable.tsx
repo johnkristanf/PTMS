@@ -209,7 +209,7 @@ export function PaidTable({ searchTerm, selectedMonth, adminType }: PaidTablePro
 
             
             
-            <div className="flex flex-col bg-blue-100 w-full h-[70%] rounded-md p-2 mt-3">
+            <div className="flex flex-col bg-orange-100 w-full h-[70%] rounded-md p-2 mt-3">
                 <div className="overflow-y-auto overflow-hidden w-full custom-scrollbar-extrasmall">
                     <div className="inline-block min-w-full py-2">
                         <div className="overflow-hidden">
@@ -305,7 +305,7 @@ export function PaidTable({ searchTerm, selectedMonth, adminType }: PaidTablePro
                                                                     <button
                                                                         onClick={() => onApprove(item.application_id, item.admin_approved || "")}
                                                                         className={classNames(
-                                                                            allRequirementsChecked && item.application_id == applicationID ? "bg-blue-700" : "bg-gray-400 hover:cursor-not-allowed",
+                                                                            allRequirementsChecked && item.application_id == applicationID ? "bg-orange-700" : "bg-gray-400 hover:cursor-not-allowed",
                                                                             "text-white font-bold p-3 rounded-md hover:opacity-75"
                                                                         )}
                                                                         disabled={!allRequirementsChecked}

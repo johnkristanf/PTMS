@@ -102,7 +102,7 @@ export function EditAccountForm() {
                             defaultValue={data.value}
                             disabled={data.disabled}
                             required
-                            className="bg-gray-400 placeholder-black font-semibold rounded-md p-2 focus:outline-blue-500 w-full"
+                            className="bg-gray-400 placeholder-black font-semibold rounded-md p-2 focus:outline-orange-500 w-full"
                             {...register(data.registerName as keyof EditStaffAccountType)}
                         />
                         
@@ -119,7 +119,7 @@ export function EditAccountForm() {
             </div>
             <button
                 type="submit"
-                className="bg-blue-700 rounded-md p-2 mt-3 text-white w-full font-semibold hover:opacity-75"
+                className="bg-orange-700 rounded-md p-2 mt-3 text-white w-full font-semibold hover:opacity-75"
             >
                 SAVE
             </button>

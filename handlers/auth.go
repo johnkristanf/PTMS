@@ -100,9 +100,6 @@ func (h *AuthHandler) StaffAccountLoginHandler(c echo.Context) error {
 			return err
 		}
 
-		// FOR PRODUCTION: secure: true, samesite: http.samesitenonemode
-		// FOR DEVELOPMENT: secure: false, samesite: http.samesitelaxmode
-
 		accessTokenCookie := &http.Cookie{
 			Name:     "access_token",
 			Value:    access_token,
@@ -153,7 +150,7 @@ func (h *AuthHandler) StaffAccountLoginHandler(c echo.Context) error {
 
 func (h *AuthHandler) ApplicantSignupHandler(c echo.Context) error{
 
-	var sc types.SignupCredentialsBind
+	sc := &types.SignupCredentialsBind{}
 
 	if err := c.Bind(&sc); err != nil {
 		return c.JSON(http.StatusBadRequest, "bad request")
@@ -218,13 +215,6 @@ func (h *AuthHandler) ApplicantLoginHandler(c echo.Context) error {
 			return err
 		}
 
-		// var webPhase http.SameSite
-
-		// if os.Getenv("WEB_PHASE") == "production" { 
-		// 	webPhase = http.SameSiteLaxMode 
-		// } else {
-		// 	webPhase = http. 
-		// }
 
 		accessTokenCookie := &http.Cookie{
 			Name:     "access_token",
@@ -370,13 +360,6 @@ func (h *AuthHandler) OauthGoogleCallback(c echo.Context) error {
 		return err
 	}
 
-	// var webPhase http.SameSite
-
-	// if os.Getenv("WEB_PHASE") == "production" { 
-	// 	webPhase = http.SameSiteLaxMode 
-	// } else {
-	// 	webPhase = http.SameSiteLaxMode 
-	// }
 
 	accessTokenCookie := &http.Cookie{
 		Name:     "access_token",
@@ -596,14 +579,7 @@ func (h *AuthHandler) FetchLoginApplicantHandler(c echo.Context) error {
 
 func (h *AuthHandler) SignoutHandler(c echo.Context) error {
 
-	// var webPhase http.SameSite
-
-	// if os.Getenv("WEB_PHASE") == "production" { 
-	// 	webPhase = http.SameSiteLaxMode 
-	// } else {
-	// 	webPhase = http. 
-	// }
-
+	
 	c.SetCookie(&http.Cookie{
 		Name:     "access_token",
 		Value:    "",

@@ -26,7 +26,6 @@ export function ReleaseDateModal({ setOpenReleaseModal, releaseDateData }: {
             queryClient.invalidateQueries({ queryKey: ["paid_applications"] });
 
             Swal.fire({
-                position: "top-end",
                 icon: "success",
                 title: "Release Date Set Successfully",
                 showConfirmButton: false,
@@ -72,6 +71,9 @@ export function ReleaseDateModal({ setOpenReleaseModal, releaseDateData }: {
             setToDate(newToDate);
         }
     }, [fromDate]);
+
+    console.log("status: ", releaseDateData?.status);
+    
 
     const onSubmit = (e: React.FormEvent) => {
         e.preventDefault();
@@ -131,8 +133,8 @@ export function ReleaseDateModal({ setOpenReleaseModal, releaseDateData }: {
                         {
                             releaseDateData && releaseDateData.status == "Disapproved" && (
                                 <textarea
-                                    placeholder="Enter your message here..."
-                                    className="h-[100px] bg-gray-200 p-3 font-bold rounded-md placeholder-black focus:outline-none"
+                                    placeholder="Enter the reason for disapproval...."
+                                    className="h-[100px] placeholder-opacity-75 bg-gray-200 p-3 font-bold rounded-md placeholder-black focus:outline-none"
                                     value={message}
                                     style={{ resize: "none" }}
                                     onChange={(e) => setMessage(e.target.value)} 
@@ -167,7 +169,7 @@ export function ReleaseDateModal({ setOpenReleaseModal, releaseDateData }: {
                         className={`${
                             isSaveDisabled
                                 ? 'bg-gray-400 cursor-not-allowed'
-                                : 'bg-blue-700 hover:opacity-75'
+                                : 'bg-orange-700 hover:opacity-75'
                         } text-white font-bold rounded-md p-2 mt-5`}
                         type="submit"
                         disabled={isSaveDisabled} 

@@ -64,7 +64,7 @@ function ApplyServicesPage() {
                         <div className="flex w-full mt-5 font-semibold">
                             <button
                                 onClick={() => clickService("Building")}
-                                className={classNames("p-2 w-full h-[70%] bg-sky-800 rounded-md text-white font-bold hover:opacity-75")}
+                                className={classNames("p-2 w-full h-[70%] bg-orange-700 rounded-md text-white font-bold hover:opacity-75")}
                             >
                                 Building Permit
                             </button>
@@ -83,7 +83,7 @@ function ApplyServicesPage() {
                                     key={permit.name}
                                     onClick={() => clickService(permit.permit_type)}
                                     className={classNames(
-                                        "p-2 w-[80%] h-full  bg-sky-500 rounded-md text-white font-bold hover:opacity-75"
+                                        "p-2 w-[80%] h-full  bg-orange-700 rounded-md text-white font-bold hover:opacity-75"
                                     )}
                                 >
                                     {permit.name}
@@ -108,7 +108,7 @@ function ApplyServicesPage() {
                                 >
                                     <button
                                         onClick={() => clickService(permit.permit_type)}
-                                        className={classNames("p-2 w-[90%] h-full  bg-sky-700 rounded-md text-white font-bold hover:opacity-75")}
+                                        className={classNames("p-2 w-[30%] h-full  bg-orange-700 rounded-md text-white font-bold hover:opacity-75")}
                                     >
                                         {permit.name}
                                     </button>

@@ -30,7 +30,6 @@ export const EditStaffAccountModalForm: React.FC<EditStaffAccountModalFormProps>
             setStaffData(undefined);
 
             Swal.fire({
-                position: "top-end",
                 icon: "success",
                 title: "Staff Account Edited!",
                 showConfirmButton: false,

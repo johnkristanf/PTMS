@@ -52,7 +52,7 @@ export const AssessmentCheckListModal = ({ applicationID, setAssessmentChecklist
     const { register, handleSubmit, formState: { errors } } = useForm<AssessmentsFormData>({
         defaultValues: {
             applicationID: applicationID,
-            datePaid: '',
+            datePaid: new Date().toISOString().split("T")[0],
             orNumber: ''
         }
     });
@@ -66,6 +66,7 @@ export const AssessmentCheckListModal = ({ applicationID, setAssessmentChecklist
                 icon: "success",
                 title: "Assessment Paid Successfully!",
                 showConfirmButton: true,
+                confirmButtonColor: '#c2410c'
             });
 
             setAssessmentChecklist(false)
@@ -104,7 +105,8 @@ export const AssessmentCheckListModal = ({ applicationID, setAssessmentChecklist
                                                 type="date" 
                                                 {...register("datePaid")} 
                                                 required
-                                                className={errors.datePaid ? "border-red-500" : ""} 
+                                                className={errors.datePaid ? "border-red-500" : ""}
+                                                disabled  
                                             />
                                             {!isPaid && errors.datePaid && <span className="text-red-500">This field is required</span>}
                                         </div>
@@ -192,7 +194,7 @@ export const AssessmentCheckListModal = ({ applicationID, setAssessmentChecklist
                                 {!isPaid && (
                                     <button
                                         type='submit'
-                                        className='bg-blue-700 rounded-md p-2 w-[50%] text-white hover:opacity-75'>
+                                        className='bg-orange-700 rounded-md p-2 w-[50%] text-white hover:opacity-75'>
                                         Save
                                     </button>
                                 )}

@@ -48,34 +48,27 @@ func (h *AccessHandler) OpenGrantedStaffHandler(c echo.Context) error {
 		return err
 	}
 
-	// var webPhase http.SameSite
-
-	// if true { 
-	// 	webPhase = http.SameSiteNoneMode 
-	// } else {
-	// 	webPhase = http.SameSiteLaxMode 
-	// }
 
 	c.SetCookie(&http.Cookie{
 		Name:     "access_token",
-		SameSite: http.SameSiteNoneMode,
+		SameSite: http.SameSiteLaxMode,
 		Value:    "",
 		Path:     "/",
 		Expires:  time.Unix(0, 0),
 		MaxAge:   -1,
 		HttpOnly: true,
-		Secure:   true,
+		Secure:   false,
 	})
 
 	c.SetCookie(&http.Cookie{
 		Name:     "refresh_token",
-		SameSite: http.SameSiteNoneMode,
+		SameSite: http.SameSiteLaxMode,
 		Value:    "",
 		Path:     "/",
 		Expires:  time.Unix(0, 0),
 		MaxAge:   -1,
 		HttpOnly: true,
-		Secure:   true,
+		Secure:   false,
 	})
 
 	admins := [3]string{"architectural", "electrical", "civil"}
@@ -111,10 +104,10 @@ func (h *AccessHandler) OpenGrantedStaffHandler(c echo.Context) error {
 			Name:     "access_token",
 			Value:    access_token,
 			Path:     "/",
-			SameSite: http.SameSiteNoneMode,
+			SameSite: http.SameSiteLaxMode,
 			Expires:  time.Now().Add(5 * time.Hour),
 			HttpOnly: true,
-			Secure:   true,
+			Secure:   false,
 
 		}
 	
@@ -122,10 +115,10 @@ func (h *AccessHandler) OpenGrantedStaffHandler(c echo.Context) error {
 			Name:     "refresh_token",
 			Value:    refresh_token,
 			Path:     "/",
-			SameSite: http.SameSiteNoneMode,
+			SameSite: http.SameSiteLaxMode,
 			Expires:  time.Now().Add(3 * 24 * time.Hour),
 			HttpOnly: true,
-			Secure:   true,
+			Secure:   false,
 
 		}
 	

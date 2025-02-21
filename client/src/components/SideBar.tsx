@@ -54,7 +54,7 @@ export function SideBar({role}: {
 
             <button
               onClick={() => SignOut()}
-              className="bg-white text-gray-600 w-full  rounded-md p-3 font-bold hover:bg-blue-700 hover:text-white mt-4"
+              className="bg-white text-gray-600 w-full  rounded-md p-3 font-bold hover:bg-orange-700 hover:text-white mt-4"
             >
               <FontAwesomeIcon icon={faSignOut}/> SIGN OUT
             </button> 
@@ -219,7 +219,7 @@ function UserInfo() {
         </div>
 
 
-        <h1 className="font-bold text-blue-700">{loginAccount.role.toLocaleUpperCase()}</h1>
+        <h1 className="font-bold text-orange-700">{loginAccount.role.toLocaleUpperCase()}</h1>
 
         <input
           ref={fileInputRef} 
@@ -439,7 +439,7 @@ function NavLinks({ role }: { role: string }) {
             onClick={() => setActiveLink(item.to)}
             className={classNames(
               "font-bold text-lg p-2 rounded-md w-full text-center flex items-center gap-1",
-              activeLink === item.to ? "bg-blue-700 text-white" : "text-gray-600 hover:bg-gray-500 hover:text-white"
+              activeLink === item.to ? "bg-orange-700 text-white" : "text-gray-600 hover:bg-gray-500 hover:text-white"
             )}
           >
 
@@ -454,7 +454,7 @@ function NavLinks({ role }: { role: string }) {
         
           <Collapsible>
 
-            <CollapsibleTrigger className="relative flex items-center w-full text-lg p-2 rounded-md gap-2 text-gray-600 hover:bg-blue-700 hover:text-white">
+            <CollapsibleTrigger className="relative flex items-center w-full text-lg p-2 rounded-md gap-2 text-gray-600 hover:bg-orange-700 hover:text-white">
               <img 
                 src="/img/icons/staff_picture.png"             
                 className="rounded-full" 
@@ -468,7 +468,7 @@ function NavLinks({ role }: { role: string }) {
 
             </CollapsibleTrigger>
             
-            <CollapsibleContent className="bg-blue-700 text-white mt-3 p-2 rounded-md w-full">
+            <CollapsibleContent className="bg-orange-700 text-white mt-3 p-2 rounded-md w-full">
               {admins.map((item) => (
                 <button
                   key={item.name}
@@ -494,7 +494,7 @@ function NavLinks({ role }: { role: string }) {
         
           <Collapsible>
 
-            <CollapsibleTrigger className="relative flex items-center w-full text-lg p-2 rounded-md gap-2 text-gray-600 hover:bg-blue-700 hover:text-white">
+            <CollapsibleTrigger className="relative flex items-center w-full text-lg p-2 rounded-md gap-2 text-gray-600 hover:bg-orange-700 hover:text-white">
               <img 
                 src="/img/icons/staff_picture.png"             
                 className="rounded-full" 
@@ -508,7 +508,7 @@ function NavLinks({ role }: { role: string }) {
 
             </CollapsibleTrigger>
             
-            <CollapsibleContent className="bg-blue-700 text-white mt-3 p-2 rounded-md w-full">
+            <CollapsibleContent className="bg-orange-700 text-white mt-3 p-2 rounded-md w-full">
               {staffs.map((item) => (
                 <button
                   key={item.name}

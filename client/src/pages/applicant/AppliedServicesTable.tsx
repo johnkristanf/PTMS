@@ -45,7 +45,6 @@ import {
     HoverCardTrigger,
 } from "@/components/ui/hover-card"
 import OccupancyModal from '@/components/modal/applicant/Occupancy';
-import { PopoverClose } from '@radix-ui/react-popover';
 
 function ServicesPage(){
 
@@ -221,7 +220,7 @@ function ServicesPage(){
                         <h1 className="text-[2rem] font-bold">Applied Services</h1>
                     </div>
 
-                    <div className="flex gap-3 pr-12 bg-blue-100">
+                    <div className="flex gap-3 pr-12 bg-orange-100">
 
                                 <div className="flex flex-col h-[70%] rounded-md w-full">
 
@@ -272,7 +271,7 @@ function ServicesPage(){
                                                                         <HoverCardTrigger>
                                                                             <button 
                                                                                 onClick={() => openApplicationModal(data)}
-                                                                                className="bg-blue-700 rounded-md p-2 text-white font-bold hover:opacity-75"
+                                                                                className="bg-orange-700 rounded-md p-2 text-white font-bold hover:opacity-75"
                                                                                 >
                                                                                 <FontAwesomeIcon icon={faAddressCard}/>
                                                                             </button>
@@ -340,7 +339,7 @@ function ServicesPage(){
                                                                                     disabled={data.status !== 'Approved'}
                                                                                     className={classNames(
                                                                                         "w-full text-white p-2 hover:opacity-75 rounded-md cursor-pointer text-center",
-                                                                                        data.status !== 'Approved' ? 'hover:cursor-not-allowed bg-gray-400' : 'bg-blue-700'
+                                                                                        data.status !== 'Approved' ? 'hover:cursor-not-allowed bg-gray-400' : 'bg-orange-700'
                                                                                     )}
                                                                                     onClick={() => {
                                                                                         setShowOptionsId(null); // Keep data fetching logic intact
@@ -352,12 +351,12 @@ function ServicesPage(){
                                                                                 </button>
                                                                                 
                                                                                 {/* CLOSE THE POPOVER WHEN CLICKED */}
-                                                                                <PopoverClose asChild>
+                                                                                {/* <PopoverClose asChild>
                                                                                     <button 
                                                                                         disabled={data.status !== 'Approved'}
                                                                                         className={classNames(
                                                                                             "w-full text-white p-2 hover:opacity-75 rounded-md cursor-pointer text-center",
-                                                                                            data.status !== 'Approved' ? 'hover:cursor-not-allowed bg-gray-400' : 'bg-blue-700'
+                                                                                            data.status !== 'Approved' ? 'hover:cursor-not-allowed bg-gray-400' : 'bg-orange-700'
                                                                                         )}
                                                                                         onClick={() => {
                                                                                             setShowOptionsId(data.application_id); // Keep ID for query
@@ -366,7 +365,7 @@ function ServicesPage(){
                                                                                     >
                                                                                         Occupancy
                                                                                     </button>
-                                                                                </PopoverClose>
+                                                                                </PopoverClose> */}
 
                                                                             </div>
                                                                         )}
