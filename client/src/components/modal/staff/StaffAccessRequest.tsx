@@ -68,7 +68,7 @@ const StaffRequestAccessModal = () => {
 
     return (
         <div className="absolute top-[10rem] right-[25rem] bg-gray-100 w-[45%] h-[220px] z-10 flex flex-col gap-5 items-center p-2 rounded-md font-semibold overflow-auto">
-            <h1 className="text-blue-700 text-2xl">Access Request</h1>
+            <h1 className="text-orange-700 text-2xl">Access Request</h1>
 
             { 
                 staffAccessRequests.length === 0 ? (

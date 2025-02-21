@@ -48,7 +48,7 @@ function ApprovedCivilPage(){
                     <div className="flex flex-col justify-start gap-2 w-full h-[80%] ml-5 mr-5 mt-32">
 
                         <div className="flex justify-between">
-                            <h1 className="text-blue-700 text-4xl font-bold">Approved Applications</h1>
+                            <h1 className="text-orange-700 text-4xl font-bold">Approved Applications</h1>
                             <div className="flex items-center gap-3">
 
                                 <StaffARNotifButton  toggleStaffAccessModal={toggleStaffAccessModal}/>

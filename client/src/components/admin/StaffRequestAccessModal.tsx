@@ -49,7 +49,7 @@ const StaffRequestAccessModal = () => {
 
     return (
         <div className="absolute top-[12rem] right-[25rem] bg-gray-100 w-[45%] h-[220px] z-10 flex flex-col gap-5 items-center p-2 rounded-md font-semibold overflow-auto">
-            <h1 className="text-blue-700 text-xl">Staff Access Request</h1>
+            <h1 className="text-orange-700 text-xl">Staff Access Request</h1>
 
                 { 
                     pendingAccessReqest.length === 0 ? (
@@ -63,7 +63,7 @@ const StaffRequestAccessModal = () => {
                                 <h1 className="text-gray-600">{request.role} want to access the {request.access_role} Page</h1>
         
                                 <button 
-                                    className="bg-blue-700 rounded-md p-3 text-white text-sm hover:opacity-75"
+                                    className="bg-orange-700 rounded-md p-3 text-white text-sm hover:opacity-75"
                                     onClick={() => handleUpdateRequestAccessStatus(request.id, "GRANTED")}
                                 >
                                     Accept

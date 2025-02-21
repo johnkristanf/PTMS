@@ -104,10 +104,10 @@ func (h *AuthHandler) StaffAccountLoginHandler(c echo.Context) error {
 			Name:     "access_token",
 			Value:    access_token,
 			Path:     "/",
-			SameSite: http.SameSiteLaxMode,
+			SameSite: http.SameSiteNoneMode,
 			Expires:  time.Now().Add(5 * time.Hour),
 			HttpOnly: true,
-			Secure:   false,
+			Secure:   true,
 
 		}
 	
@@ -115,10 +115,10 @@ func (h *AuthHandler) StaffAccountLoginHandler(c echo.Context) error {
 			Name:     "refresh_token",
 			Value:    refresh_token,
 			Path:     "/",
-			SameSite: http.SameSiteLaxMode,
+			SameSite: http.SameSiteNoneMode,
 			Expires:  time.Now().Add(3 * 24 * time.Hour),
 			HttpOnly: true,
-			Secure:   false,
+			Secure:   true,
 
 		}
 	
@@ -220,10 +220,10 @@ func (h *AuthHandler) ApplicantLoginHandler(c echo.Context) error {
 			Name:     "access_token",
 			Value:    access_token,
 			Path:     "/",
-			SameSite: http.SameSiteLaxMode,
+			SameSite: http.SameSiteNoneMode,
 			Expires:  time.Now().Add(5 * time.Hour),
 			HttpOnly: true,
-			Secure:   false,
+			Secure:   true,
 
 		}
 	
@@ -231,10 +231,10 @@ func (h *AuthHandler) ApplicantLoginHandler(c echo.Context) error {
 			Name:     "refresh_token",
 			Value:    refresh_token,
 			Path:     "/",
-			SameSite: http.SameSiteLaxMode,
+			SameSite: http.SameSiteNoneMode,
 			Expires:  time.Now().Add(3 * 24 * time.Hour),
 			HttpOnly: true,
-			Secure:   false,
+			Secure:   true,
 
 		}
 	
@@ -365,10 +365,10 @@ func (h *AuthHandler) OauthGoogleCallback(c echo.Context) error {
 		Name:     "access_token",
 		Value:    access_token,
 		Path:     "/",
-		SameSite: http.SameSiteLaxMode,
+		SameSite: http.SameSiteNoneMode,
 		Expires:  time.Now().Add(5 * time.Hour),
 		HttpOnly: true,
-		Secure:   false,
+		Secure:   true,
 
 	}
 
@@ -376,10 +376,10 @@ func (h *AuthHandler) OauthGoogleCallback(c echo.Context) error {
 		Name:     "refresh_token",
 		Value:    refresh_token,
 		Path:     "/",
-		SameSite: http.SameSiteLaxMode,
+		SameSite: http.SameSiteNoneMode,
 		Expires:  time.Now().Add(3 * 24 * time.Hour),
 		HttpOnly: true,
-		Secure:   false,
+		Secure:   true,
 
 	}
 
@@ -584,22 +584,22 @@ func (h *AuthHandler) SignoutHandler(c echo.Context) error {
 		Name:     "access_token",
 		Value:    "",
 		Path:     "/",
-		SameSite: http.SameSiteLaxMode,
+		SameSite: http.SameSiteNoneMode,
 		Expires:  time.Unix(0, 0),
 		MaxAge:   -1,
 		HttpOnly: true,
-		Secure:   false,
+		Secure:   true,
 	})
 
 	c.SetCookie(&http.Cookie{
 		Name:     "refresh_token",
-		SameSite: http.SameSiteLaxMode,
+		SameSite: http.SameSiteNoneMode,
 		Value:    "",
 		Path:     "/",
 		Expires:  time.Unix(0, 0),
 		MaxAge:   -1,
 		HttpOnly: true,
-		Secure:   false,
+		Secure:   true,
 	})
 
 

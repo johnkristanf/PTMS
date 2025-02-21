@@ -34,7 +34,7 @@ function StaffAccountsElectricalPage() {
                 <div className="flex flex-col w-full h-full pt-16 gap-4 ml-5 mt-20">
 
                     <div className="flex justify-between w-full pr-16">
-                        <h1 className="text-blue-700 font-bold text-4xl">Staff Accounts</h1>
+                        <h1 className="text-orange-700 font-bold text-4xl">Staff Accounts</h1>
                         <button 
                             onClick={() => setOpenModalForm(true)}
                             className="text-white font-bold bg-gray-600 rounded-md p-2 hover:opacity-75">

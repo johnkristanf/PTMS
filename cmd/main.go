@@ -36,6 +36,8 @@ func main(){
 
 	// Comment this when you push to prod to avoid nginx error cors
 
+	// LEARNING NOTE: THIS CORS CONFIG IS GOOD FOR LOCAL ONLY
+
 	e.Use(middleware.CORSWithConfig(middleware.CORSConfig{
 		AllowOrigins: []string{"http://localhost:9090", "https://ptms-alpha.vercel.app"},
 		AllowMethods: []string{echo.GET, echo.POST, echo.PUT, echo.DELETE},

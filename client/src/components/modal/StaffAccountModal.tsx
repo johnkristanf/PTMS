@@ -73,7 +73,7 @@ export const StaffAccountModalForm: React.FC<StaffAccountModalFormProps> = ({ se
                                     key={data.registerName}
                                     type={data.inputType}
                                     placeholder={data.placeHolder}
-                                    className="bg-gray-400 placeholder-black font-semibold rounded-md p-2 focus:outline-blue-700 w-full"
+                                    className="bg-gray-400 placeholder-black font-semibold rounded-md p-2 focus:outline-orange-700 w-full"
                                     {...register(data.registerName as keyof StaffAccount)}
                                 />
                             ))}
@@ -81,7 +81,7 @@ export const StaffAccountModalForm: React.FC<StaffAccountModalFormProps> = ({ se
 
                         <select
                             {...register("role")}
-                            className="bg-gray-400 text-black font-semibold rounded-md p-2 focus:outline-blue-700 w-full"
+                            className="bg-gray-400 text-black font-semibold rounded-md p-2 focus:outline-orange-700 w-full"
                             onChange={(e) => handleRoleChange(e)}
                         >
                             <option value="">Select Role</option>
@@ -92,7 +92,7 @@ export const StaffAccountModalForm: React.FC<StaffAccountModalFormProps> = ({ se
 
                         <button
                             type="submit"
-                            className={`rounded-md p-2 mt-3 w-full font-semibold ${mutation.isPending ? "bg-gray-500 cursor-not-allowed" : "bg-blue-700 hover:opacity-75 text-white"}`}
+                            className={`rounded-md p-2 mt-3 w-full font-semibold ${mutation.isPending ? "bg-gray-500 cursor-not-allowed" : "bg-orange-700 hover:opacity-75 text-white"}`}
                             disabled={mutation.isPending}
                         >
                             {mutation.isPending ? "Submitting..." : "SUBMIT"}

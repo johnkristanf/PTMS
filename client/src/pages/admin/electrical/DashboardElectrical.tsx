@@ -53,7 +53,7 @@ function ElectricalDashboardPage() {
 
                     <div className="flex flex-col gap-2 w-full h-[80%] mt-32 px-5 font-semibold">
                         <div className="flex justify-between">
-                            <h1 className="text-blue-700 text-4xl font-bold">Dashboard</h1>
+                            <h1 className="text-orange-700 text-4xl font-bold">Dashboard</h1>
                             <div className="flex items-center gap-3">
 
                                 <StaffARNotifButton toggleStaffAccessModal={toggleStaffAccessModal}/>
