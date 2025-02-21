@@ -180,7 +180,7 @@ function RequirementsModalStaff({ applicationID, setShowRequirements }: {
             <h2 className="font-semibold mb-1">{title}</h2>
             {items.map((item) => (
                 <div
-                    key={item}
+                    key={item} 
                     className="flex items-center mb-2 hover:bg-gray-200 w-full p-2 rounded-md cursor-pointer"
                     onClick={() => onCheckRequirements(item)}
                 >
