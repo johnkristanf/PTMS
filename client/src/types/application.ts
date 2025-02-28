@@ -55,6 +55,12 @@ export type Application = {
     
     assessment_status: string
 
+    applicant_form_documents: string[]
+    completion_form_documents: string[]
+    additional_form_documents: string[]
+
+    is_finish_scanning: boolean,
+
     scopeType: string
     characterOfOccupancy: string
 }

@@ -3,6 +3,16 @@ import { ServiceModalForm } from '../../components/modal/ServiceModalForm';
 import { useState } from 'react';
 import { SideBar } from '../../components/SideBar';
 import { PTMSHeader } from '../../components/PtmsHeader';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faInfoCircle } from '@fortawesome/free-solid-svg-icons';
+
+
+import {
+    HoverCard,
+    HoverCardContent,
+    HoverCardTrigger,
+  } from "@/components/ui/hover-card"
+  
 
 function ApplyServicesPage() {
     const [selectedService, setSelectedService] = useState<string>();
@@ -61,20 +71,33 @@ function ApplyServicesPage() {
                 <div className="flex w-full justify-center mt-2 ">
 
                     <div className="flex flex-col w-full gap-6">
-                        <div className="flex w-full mt-5 font-semibold">
+                        <div className="flex justify-center w-full mt-5 font-semibold gap-2">
                             <button
                                 onClick={() => clickService("Building")}
-                                className={classNames("p-2 w-full h-[70%] bg-orange-700 rounded-md text-white font-bold hover:opacity-75")}
+                                className={classNames("p-2 w-[60%] h-full border border-orange-700 text-orange-700 rounded-md font-bold hover:bg-orange-700 hover:text-white")}
                             >
                                 Building Permit
                             </button>
 
-                            <div className="flex flex-col items-center w-full text-md">
-                                <h1> - Applying building permit includes: </h1>
-                                <h1>Excavation | Plumbing</h1>
-                                <h1>Electronics | Electrical</h1>
-                                <h1>Mechanical | Fencing</h1>
-                            </div>
+
+                            <HoverCard>
+                                <HoverCardTrigger>
+                                    <FontAwesomeIcon icon={faInfoCircle}/>
+                                </HoverCardTrigger>
+
+                                <HoverCardContent>
+                                    <div className="flex flex-col items-center w-full text-md">
+                                        <h1>Building permit includes: </h1>
+                                        <h1>Excavation | Plumbing</h1>
+                                        <h1>Electronics | Electrical</h1>
+                                        <h1>Mechanical | Fencing</h1>
+                                    </div>
+                                </HoverCardContent>
+                            </HoverCard>
+
+
+
+                            
                         </div>
 
                         <div className="grid grid-cols-3 gap-4 font-semibold mt-5">
@@ -83,7 +106,7 @@ function ApplyServicesPage() {
                                     key={permit.name}
                                     onClick={() => clickService(permit.permit_type)}
                                     className={classNames(
-                                        "p-2 w-[80%] h-full  bg-orange-700 rounded-md text-white font-bold hover:opacity-75"
+                                        "p-2 w-[80%] h-full  border border-orange-700 text-orange-700 rounded-md font-bold hover:bg-orange-700 hover:text-white"
                                     )}
                                 >
                                     {permit.name}
@@ -104,16 +127,25 @@ function ApplyServicesPage() {
                             individual_permit.map((permit) => (
                                 <div 
                                     key={permit.name} 
-                                    className="flex gap-8"
+                                    className="flex gap-2"
                                 >
                                     <button
                                         onClick={() => clickService(permit.permit_type)}
-                                        className={classNames("p-2 w-[30%] h-full  bg-orange-700 rounded-md text-white font-bold hover:opacity-75")}
+                                        className={classNames("p-2 w-[30%] h-full border border-orange-700 text-orange-700 rounded-md font-bold hover:bg-orange-700 hover:text-white")}
                                     >
                                         {permit.name}
                                     </button>
 
-                                    <h1 className='text-md'> - {permit.info}</h1>
+                                    <HoverCard>
+                                        <HoverCardTrigger>
+                                            <FontAwesomeIcon icon={faInfoCircle}/>
+                                        </HoverCardTrigger>
+
+                                        <HoverCardContent>
+                                            <h1 className='text-md'>{permit.info}</h1>
+                                        </HoverCardContent>
+                                    </HoverCard>
+
                                 </div>
                                 
                             ))

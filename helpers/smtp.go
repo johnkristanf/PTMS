@@ -530,3 +530,77 @@ func SendPasswordResetEmailLink(to string, resetLink string) error {
 
 	return nil
 }
+
+
+
+
+
+func SendTemporaryPasswordEmail(to string, tempPassword string) error {
+
+	client, err := Connection()
+	if err != nil {
+        return err
+    }
+
+    defer Disconnection(client)
+
+	body := fmt.Sprintf(`
+		<html>
+		<body>
+			<p>Dear %s,</p>
+			<p>For security reasons, we’ve generated a temporary password for your account:</p>
+			<p><span style="color: darkorange; font-weight: bold;">%s</span></p>
+			<p>Please use this password to log in and be sure to change it immediately to a new, personal password of your choice.</p>
+			<p>Sincerely,</p>
+			<p>Panabo City Engineering's Issuance of Permit Section</p>
+		</body>
+		</html>
+	`, to, tempPassword)
+
+
+	headers := map[string]string{
+		"From":		from,
+		"To": 		to,
+		"Subject": "PTMS Temporary Password",
+		"MIME-Version": "1.0",
+		"Content-Type": `text/html; charset="UTF-8"`,
+	}
+
+	message := ""
+	for k, v := range headers {
+		message += fmt.Sprintf("%s: %s\r", k, v)
+	}
+	message += "\r" + body
+
+
+	authenticate := smtp.PlainAuth("", from, password, host)
+
+	if err := client.Auth(authenticate); err != nil {
+		return err
+	}
+
+	if err := client.Mail(from); err != nil {
+		return err
+	}
+
+	if err := client.Rcpt(headers["To"]); err != nil {
+		return err
+	}
+
+	// Send the email content
+	writer, err := client.Data()
+    if err != nil {
+        return err
+    }
+
+    _, err = writer.Write([]byte(message))
+    if err != nil {
+        return err
+    }
+
+	if err := writer.Close(); err != nil {
+		return err
+	}
+
+	return nil
+}

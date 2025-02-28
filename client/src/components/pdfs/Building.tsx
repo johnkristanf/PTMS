@@ -58,7 +58,7 @@ function BuildingPDF({ permitInfo, setPermitsInfo }: {
     <>
       <div className="fixed top-0 w-full h-full bg-gray-800 opacity-75"></div>
 
-      <div className="flex justify-center w-full h-full fixed top-20">
+      <div className="flex justify-center w-full h-full fixed top-[6rem]">
 
         <div className="flex flex-col mt-[4rem] items-center h-[70%] py-4 w-[55%] bg-white rounded-md">
 

@@ -34,8 +34,8 @@ function TrashApplicationArhictecturalPage() {
   return (
 
     <>
-        { openStaffAccessModal && (<StaffRequestAccessModal />) }
-        { openAdminAccessModal && (<AdminRequestAccessModal />) }
+        { openStaffAccessModal && (<StaffRequestAccessModal setOpenStaffAccessModal={setOpenStaffAccessModal}/>) }
+        { openAdminAccessModal && (<AdminRequestAccessModal setOpenAdminAccessModal={setOpenAdminAccessModal}/>) }
 
       <div className="flex justify-between items-center h-[120vh] bg-white">
         <SideBar role={"architectural"} />

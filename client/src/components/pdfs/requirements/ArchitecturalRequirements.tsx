@@ -28,6 +28,7 @@ const ArchitecturalRequirements = ({ applicationID, setRequirementsModal, setAll
             Swal.fire({
                 icon: "success",
                 title: "Architectural Requirements Checked!",
+                confirmButtonColor: "#c2410c",
                 showConfirmButton: true,
             }).then(result => {
                 if(result.isConfirmed || result.isDismissed) setRequirementsModal(false)
@@ -103,7 +104,7 @@ const ArchitecturalRequirements = ({ applicationID, setRequirementsModal, setAll
                         <button
                             type="button"
                             onClick={toggleSelectAll}
-                            className="bg-blue-700 text-white p-2 rounded-md mr-4"
+                            className="bg-orange-700 text-white p-2 rounded-md mr-4"
                         >
                             {
                                 areAllSelected 
@@ -519,7 +520,7 @@ const ArchitecturalRequirements = ({ applicationID, setRequirementsModal, setAll
                         </div>
 
                         <div className="flex flex-col items-center w-full gap-4 mt-5">
-                            <button type="submit" disabled={!isChanged} className={`w-[85%] text-white font-bold py-2 px-4 rounded w-1/2 ${isChanged ? 'bg-blue-700 hover:opacity-75' : 'bg-gray-500 cursor-not-allowed'}`}>
+                            <button type="submit" disabled={!isChanged} className={`w-[85%] text-white font-bold py-2 px-4 rounded w-1/2 ${isChanged ? 'bg-orange-700 hover:opacity-75' : 'bg-gray-500 cursor-not-allowed'}`}>
                                 Save
                             </button>
                             

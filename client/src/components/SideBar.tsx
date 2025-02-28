@@ -508,7 +508,10 @@ function NavLinks({ role }: { role: string }) {
 
             </CollapsibleTrigger>
             
-            <CollapsibleContent className="bg-orange-700 text-white mt-3 p-2 rounded-md w-full">
+            <CollapsibleContent 
+                className="p-2 mt-3 rounded-md w-full flex flex-col justify-center gap-4 
+                bg-transparent data-[state=open]:bg-orange-700 data-[state=open]:text-white transition-all duration-300"
+            >
               {staffs.map((item) => (
                 <button
                   key={item.name}
@@ -518,7 +521,7 @@ function NavLinks({ role }: { role: string }) {
                     setToAccessRole("staff")
                   }}
                   className={classNames(
-                    "font-bold text-lg p-2 rounded-md w-full text-center flex items-center justify-center gap-1 hover:text-black"
+                    "font-bold text-lg p-2 border rounded-md w-full text-center hover:bg-white hover:text-orange-700"
                   )}
                   >
                   {item.name}

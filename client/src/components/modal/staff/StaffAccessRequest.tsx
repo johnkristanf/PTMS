@@ -3,9 +3,13 @@ import { DeleteStaffAccessRequest } from "../../../http/delete/access";
 import Swal from "sweetalert2";
 import { OpenGrantedPage } from "../../../http/post/access";
 import { useFetchStaffAR } from "../../../hook/useFetchStaffAR";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faX } from "@fortawesome/free-solid-svg-icons";
 
 
-const StaffRequestAccessModal = () => {
+const StaffRequestAccessModal = ({ setIsNotificationModalOpen }: {
+    setIsNotificationModalOpen: React.Dispatch<React.SetStateAction<boolean>>
+}) => {
 
     const queryClient = useQueryClient();
 
@@ -69,6 +73,12 @@ const StaffRequestAccessModal = () => {
     return (
         <div className="absolute top-[10rem] right-[25rem] bg-gray-100 w-[45%] h-[220px] z-10 flex flex-col gap-5 items-center p-2 rounded-md font-semibold overflow-auto">
             <h1 className="text-orange-700 text-2xl">Access Request</h1>
+
+            <FontAwesomeIcon 
+                icon={faX} 
+                className="absolute top-3 right-3 text-2xl hover:opacity-75 hover:cursor-pointer"
+                onClick={() => setIsNotificationModalOpen(false)}
+            />
 
             { 
                 staffAccessRequests.length === 0 ? (

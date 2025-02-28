@@ -34,8 +34,8 @@ function DisapprovedCivilPage(){
     return(
 
         <>
-            { openStaffAccessModal && (<StaffRequestAccessModal />) }
-            { openAdminAccessModal && (<AdminRequestAccessModal />) }
+            { openStaffAccessModal && (<StaffRequestAccessModal setOpenStaffAccessModal={setOpenStaffAccessModal}/>) }
+            { openAdminAccessModal && (<AdminRequestAccessModal setOpenAdminAccessModal={setOpenAdminAccessModal}/>) }
 
             <div className="flex justify-between items-center h-[125vh] w-full bg-white">
 

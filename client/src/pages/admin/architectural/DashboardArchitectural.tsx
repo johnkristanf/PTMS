@@ -4,7 +4,12 @@ import { PTMSHeader } from "../../../components/PtmsHeader";
 
 import AdminArNotifButton from "../../../components/admin/AdminARNotifButton";
 
-
+import {
+    HoverCard,
+    HoverCardContent,
+    HoverCardTrigger,
+  } from "@/components/ui/hover-card"
+  
 
 import DashboardStaffARModal from "../../../components/admin/DashboardStaffARModal";
 import DashboardAdminARModal from "../../../components/admin/DashboardAdminARModal";
@@ -36,8 +41,8 @@ function ArchitecturalDashboardPage() {
     return (
 
         <>
-            { openStaffAccessModal && (<DashboardStaffARModal />) }
-            { openAdminAccessModal && (<DashboardAdminARModal />) }
+            { openStaffAccessModal && (<DashboardStaffARModal setOpenStaffAccessModal={setOpenStaffAccessModal}/>) }
+            { openAdminAccessModal && (<DashboardAdminARModal setOpenAdminAccessModal={setOpenAdminAccessModal}/>) }
 
             <div className="flex justify-between items-center h-[125vh] w-full bg-white">
                 <SideBar role={"architectural"} />
@@ -57,9 +62,28 @@ function ArchitecturalDashboardPage() {
                             <h1 className="text-orange-700 text-4xl font-bold">Dashboard</h1>
                             <div className="flex items-center gap-3">
 
-                                <StaffARNotifButton toggleStaffAccessModal={toggleStaffAccessModal}/>
+                            <HoverCard>
+                                <HoverCardTrigger>
+                                    <StaffARNotifButton toggleStaffAccessModal={toggleStaffAccessModal}/>
+                                </HoverCardTrigger>
 
-                                <AdminArNotifButton toggleAdminAccessModal={toggleAdminAccessModal} />
+                                <HoverCardContent>
+                                    Notification for staff that want to have an access to another staff account.
+                                </HoverCardContent>
+                            </HoverCard>
+
+
+
+                            <HoverCard>
+                                <HoverCardTrigger>
+                                    <AdminArNotifButton toggleAdminAccessModal={toggleAdminAccessModal} />
+                                </HoverCardTrigger>
+
+                                <HoverCardContent>
+                                    Notification for other admin wanting to have an access over your account
+                                </HoverCardContent>
+                            </HoverCard>
+
 
 
                                 

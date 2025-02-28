@@ -15,6 +15,7 @@ func AuthRoutes(e *echo.Echo, h *handlers.AuthHandler) {
 	g.POST("/applicant/login", h.ApplicantLoginHandler)
 
 	g.POST("/verify-email/reset", h.VerifyEmailResetHandler)
+	g.POST("/send/temp_passowrd", h.SendTemporaryPasswordHandler)
 
 	g.PUT("/change/password", h.PasswordResetHandler)
 

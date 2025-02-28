@@ -98,13 +98,14 @@ export const AssessmentsModal: React.FC<AssessmentModalProps> = ({ applicantAsse
             Swal.fire({
                 title: "Application Next Step",
                 text: "Click again the assessment icon button to see the assessment list",
+                confirmButtonColor: "#c2410c",
                 icon: "info",
             }).then((result) => {
                 if (result.isConfirmed) {
                     Swal.fire({
                         icon: "success",
                         title: "Assessment Added!",
-                        showConfirmButton: true,
+                        showConfirmButton: false,
                     });
 
                     setRenderAssessmentPDF(true);

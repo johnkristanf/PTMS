@@ -23,7 +23,7 @@ function ReceiverPage() {
 
     <>
             {
-                isNotificationModalOpen && (<StaffRequestAccessModal />)
+                isNotificationModalOpen && (<StaffRequestAccessModal setIsNotificationModalOpen={setIsNotificationModalOpen}/>)
             }
 
       <div className="flex justify-between items-center h-[120vh] bg-white">

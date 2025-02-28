@@ -168,3 +168,10 @@ export const FetchRequirements = async (applicationID: number, adminType: string
         withCredentials: true
     });
 }
+
+export const FetchFirstStepRequirements = async (applicationID: number) => {
+
+    return axios.get(`${DOMAIN_NAME}/application/first_step/${applicationID}`, {
+        withCredentials: true
+    });
+}

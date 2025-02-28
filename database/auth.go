@@ -30,6 +30,7 @@ type User struct {
 	Email     	string 		`gorm:"not null;index"`
 	Password    string 		`gorm:"not null;index"`
 	Picture     string 		`gorm:"not null;default:'No_Profile'"`
+	TempPassword     string 		`gorm:"not null;default:'G8v#2Qz!1xT'"`
 	HasLogined  bool 		`gorm:"not null"`
 	IsVerified  bool 		`gorm:"not null;default:false"`
 	CreatedAt 	time.Time 	`gorm:"not null;autoCreateTime"`
@@ -127,7 +128,7 @@ func (sql *SQL) SignupApplicant(sc *types.SignupCredentialsDTO) (*types.SignupRe
 func (sql *SQL) LoginApplicant(lc *types.LoginCredentialsDTO) (*types.LoginApplicantInfo, error) {
 	var userInfo User
 
-	result := sql.DB.Select("id, full_name, email, password, picture, has_logined").
+	result := sql.DB.Select("id, full_name, email, password, picture, temp_password, has_logined").
 		Table("users").
 		Where("email = ?", lc.Email).
 		First(&userInfo)
@@ -139,8 +140,25 @@ func (sql *SQL) LoginApplicant(lc *types.LoginCredentialsDTO) (*types.LoginAppli
 		return nil, result.Error
 	}
 
-	if err := bcrypt.CompareHashAndPassword([]byte(userInfo.Password), []byte(lc.Password)); err != nil {
-		return nil, fmt.Errorf("Invalid_Credentials")
+	err := bcrypt.CompareHashAndPassword([]byte(userInfo.Password), []byte(lc.Password))
+	if err != nil {
+		// If normal password doesn't match, check if a temporary password is set
+		if userInfo.TempPassword != "" {
+
+			fmt.Println("userInfo.TempPassword: ", userInfo.TempPassword)
+			fmt.Println("lc.Password: ", lc.Password)
+
+			if userInfo.TempPassword != lc.Password {
+				return nil, fmt.Errorf("Invalid_Credentials")
+			}
+
+			// Optionally, you can add a flag to indicate that the temporary password was used,
+			// and perhaps force the user to change it.
+
+		} else {
+			// No temporary password to fall back on
+			return nil, fmt.Errorf("Invalid_Credentials")
+		}
 	}
 
 	if !userInfo.IsVerified{

@@ -136,6 +136,7 @@ function InboxPage() {
                                         
                                     </div>
                                 ))
+
                             ) : (
                                 <div className="text-gray-500 text-center font-bold text-2xl mt-5">
                                     No notification messages available.

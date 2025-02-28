@@ -204,3 +204,16 @@ export const groupByClass = (data: string[]) => {
 
   return grouped;
 };
+
+
+export function formatDocumentFirstStepKey(key: string): string {
+    // Replace underscores with spaces
+    const withSpaces = key.replace(/_/g, " ");
+    // Insert a space before uppercase letters (for camelCase keys)
+    const spacedCamel = withSpaces.replace(/([a-z0-9])([A-Z])/g, "$1 $2");
+    // Capitalize the first letter of each word
+    return spacedCamel.replace(/\w\S*/g, (word) => 
+      word.charAt(0).toUpperCase() + word.substr(1).toLowerCase()
+    );
+  }
+  

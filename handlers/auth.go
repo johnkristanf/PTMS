@@ -278,6 +278,25 @@ func (h *AuthHandler) VerifyEmailResetHandler(c echo.Context) error {
 	return c.JSON(http.StatusOK, "ResetPassword_Email_Sent")
 }
 
+
+func (h *AuthHandler) SendTemporaryPasswordHandler(c echo.Context) error {
+
+	user := &types.PasswordRestEmailBind{}
+
+	if err := c.Bind(&user); err != nil {
+		return c.JSON(http.StatusBadRequest, "bad request")
+	}
+
+	fmt.Println("user Email sa temp func: ", user.Email)
+	
+	tempPassword := "G8v#2Qz!1xT"
+	if err := helpers.SendTemporaryPasswordEmail(user.Email, tempPassword); err != nil{
+		return err
+	}
+
+	return c.JSON(http.StatusOK, "Temporary_Password_Sent")
+}
+
 func (h *AuthHandler) PasswordResetHandler(c echo.Context) error {
 	var user types.UpdateUserPassword
 

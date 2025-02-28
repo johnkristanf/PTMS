@@ -76,6 +76,10 @@ export const SignupApplicant = async (signupCrendentials: SignupCredentials): Pr
             if (error.response.status === 403) {
                 return "need_verification";
             }
+
+            if (error.response.status === 409) {
+                return "email_already_exists";
+            }
         }
 
         return "Error in Sign Up";
@@ -108,6 +112,23 @@ export const ApplicantLogin = async (loginCredentials: LoginCredentials): Promis
 
     }
 }
+
+
+export const SendTemporaryPassword = async (email: string) => {
+    try {
+        const response = await axios.post(`${DOMAIN_NAME}/auth/send/temp_passowrd`, { email });
+        console.log("response temporary password: ", response);
+
+        return response.data;
+
+            
+    } catch (error: any) {
+        if (axios.isAxiosError(error) && error.response) {
+            console.error("Axios error response: ", error.response);
+        }
+    }
+};
+
 
 
 

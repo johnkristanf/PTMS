@@ -88,8 +88,8 @@ export const AssessmentCheckListModal = ({ applicationID, setAssessmentChecklist
         <div className="w-full h-full fixed top-0 left-0 flex justify-center items-center">
             <div className="fixed top-0 bg-gray-600 opacity-75 w-full h-screen"></div>
             
-            <div className="fixed top-16 w-full h-[90%] flex items-center justify-end rounded-md p-5">
-                <div className="bg-white w-[70%] p-5 rounded-md h-full mr-[4rem] overflow-auto">
+            <div className="fixed top-16 w-full h-[90%] flex items-center justify-center rounded-md p-5">
+                <div className="bg-white w-[70%] p-5 rounded-md h-full overflow-auto">
                     <form onSubmit={handleSubmit(onSubmit)}>
                         <div className="w-full flex items-center justify-between gap-8 mb-3">
                             <div className="flex flex-col gap-2">
@@ -104,9 +104,9 @@ export const AssessmentCheckListModal = ({ applicationID, setAssessmentChecklist
                                             <input 
                                                 type="date" 
                                                 {...register("datePaid")} 
-                                                required
+                                                defaultValue={new Date().toISOString().split("T")[0]} // Sets default to today's date
                                                 className={errors.datePaid ? "border-red-500" : ""}
-                                                disabled  
+                                                required
                                             />
                                             {!isPaid && errors.datePaid && <span className="text-red-500">This field is required</span>}
                                         </div>
@@ -181,9 +181,9 @@ export const AssessmentCheckListModal = ({ applicationID, setAssessmentChecklist
                         {/* END OF TABLE DIV */}
                         
                         <div className="flex justify-between items-center w-full mt-5 px-8">
-                            <div className="flex items-center mt-2 gap-3">
-                                <h1 className='font-semibold text-lg'>Assessed by:</h1>
-                                <h1 className='font-semibold text-lg'>Receiver</h1>
+                            <div className="flex items-center mt-2 gap-3  text-md">
+                                <h1 className='font-semibold'>Assessed by:</h1>
+                                <h1 className='font-semibold '>Peter Alfred D. Cabalda</h1>
                             </div>
                             <div className="flex gap-3 w-[30%]">
                                 <button

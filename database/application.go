@@ -9,6 +9,8 @@ import (
 	"github.com/johnkristanf/TMS-IPAS/helpers"
 	"github.com/johnkristanf/TMS-IPAS/types"
 	"gorm.io/gorm"
+
+	"github.com/lib/pq"
 )
 
 
@@ -46,6 +48,12 @@ type Application struct {
 	StaffProccessStatus 		string      `gorm:"not null"`
 
 	AdminApproved				string		`gorm:"not null"`
+
+	ApplicantFormDocuments      pq.StringArray  	`gorm:"column:applicant_form_documents;type:text[];default:'{}'" json:"applicant_form_documents"`
+	CompletionFormDocuments     pq.StringArray  	`gorm:"column:completion_form_documents;type:text[];default:'{}'" json:"completion_form_documents"`
+	AdditionalDocuments         pq.StringArray  	`gorm:"column:additional_documents;type:text[];default:'{}'" json:"additional_form_documents"`
+
+	IsFinishScanning         	bool      			`gorm:"not null;default:false"`
 
 	ReleaseDate					string		`gorm:"not null"`
 	CreatedAt 					time.Time 	`gorm:"not null;autoCreateTime"`
@@ -260,6 +268,11 @@ type APPLICATION_DB_METHOD interface {
 	DeleteInbox(string) error
 
 	FetchOccupancyData(int64) ([]*types.OccupancyData, error)
+	UpdateApplicantFormDocument(*types.ApplicantFormDocument) error
+	UpdateCompletionFormDocument(*types.CompletionFormDocument) error
+	UpdateAdditionalFormDocument(*types.AdditionalFormDocument) error
+
+	UpdateFinishScanning(int64) error
 }
 
 
@@ -810,7 +823,7 @@ func (sql *SQL) FetchAllInboxes(userID int64) ([]*types.FormattedInbox, error) {
 			Status: 	inbox.Status,	
 			UserID:     inbox.UserID,
 			Subject:    inbox.Subject,
-			TimeCreated:  inbox.CreatedAt.Local().Format("03:04 PM"), 
+			TimeCreated:  inbox.CreatedAt.Local().Format("Jan 02, 2006 3:04 PM"),
 		}
 		inboxes = append(inboxes, formattedInbox)
 	}
@@ -1050,7 +1063,7 @@ func (sql *SQL) FetchApplicationByStaffProccessStatus(status string, searchName 
 	query := sql.DB.Table("applications").
 		Select(`applications.id, applications.service_type, applications.application_code, applications.first_name, applications.middle_initial, applications.last_name, 
 		applications.barangay, applications.street, applications.municipality, applications.zip_code, applications.permit_type, 
-		applications.email, applications.admin_approved, applications.user_id`).
+		applications.email, applications.applicant_form_documents, applications.completion_form_documents, applications.additional_documents, applications.is_finish_scanning, applications.admin_approved, applications.user_id`).
 
 		Joins("INNER JOIN assessments ON applications.id = assessments.application_id").
 		Where("applications.status = ? AND applications.staff_proccess_status = ?", "Approved", status).
@@ -1071,7 +1084,10 @@ func (sql *SQL) FetchApplicationByStaffProccessStatus(status string, searchName 
 		return nil, err
 	}
 
-
+	for index, item := range results {
+		fmt.Printf("Index %d: %+v\n", index, item)
+	}
+	
 	return results, nil
 }
 
@@ -1434,3 +1450,63 @@ func (sql *SQL) FetchOccupancyData(applicationID int64) ([]*types.OccupancyData,
 
 	return occupancyData, nil
 }
+
+
+
+func (sql *SQL)	UpdateApplicantFormDocument(data *types.ApplicantFormDocument) error {
+
+	result := sql.DB.Model(&Application{}).
+	Where("id = ?", data.ID).
+	Update("applicant_form_documents", pq.Array(data.ApplicantFormDocuments))
+
+
+	if result.Error != nil {
+		return result.Error
+	}
+
+	return nil
+}
+ 
+
+
+func (sql *SQL) UpdateCompletionFormDocument(data *types.CompletionFormDocument) error {
+	result := sql.DB.Model(&Application{}).
+	Where("id = ?", data.ID).
+	Update("completion_form_documents", pq.Array(data.CompletionFormDocuments))
+
+
+	if result.Error != nil {
+		return result.Error
+	}
+
+	return nil
+}
+
+
+func (sql *SQL) UpdateAdditionalFormDocument(data *types.AdditionalFormDocument) error {
+	result := sql.DB.Model(&Application{}).
+	Where("id = ?", data.ID).
+	Update("additional_documents", pq.Array(data.AdditionalDocuments))
+
+
+	if result.Error != nil {
+		return result.Error
+	}
+
+	return nil
+}
+
+
+func (sql *SQL) UpdateFinishScanning(applicationID int64) error {
+	result := sql.DB.Model(&Application{}).
+	Where("id = ?", applicationID).
+	Update("is_finish_scanning", true)
+
+
+	if result.Error != nil {
+		return result.Error
+	}
+
+	return nil
+}
+

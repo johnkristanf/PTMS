@@ -35,8 +35,8 @@ function ElectricalDashboardPage() {
     return (
 
         <>
-            { openStaffAccessModal && (<DashboardStaffARModal />) }
-            { openAdminAccessModal && (<DashboardAdminARModal />) }
+            { openStaffAccessModal && (<DashboardStaffARModal setOpenStaffAccessModal={setOpenStaffAccessModal}/>) }
+            { openAdminAccessModal && (<DashboardAdminARModal setOpenAdminAccessModal={setOpenAdminAccessModal}/>) }
 
             <div className="flex justify-between items-center h-[125vh] w-full bg-white">
                 <SideBar role={"electrical"} />

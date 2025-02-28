@@ -759,3 +759,112 @@ func (h *ApplicationHandler) FetchOccupancyDataHandler(c echo.Context) error {
 	})
 
 }
+
+
+
+
+func (h *ApplicationHandler) UpdateApplicantFormDocumentHandler(c echo.Context) error {
+
+	applicantFormDocument := &types.ApplicantFormDocument{}
+	if err := c.Bind(&applicantFormDocument); err != nil {
+        return c.JSON(http.StatusBadRequest, err.Error())
+    }
+
+	if err := h.DB_METHOD.UpdateApplicantFormDocument(applicantFormDocument); err != nil {
+		return c.JSON(http.StatusInternalServerError, map[string]error{
+			"internal server error": err,
+		})
+	}
+	
+	return c.JSON(http.StatusOK, map[string]interface{}{
+		"id": applicantFormDocument.ID,
+		"document array": applicantFormDocument.ApplicantFormDocuments,
+	})
+
+}
+
+
+func (h *ApplicationHandler) UpdateCompletionFormDocumentHandler(c echo.Context) error {
+
+	completionFormDocument := &types.CompletionFormDocument{}
+	if err := c.Bind(&completionFormDocument); err != nil {
+        return c.JSON(http.StatusBadRequest, err.Error())
+    }
+
+
+	if err := h.DB_METHOD.UpdateCompletionFormDocument(completionFormDocument); err != nil {
+		return c.JSON(http.StatusInternalServerError, map[string]error{
+			"internal server error": err,
+		})
+	}
+	
+	return c.JSON(http.StatusOK, map[string]interface{}{
+		"id": completionFormDocument.ID,
+		"document array": completionFormDocument.CompletionFormDocuments,
+	})
+
+}
+
+
+
+func (h *ApplicationHandler) UpdateAdditionalFormDocumentHandler(c echo.Context) error {
+
+	additionalFormDocument := &types.AdditionalFormDocument{}
+	if err := c.Bind(&additionalFormDocument); err != nil {
+		fmt.Println("Bind err: ", err)
+        return c.JSON(http.StatusBadRequest, err.Error())
+    }
+
+
+	if err := h.DB_METHOD.UpdateAdditionalFormDocument(additionalFormDocument); err != nil {
+		return c.JSON(http.StatusInternalServerError, map[string]error{
+			"internal server error": err,
+		})
+	}
+	
+	return c.JSON(http.StatusOK, map[string]interface{}{
+		"id": additionalFormDocument.ID,
+		"document array": additionalFormDocument.AdditionalDocuments,
+	})
+
+}
+
+
+func (h *ApplicationHandler) UpdateFinishScanningHandler(c echo.Context) error {
+
+	finishScanningData := &types.FinishScanning{}
+	if err := c.Bind(&finishScanningData); err != nil {
+        return c.JSON(http.StatusBadRequest, err.Error())
+    }
+
+	fmt.Println("application ID in scan: ", finishScanningData.ID)
+
+
+	if err := h.DB_METHOD.UpdateFinishScanning(finishScanningData.ID); err != nil {
+		return c.JSON(http.StatusInternalServerError, map[string]error{
+			"internal server error": err,
+		})
+	}
+	
+	return c.JSON(http.StatusOK, "Scanning Finished")
+
+}
+
+
+
+
+
+func (h * ApplicationHandler) FetchDocumentFirstStepRequirementsHandler(c echo.Context) error {
+	param := c.Param("application_id")
+	application_id, err := strconv.Atoi(param)
+	if err != nil{
+		return err
+	}
+
+	requirements, err := h.DB_METHOD.FetchRequirements(int64(application_id))
+	if err != nil {
+		return err
+	}
+
+	return c.JSON(http.StatusOK, requirements)
+}

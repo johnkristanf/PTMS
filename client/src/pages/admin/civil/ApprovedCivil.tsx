@@ -35,8 +35,8 @@ function ApprovedCivilPage(){
     return(
 
         <>
-            { openStaffAccessModal && (<StaffRequestAccessModal />) }
-            { openAdminAccessModal && (<AdminRequestAccessModal />) }
+            { openStaffAccessModal && (<StaffRequestAccessModal setOpenStaffAccessModal={setOpenStaffAccessModal}/>) }
+            { openAdminAccessModal && (<AdminRequestAccessModal setOpenAdminAccessModal={setOpenAdminAccessModal}/>) }
 
             <div className="flex justify-between items-center h-[125vh] bg-white">
                 <SideBar role={"civil"}/>

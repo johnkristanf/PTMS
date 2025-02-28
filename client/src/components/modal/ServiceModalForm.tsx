@@ -293,7 +293,7 @@ export const ServiceModalForm = ({ selectedService, setServiceModalOpen }: {
                                             <input 
                                                 key={data.registerName}
                                                 type={data.inputType} 
-                                                className={classNames("bg-gray-200 placeholder-black font-semibold rounded-md p-2 focus:outline-slate-800 w-full")}
+                                                className={classNames(" placeholder-black font-semibold rounded-md p-2 border border-black focus:border-orange-700 focus:outline-none w-full")}
                                                 {...register(data.registerName as keyof ApplicantInfo)}
                                             />
 
@@ -321,7 +321,7 @@ export const ServiceModalForm = ({ selectedService, setServiceModalOpen }: {
                                             <input 
                                                 key={data.registerName}
                                                 type={data.inputType} 
-                                                className={classNames("bg-gray-200 placeholder-black font-semibold rounded-md p-2 focus:outline-slate-800 w-full")}
+                                                className={classNames(" placeholder-black font-semibold rounded-md p-2 border border-black focus:border-orange-700 focus:outline-none w-full")}
                                                 {...register(data.registerName as keyof ApplicantInfo)}
                                             />
 
@@ -354,7 +354,7 @@ export const ServiceModalForm = ({ selectedService, setServiceModalOpen }: {
                                                 type={data.inputType} 
                                                 defaultValue={data.value}
                                                 disabled={data.disabled}
-                                                className={classNames(`${data.value ? "bg-gray-400 text-white": "bg-gray-200"} placeholder-black font-semibold rounded-md p-2 focus:outline-slate-800 w-full`)}
+                                                className={classNames(`${data.value ? "bg-gray-400 text-white": ""} placeholder-black font-semibold rounded-md p-2 border border-black focus:border-orange-700 focus:outline-none w-full`)}
                                                 {...register(data.registerName as keyof ApplicantInfo)}
                                             />
                                             {/* {errors[data.registerName as keyof ApplicantInfo] && (
@@ -367,7 +367,7 @@ export const ServiceModalForm = ({ selectedService, setServiceModalOpen }: {
                                             <label className='mt-3'>Barangay</label>
 
                                             <select 
-                                                className="bg-gray-200 placeholder-black font-semibold rounded-md p-2 focus:outline-slate-800 w-full"
+                                                className=" placeholder-black font-semibold rounded-md p-2 border border-black focus:border-orange-700 focus:outline-none w-full"
                                                 {...register("barangay")}
                                             >
                                                 <option disabled selected>Select Barangay</option>
@@ -392,7 +392,7 @@ export const ServiceModalForm = ({ selectedService, setServiceModalOpen }: {
                                                 type={data.inputType} 
                                                 defaultValue={data.value}
                                                 disabled={data.disabled}
-                                                className={classNames(`${data.value ? "bg-gray-400 text-white": "bg-gray-200"} placeholder-black font-semibold rounded-md p-2 focus:outline-slate-800 w-full`)}
+                                                className={classNames(`${data.value ? "bg-gray-400 text-white": ""} placeholder-black font-semibold rounded-md p-2 border border-black focus:border-orange-700 focus:outline-none w-full`)}
                                                 {...register(data.registerName as keyof ApplicantInfo)}
                                             />
                                             {/* {errors[data.registerName as keyof ApplicantInfo] && (
@@ -448,7 +448,7 @@ export const ServiceModalForm = ({ selectedService, setServiceModalOpen }: {
                                                 type={data.inputType} 
                                                 maxLength={data.maxLength}
                                                 placeholder={data.placeHolder}
-                                                className={classNames("bg-gray-200 placeholder-black placeholder-gray-600 opacity-70 font-semibold rounded-md p-2 focus:outline-slate-800 w-full")}
+                                                className={classNames(" placeholder-black placeholder-gray-600 opacity-70 font-semibold rounded-md p-2 border border-black focus:border-orange-700 focus:outline-none w-full")}
                                                 {...register(
                                                     data.registerName as keyof ApplicantInfo,
                                                     // data.label !== "Tax Account No." && data.label !== "TCT No."
@@ -568,7 +568,7 @@ export const ServiceModalForm = ({ selectedService, setServiceModalOpen }: {
                             type="submit"
                             className={classNames(
                                 "rounded-md p-2 mt-3 text-white w-full font-semibold",
-                                "bg-orange-800 hover:opacity-75" 
+                                "bg-orange-700 hover:opacity-75" 
                             )}
                         >
                             SUBMIT

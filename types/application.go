@@ -1,5 +1,8 @@
 package types
 
+import (
+	"github.com/lib/pq"
+)
 
 type ApplicantInfo struct {
 	FirstName     string `json:"firstname"`
@@ -33,6 +36,9 @@ type IsApplicationExits struct {
 	ID  int64  `json:"application_id"`
 }
 
+
+
+
 type ApplicantInfoFetching struct {
 	ID              		  	int64  `json:"application_id"`
 	ApplicationCode 			string `json:"applicationCode"`
@@ -62,6 +68,10 @@ type ApplicantInfoFetching struct {
 	ApplicantID 				int64  `json:"applicantID"`
 	Status      				string `json:"assessment_status"`
 
+	ApplicantFormDocuments      pq.StringArray  	`json:"applicant_form_documents"`
+	CompletionFormDocuments     pq.StringArray  	`json:"completion_form_documents"`
+	AdditionalDocuments         pq.StringArray  	`json:"additional_form_documents"`
+
 	ReleaseDate					string `json:"release_date"`
 	AdminApproved    			string `json:"admin_approved"`
 }
@@ -87,6 +97,12 @@ type ApplicantionByProccess struct {
 	UserID       				string `json:"user_id"`
 	ApplicantID 				int64  `json:"applicantID"`
 
+	ApplicantFormDocuments  	pq.StringArray `gorm:"column:applicant_form_documents" json:"applicant_form_documents"`
+    CompletionFormDocuments 	pq.StringArray `gorm:"column:completion_form_documents" json:"completion_form_documents"`
+    AdditionalDocuments     	pq.StringArray `gorm:"column:additional_documents" json:"additional_form_documents"`
+
+	IsFinishScanning         	bool 	`gorm:"column:is_finish_scanning" json:"is_finish_scanning"`
+	
 	ReleaseDate					string `json:"release_date"`
 	AdminApproved    			string `json:"admin_approved"`
 }
@@ -419,4 +435,29 @@ type OccupancyData struct {
 	FirstName  					string			`json:"first_name"`
 	MiddleInitial  				string			`json:"middle_initial"`
 	LastName  					string			`json:"last_name"`
+}
+
+
+
+type ApplicantFormDocument struct {
+	ID              		  	int64  `json:"application_id"`
+	ApplicantFormDocuments      []string  	`json:"applicant_form_documents"`
+}
+
+
+type CompletionFormDocument struct {
+	ID              		  	int64  `json:"application_id"`
+	CompletionFormDocuments      []string  	`json:"completion_form_documents"`
+}
+
+
+
+type AdditionalFormDocument struct {
+	ID              		  int64  `json:"application_id"`
+	AdditionalDocuments      []string  	`json:"additional_form_documents"`
+}
+
+
+type FinishScanning struct {
+	ID              		  int64  `json:"application_id"`
 }

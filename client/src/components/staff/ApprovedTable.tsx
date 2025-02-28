@@ -1,10 +1,9 @@
-import React, { useRef, useState } from "react";
+import React, {  useState } from "react";
 import { ReleaseDateModal } from "../modal/staff/ReleaseModal";
 import { ApplicationFileModal } from "../modal/staff/ApplicationFilesModal";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { ReleaseDateData } from "../../types/application";
 import Swal from "sweetalert2";
-import { UploadDocument } from "../../http/post/document";
 
 import '../../assets/scrollStyle.css'
 import { useFetchApprovedByStatus } from "../../hook/useFetchApprovedByStatus";
@@ -13,10 +12,20 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCircleCheck, faFileExport, faWarehouse } from "@fortawesome/free-solid-svg-icons";
 
 import {
+    Dialog,
+    DialogContent,
+    DialogOverlay,
+    DialogTrigger,
+} from "@/components/ui/dialog"
+  
+
+import {
     HoverCard,
     HoverCardContent,
     HoverCardTrigger,
 } from "@/components/ui/hover-card"
+import { DocumentStepsComponent } from "../modal/staff/DocumentSteps";
+import { classNames } from "@/helpers/classNames";
 
 interface ApproveTableProps {
     searchTerm: string,
@@ -32,28 +41,33 @@ export function ApproveTable({ searchTerm, selectedMonth, staffRole, ReleaserRep
 
     const [selectedApplicationCode, setSelectedApplicationCode] = useState<string>(); 
     const [releaseDateData, setReleaseDateData] = useState<ReleaseDateData>(); 
-    const fileInputRef = useRef<HTMLInputElement | null>(null);
 
     const queryClient = useQueryClient();
 
 
     const handleRowClick = (e: React.MouseEvent<HTMLTableRowElement, MouseEvent>, application_code: string) => {
-        if ((e.target as HTMLElement).tagName !== "BUTTON" && (e.target as HTMLElement).tagName !== "INPUT") {
-            setOpenFile(true);
-            setSelectedApplicationCode(application_code)
-        }
+        // If the click target is inside a button, don't trigger the file modal.
+        if ((e.target as HTMLElement).closest("button")) return;
+      
+        setOpenFile(true);
+        setSelectedApplicationCode(application_code);
     };
+      
 
 
     const handleButtonClick = (e: React.MouseEvent) => {
         e.stopPropagation();
     };
 
-    const triggerFileInput = (e: React.MouseEvent, applicationId: string) => {
+    // const triggerFileInput = (e: React.MouseEvent, applicationId: string) => {
+    //     fileInputRef.current?.click(); 
+    // };
+
+
+    const triggerOpenDocumentSteps = (e: React.MouseEvent, applicationId: string) => {
         e.stopPropagation(); 
         setSelectedApplicationCode(applicationId); 
-        fileInputRef.current?.click(); 
-    };
+    }
 
 
     const onOpenReleaseModal = (e: React.MouseEvent, applicationId: number, email: string, user_id: number) => {
@@ -69,35 +83,7 @@ export function ApproveTable({ searchTerm, selectedMonth, staffRole, ReleaserRep
 
    
 
-    const uploadDocumentMutation = useMutation({
-        mutationFn: UploadDocument,
-        onSuccess: () => {
-            queryClient.invalidateQueries({ queryKey: ["approved_applications"] });
-
-            Swal.fire({
-                icon: "success",
-                title: "File Uploaded Successfully",
-                showConfirmButton: false,
-                timer: 1500,
-            });
-        },
-
-        onMutate: () => {
-            Swal.fire({
-                title: 'Please wait...',
-                text: 'Your request is being processed',
-                allowOutsideClick: false,
-                showConfirmButton: false,
-                willOpen: () => {
-                    Swal.showLoading();
-                },
-            });
-        },
-
-        onError: (error: unknown) => {
-            console.error("Document Upload Error:", error);
-        },
-    });
+    
 
 
     const submitToReleaserMutation = useMutation({
@@ -106,7 +92,6 @@ export function ApproveTable({ searchTerm, selectedMonth, staffRole, ReleaserRep
             queryClient.invalidateQueries({ queryKey: ["approved_applications"] });
 
             Swal.fire({
-                position: "top-end",
                 icon: "success",
                 title: "Application Submitted to Releaser",
                 showConfirmButton: false,
@@ -132,38 +117,14 @@ export function ApproveTable({ searchTerm, selectedMonth, staffRole, ReleaserRep
     });
 
 
-    const handleDocumentUpload = async (file : File, applicationCode: string) => {
-
-        try {
-            const formData = new FormData();
-            formData.append("document", file);
-            formData.append("application_code", applicationCode);
-
-            uploadDocumentMutation.mutate(formData)
-            
-        } catch (error) {
-            console.error("File upload failed", error);
-            alert("File upload failed");
-        }
-    }
-
-
-    const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const file = e.target.files?.[0];
-
-        console.log("filename: ", file?.name);
-        
-        if (file && selectedApplicationCode) {
-            handleDocumentUpload(file, selectedApplicationCode); 
-        }
-    };
-
+ 
     const handleSubmitToReleaser = (application_id: number) => {
         submitToReleaserMutation.mutate(application_id.toString());
     }
 
 
     const { approvedApplication } = useFetchApprovedByStatus(staffRole, searchTerm, selectedMonth);
+    console.log("approvedApplication: ", approvedApplication);
     
 
     return (
@@ -221,51 +182,60 @@ export function ApproveTable({ searchTerm, selectedMonth, staffRole, ReleaserRep
                                             {staffRole === 'scanner' && !ReleaserReport && (
                                                 <td className="whitespace-nowrap py-4">
                                                     <div className="flex gap-3">
-                                                    <input
-                                                        type="file"
-                                                        ref={fileInputRef}
-                                                        style={{ display: "none" }}
-                                                        onClick={handleButtonClick}
-                                                        onChange={handleFileChange}
-                                                    />
 
-                                                        <HoverCard>
-                                                            <HoverCardTrigger>
-                                                                <button
+                                                    {/* SCAN DOCUMENT BUTTON */}
+
+                                                        <Dialog>
+                                                            <DialogTrigger asChild>
+                                                                <button 
                                                                     onClick={(e) => {
-                                                                    triggerFileInput(e, item.applicationCode);
+                                                                        triggerOpenDocumentSteps(e, item.applicationCode)
                                                                     }}
                                                                     className="bg-orange-700 text-white font-bold p-3 rounded-md hover:opacity-75"
                                                                 >
-                                                                    <FontAwesomeIcon icon={faWarehouse}/>
+                                                                    <FontAwesomeIcon icon={faWarehouse} />
                                                                 </button>
-                                                            </HoverCardTrigger>
-                                                        
-                                                            <HoverCardContent>
-                                                                Scan/Store Documents Hover
-                                                            </HoverCardContent>
-                                                        
-                                                        </HoverCard> 
+                                                            </DialogTrigger>
 
-                                                        <HoverCard>
-                                                            <HoverCardTrigger>
+                                                            <DialogOverlay className="fixed inset-0 bg-black bg-opacity-50 z-50" />
+
+                                                            <DialogContent className="mt-8 overflow-y-auto max-h-[80vh]">
+                                                                <DocumentStepsComponent 
+                                                                    applicationID={item.application_id}
+                                                                    applicantCode={selectedApplicationCode}
+                                                                    applicant_form_documents={item.applicant_form_documents || []}
+                                                                    completion_form_documents={item.completion_form_documents || []}
+                                                                    additional_form_documents={item.additional_form_documents || []}
+                                                                />
+                                                            </DialogContent>
+                                                        </Dialog>
+
+
+                                                    {/* SUBMIT DOCUMENT BUTTON */}
+                                                        {/* <HoverCard>
+                                                            <HoverCardTrigger> */}
                                                                 <button
                                                                     onClick={(e) => {
                                                                         handleButtonClick(e);
                                                                         handleSubmitToReleaser(item.application_id)
                                                                         console.log("Submit clicked");
                                                                     }}
-                                                                    className="bg-green-600 text-white font-bold p-3 rounded-md hover:opacity-75"
+
+                                                                    disabled={!item.is_finish_scanning}
+                                                                    className={classNames(
+                                                                        !item.is_finish_scanning ? "bg-gray-500 cursor-not-allowed": "bg-green-600",
+                                                                        "text-white font-bold p-3 rounded-md hover:opacity-75"
+                                                                    )}
                                                                 >
                                                                     <FontAwesomeIcon icon={faCircleCheck}/>
                                                                 </button>
-                                                            </HoverCardTrigger>
+                                                            {/* </HoverCardTrigger>
                                                         
                                                             <HoverCardContent>
                                                                 Submit Documents Hover
                                                             </HoverCardContent>
                                                         
-                                                        </HoverCard> 
+                                                        </HoverCard>  */}
 
                                                    
 

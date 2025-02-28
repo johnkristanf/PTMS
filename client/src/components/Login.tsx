@@ -1,6 +1,6 @@
 import { useForm, SubmitHandler } from "react-hook-form"
 import { LoginCredentials, SignupCredentials } from "../types/auth"
-import { ApplicantLogin, SignupApplicant, StaffAccountLogin } from "../http/post/auth"
+import { ApplicantLogin, SendTemporaryPassword, SignupApplicant, StaffAccountLogin } from "../http/post/auth"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { faArrowLeft, faEye, faEyeSlash } from "@fortawesome/free-solid-svg-icons"
 import { useState } from "react"
@@ -128,7 +128,13 @@ export function ApplicantAuthentication({ setRole }: {
             />
 
             {
-                authType == "login" ? (<ApplicantLoginForm setAuthType={setAuthType}/>) :  (<ApplicantSignupForm setAuthType={setAuthType}/>)
+                authType === "login" ? (
+                    <ApplicantLoginForm setAuthType={setAuthType} />
+                ) : authType === "signup" ? (
+                    <ApplicantSignupForm setAuthType={setAuthType} />
+                ) : authType === "forgot_password" ? (
+                    <ApplicantForgotPasswordForm setAuthType={setAuthType} />
+                ) : null
             }
 
             
@@ -216,18 +222,31 @@ function ApplicantLoginForm({setAuthType}: {
                 </div>
 
                 <div className="flex justify-between items-center mt-5">
-                    <h1 
-                        className="font-semibold "
-                    >
-                            Don't have an account? 
-                            <a 
-                                className="ml-1 text-orange-800 hover:opacity-75 hover:cursor-pointer" 
-                                onClick={() => setAuthType("signup")}>
-                                Signup
-                            </a> 
 
-                            
-                    </h1>
+                        <div className="flex flex-col">
+                            <h1 
+                                className="font-semibold "
+                            >
+                                    Don't have an account? 
+                                    <a 
+                                        className="ml-1 text-orange-800 hover:opacity-75 hover:cursor-pointer" 
+                                        onClick={() => setAuthType("signup")}>
+                                        Signup
+                                    </a>  
+                            </h1>
+
+                            <h1 className="font-semibold mt-3">
+                                Forgot Password?{" "}
+                                <a
+                                    className="ml-1 text-orange-800 hover:opacity-75 hover:cursor-pointer"
+                                    onClick={() => setAuthType("forgot_password")}
+                                >
+                                    Click Here
+                                </a>
+                            </h1>
+                        </div>
+                        
+
 
                     <button
                         type="submit"
@@ -269,7 +288,15 @@ function ApplicantSignupForm({ setAuthType }: { setAuthType: React.Dispatch<Reac
             Swal.close();
             Swal.fire({
                 title: "Account Activation Needed",
-                text: "Check your email for the activation link",
+                text: "Check your email for the activation link. If you don't see it, please check your spam or junk folder.",
+            });
+        }
+
+        if (signupResult === "email_already_exists") {
+            Swal.close();
+            Swal.fire({
+                title: "Email already been registered",
+                text: "Please register another email",
             });
         }
 
@@ -291,7 +318,9 @@ function ApplicantSignupForm({ setAuthType }: { setAuthType: React.Dispatch<Reac
                 <label className="font-semibold">Full Name</label>
                 <input
                     type="text"
+                    style={{ textTransform: "capitalize" }}
                     className="bg-gray-300 rounded-md p-2 focus:outline-orange-500"
+                    placeholder="(Last Name First Name, Middle Initial)"
                     {...register("full_name", { required: true })}
                 />
 
@@ -333,16 +362,18 @@ function ApplicantSignupForm({ setAuthType }: { setAuthType: React.Dispatch<Reac
                 {errors.password && <span className="text-red-800 font-bold">{errors.password.message}</span>}
 
                 <div className="flex justify-between items-center">
-                    <h1 className="font-semibold">
-                        Already have an account?{" "}
-                        <a
-                            className="ml-1 text-orange-800 hover:opacity-75 hover:cursor-pointer"
-                            onClick={() => setAuthType("login")}
-                        >
-                            Login
-                        </a>
-                    </h1>
 
+                        <h1 className="font-semibold">
+                            Already have an account?{" "}
+                            <a
+                                className="ml-1 text-orange-800 hover:opacity-75 hover:cursor-pointer"
+                                onClick={() => setAuthType("login")}
+                            >
+                                Login
+                            </a>
+                        </h1>
+
+                                        
                     <button
                         type="submit"
                         className="bg-orange-700 rounded-md p-2 text-white w-[30%] font-semibold hover:opacity-75"
@@ -354,6 +385,96 @@ function ApplicantSignupForm({ setAuthType }: { setAuthType: React.Dispatch<Reac
         </>
     );
 }
+
+
+
+
+function ApplicantForgotPasswordForm({setAuthType}: {
+    setAuthType: React.Dispatch<React.SetStateAction<string>>
+}) {
+
+    const { register, handleSubmit, reset, formState: { errors } } = useForm<{email: string}>()
+
+
+    const onSubmit: SubmitHandler<{email: string}> = async (data) => {
+        Swal.fire({
+            title: 'Sending...',
+            text: 'Your request is being processed',
+            allowOutsideClick: false,
+            showConfirmButton: false,
+            willOpen: () => {
+                Swal.showLoading();
+            },
+        });
+
+        const response = await SendTemporaryPassword(data.email);
+
+        if(response === "Temporary_Password_Sent"){
+            Swal.close();
+            Swal.fire({
+                icon: 'success',
+                title: 'Temporary Password Sent',
+                text: 'You can now use the temporary password to login',
+                showConfirmButton: false,
+            });
+
+            setTimeout(() => {
+                setAuthType('login')
+            }, 3000)
+    
+        }
+
+        console.log("response forgot: ", response);
+        
+
+        reset();
+
+    }
+
+    return (
+        <>
+            <div className="flex flex-col items-center text-center gap-3">
+                <h1 className="font-bold text-3xl">Forgot Password</h1>
+                <p className="text-gray-500">Please provide the email where you want to get the temporary password</p>
+            </div>
+
+            <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-2 w-full ">
+
+                <div className="flex gap-1">
+                    {errors.email && <span className="text-red-800 font-bold">Email is required.</span>}
+                </div>
+
+                <label className="font-semibold">Email</label>
+                <input
+                    type="email"
+                    className="bg-gray-300 rounded-md p-2 focus:outline-orange-500"
+                    {...register("email", { required: true })}
+                />
+
+
+                <div className="flex justify-between items-center mt-5">
+                  
+                    <button 
+                        className="text-white bg-gray-500 w-[30%] p-2 rounded-md hover:opacity-75 hover:cursor-pointer" 
+                        onClick={() => setAuthType("signup")}>
+                            Back
+                    </button> 
+
+                    <button
+                        type="submit"
+                        className="bg-orange-700 rounded-md p-2 text-white w-[30%] font-semibold hover:opacity-75"
+                    >
+                        Send
+                    </button>
+
+                </div>
+
+            </form>
+
+        </>
+    )
+}
+
 
 // export function ApplicantLogin({setRole}: {
 //     setRole: React.Dispatch<React.SetStateAction<string>>

@@ -74,7 +74,6 @@ export function PaidTable({ searchTerm, selectedMonth, adminType }: PaidTablePro
             queryClient.invalidateQueries({ queryKey: ["paid_applications"] });
 
             Swal.fire({
-                position: "top-end",
                 icon: "success",
                 title: "Application Approved",
                 showConfirmButton: false,
@@ -111,7 +110,7 @@ export function PaidTable({ searchTerm, selectedMonth, adminType }: PaidTablePro
             text: admins == 2 ? lastAdminToApproveMessage : adminToApproveMessage,
             icon: "question",
             showCancelButton: true,
-            confirmButtonColor: "#3085d6",
+            confirmButtonColor: "#d97706",
             cancelButtonColor: "#000000",
             confirmButtonText: "Yes",
         }).then((result) => {
