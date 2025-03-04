@@ -35,7 +35,14 @@ function BuildingPDF({ permitInfo, setPermitsInfo }: {
 
       <>
         <Document>
+          <ApplicationLetter applicationLetterInfo={applicationLetterInfo}/>
           <BuildingPermit permitInfo={permitInfo} />
+          <ElectricalComponentPermit permitInfo={permitInfo} />
+          <PlumbingPermitComponent permitInfo={permitInfo} />
+          <MechanicalPermitComponent permitInfo={permitInfo} />
+          <ElectronicsPermitComponent permitInfo={permitInfo} />
+          <FencingPermitComponent permitInfo={permitInfo} />
+          <ExcavationPermitComponent permitInfo={permitInfo} />
         </Document>
 
       </>
@@ -117,39 +124,49 @@ function BuildingPermit({ permitInfo }: {
 
   const applicantName = `${permitInfo.firstname} ${permitInfo.middleInitial} ${permitInfo.lastName} `
   return (
-    <Page size="A4" style={styles.page}>
 
-      <PermitHeader serviceType={serviceType} applicationCode={applicationCode} />
+    <>
+      <Page size={{ width: 595.28, height: 1400 }} style={styles.page}>
 
-      <View style={styles.body1}>
-        <PermitBodyBox1 permitInfo={permitInfo} />
-      </View>
+        <PermitHeader serviceType={serviceType} applicationCode={applicationCode} />
 
-      <View style={styles.body2}>
-        <PermitBodyBox2 />
-      </View>
+        <View style={styles.body1}>
+          <PermitBodyBox1 permitInfo={permitInfo} />
+        </View>
 
-      <View style={styles.body3}>
-        <PermitBodyBox3 applicantName={applicantName} />
-        <PermitBodyBox4 />
-      </View>
+        <View style={styles.body2}>
+          <PermitBodyBox2 />
+        </View>
 
-      <View style={styles.body5}>
-        <PermitBodyBox5 applicantName={applicantName} />
-      </View>
+        <View style={styles.body3}>
+          <PermitBodyBox3 applicantName={applicantName} />
+          <PermitBodyBox4 />
+        </View>
 
-      <View style={styles.body6_7}>
-        <PermitBodyBox6 />
-      </View>
+        <View style={styles.body5}>
+          <PermitBodyBox5 applicantName={applicantName} />
+        </View>
 
-      <View style={styles.body6_7}>
-        <PermitBodyBox7 />
-      </View>
+      </Page>
 
-      <View style={styles.body8}>
-        <PermitBodyBox8 />
-      </View>
-    </Page>
+      <Page size={{ width: 595.28, height: 1400 }} style={styles.page}>
+
+        <View style={styles.body6_7}>
+          <PermitBodyBox6 />
+        </View>
+
+        <View style={styles.body6_7}>
+          <PermitBodyBox7 />
+        </View>
+
+        <View style={styles.body8}>
+          <PermitBodyBox8 />
+        </View>
+
+      </Page>
+
+    </>
+    
   );
 }
 
@@ -184,7 +201,7 @@ const styles = StyleSheet.create({
   },
   body6_7: {
     width: '100%',
-    height: '20%',
+    height: '30%',
     paddingHorizontal: 20,
     marginTop: 15
   },

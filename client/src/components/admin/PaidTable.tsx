@@ -110,7 +110,7 @@ export function PaidTable({ searchTerm, selectedMonth, adminType }: PaidTablePro
             text: admins == 2 ? lastAdminToApproveMessage : adminToApproveMessage,
             icon: "question",
             showCancelButton: true,
-            confirmButtonColor: "#d97706",
+            confirmButtonColor: "#c2410c",
             cancelButtonColor: "#000000",
             confirmButtonText: "Yes",
         }).then((result) => {

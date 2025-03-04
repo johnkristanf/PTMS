@@ -4,9 +4,10 @@ import { SideBar } from "../../../components/SideBar";
 import { PTMSHeader } from "../../../components/PtmsHeader";
 import { DropdownDate } from "../../../components/DropdownDate";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faBell } from "@fortawesome/free-solid-svg-icons";
+import { faBell, faPersonWalking } from "@fortawesome/free-solid-svg-icons";
 import StaffRequestAccessModal from "../../../components/modal/staff/StaffAccessRequest";
 import { useFetchStaffAR } from "../../../hook/useFetchStaffAR";
+import ApplyServiceModal from "@/components/modal/ApplyServicesModal";
 
 function ReceiverPage() {
   const [searchTerm, setSearchTerm] = useState<string>("");
@@ -14,6 +15,7 @@ function ReceiverPage() {
 
 
   const [isNotificationModalOpen, setIsNotificationModalOpen] = useState<boolean>(false);
+  const [servicesApplyModalOpen, setServisesApplyModalOpen] = useState<boolean>(false);
    
   const toggleNotificationModal = () => setIsNotificationModalOpen((prevState) => !prevState);
 
@@ -53,8 +55,14 @@ function ReceiverPage() {
                           onClick={toggleNotificationModal}
                       />
                   </div>
+                    
 
-
+                  <button
+                    className="bg-orange-700 p-2 rounded-md text-white font-semibold"
+                    onClick={() => setServisesApplyModalOpen(true)}
+                  >
+                    <FontAwesomeIcon icon={faPersonWalking}/> Walk In
+                  </button>
                   
                   <DropdownDate
                       searchTerm={searchTerm}
@@ -64,6 +72,7 @@ function ReceiverPage() {
                   />
               </div>
 
+            {(servicesApplyModalOpen) && <ApplyServiceModal setServisesApplyModalOpen={setServisesApplyModalOpen}/> }
 
               
             </div>

@@ -273,6 +273,8 @@ type APPLICATION_DB_METHOD interface {
 	UpdateAdditionalFormDocument(*types.AdditionalFormDocument) error
 
 	UpdateFinishScanning(int64) error
+
+	FetchMonthlyAssessment() ([]*types.MonthlyAssessment, error)
 }
 
 
@@ -1510,3 +1512,20 @@ func (sql *SQL) UpdateFinishScanning(applicationID int64) error {
 	return nil
 }
 
+
+func (sql *SQL) FetchMonthlyAssessment() ([]*types.MonthlyAssessment, error) {
+
+	monthlyData := make([]*types.MonthlyAssessment, 0)
+
+	err := sql.DB.Table("assessments").
+		Select("TO_CHAR(created_at, 'FMMonth') AS month_name, DATE_PART('month', created_at)::int AS month_number, SUM(total_assesment) AS total_assessment").
+		Group("month_name, month_number").
+		Order("month_number").
+		Scan(&monthlyData).Error
+
+	if err != nil {
+		return nil, err
+	}
+
+	return monthlyData, nil
+}

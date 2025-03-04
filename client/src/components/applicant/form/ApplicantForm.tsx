@@ -59,7 +59,7 @@ export function ApplicantInformationFormApplicant({ applicantInfo }: {
                         <div className="flex gap-2">
                             <input 
                                 type="text"
-                                className={classNames("bg-gray-400 placeholder-black font-semibold rounded-md p-2 focus:outline-blue-700")}
+                                className={classNames("bg-gray-400 placeholder-black rounded-md p-2 focus:outline-blue-700")}
                                 value={applicantInfo?.applicationCode}
                                 readOnly
                                 disabled
@@ -70,7 +70,7 @@ export function ApplicantInformationFormApplicant({ applicantInfo }: {
                     <div className="flex flex-col w-1/4">
                         <h1 className="font-semibold text-xl text-center">Status</h1>
 
-                        <h1 className="bg-gray-400 p-2 rounded-md text-lg font-semibold w-full text-center">
+                        <h1 className="bg-gray-400 p-2 rounded-md text-lg  w-full text-center">
                             
                             <span className={`${applicantInfo?.status === 'Pending' ? 'text-black' : applicantInfo?.status === 'Disapproved' ? 'text-red-800' : ''}`}>
                                 {applicantInfo?.status}
@@ -89,7 +89,7 @@ export function ApplicantInformationFormApplicant({ applicantInfo }: {
                         <input 
                             type="text"
                             value={`${applicantInfo?.firstname} ${applicantInfo?.middleInitial} ${applicantInfo?.lastName}`} 
-                            className={classNames("bg-gray-400 placeholder-black font-semibold rounded-md p-2 focus:outline-blue-700 w-full")}
+                            className={classNames("bg-gray-400 placeholder-black  rounded-md p-2 focus:outline-blue-700 w-full")}
                             readOnly
 
                         />
@@ -106,7 +106,7 @@ export function ApplicantInformationFormApplicant({ applicantInfo }: {
                                 <input 
                                     type={data.inputType} 
                                     value={data.value} 
-                                    className={classNames("bg-gray-400 placeholder-black font-semibold rounded-md p-2 focus:outline-blue-700 w-full")}
+                                    className={classNames("bg-gray-400 placeholder-black  rounded-md p-2 focus:outline-blue-700 w-full")}
                                     readOnly
 
                                 />
@@ -122,7 +122,7 @@ export function ApplicantInformationFormApplicant({ applicantInfo }: {
                         <input 
                             type="text"
                             value={`${applicantInfo?.addressNo} ${applicantInfo?.barangay} ${applicantInfo?.street} ${applicantInfo?.municipality} ${applicantInfo?.zipCode}`} 
-                            className={classNames("bg-gray-400 placeholder-black font-semibold rounded-md p-2 focus:outline-blue-700 w-full")}
+                            className={classNames("bg-gray-400 placeholder-black rounded-md p-2 focus:outline-blue-700 w-full")}
                             readOnly
 
                         />
@@ -133,7 +133,7 @@ export function ApplicantInformationFormApplicant({ applicantInfo }: {
                         <input 
                             type="text"
                             value={applicantInfo?.locationForConstruct_Install} 
-                            className={classNames("bg-gray-400 placeholder-black font-semibold rounded-md p-2 focus:outline-blue-700 w-full")}
+                            className={classNames("bg-gray-400 placeholder-black  rounded-md p-2 focus:outline-blue-700 w-full")}
                             readOnly
 
                         />
@@ -150,7 +150,7 @@ export function ApplicantInformationFormApplicant({ applicantInfo }: {
                                 <input 
                                     type={data.inputType} 
                                     value={data.value} 
-                                    className={classNames("bg-gray-400 placeholder-black font-semibold rounded-md p-2 focus:outline-blue-700 w-full")}
+                                    className={classNames("bg-gray-400 placeholder-black rounded-md p-2 focus:outline-blue-700 w-full")}
                                     readOnly
                                 />
                             </div>

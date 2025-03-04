@@ -8,7 +8,7 @@ import AdminArNotifButton from "../../../components/admin/AdminARNotifButton";
 import DashboardStaffARModal from "../../../components/admin/DashboardStaffARModal";
 import DashboardAdminARModal from "../../../components/admin/DashboardAdminARModal";
 
-import { ApplicationPerBarangay, ApplicationPerPermitTypeChart, ApplicationPerYearChart } from "../../../components/admin/Charts";
+import { ApplicationPerBarangay, ApplicationPerPermitTypeChart, ApplicationPerYearChart, MonthlyAssessmentChart } from "../../../components/admin/Charts";
 import StaffARNotifButton from "../../../components/staff/StaffARNotifButton";
 
 
@@ -70,9 +70,14 @@ function ElectricalDashboardPage() {
                             <ApplicationPerPermitTypeChart />
                         </div>
 
-                        <div className="w-full flex justify-end">
-                            <ApplicationPerBarangay />
-
+                        <div className="w-full flex justify-center ">
+                            <div className="w-1/2 p-2">
+                                <ApplicationPerBarangay />
+                            </div>
+                                                
+                            <div className="w-1/2 p-2">
+                                <MonthlyAssessmentChart />
+                            </div>
                         </div>
 
 

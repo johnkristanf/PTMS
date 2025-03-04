@@ -72,7 +72,7 @@ export function MechanicalPermitComponent({ permitInfo }: {
 
             {
                 permitInfo && permitInfo.permit_type != "Building" && (
-                    <Page size="A4" style={styles.page}>
+                    <Page size={{ width: 595.28, height: 1400 }} style={styles.page}>
                         <View style={styles.pageContainer2}>
                             <PermitBodyBox11 permitInfo={permitInfo} />
                         </View>
@@ -81,7 +81,7 @@ export function MechanicalPermitComponent({ permitInfo }: {
             }
             
 
-            <Page size="A4" style={styles.page}>
+            <Page size={{ width: 595.28, height: 1400 }} style={styles.page}>
                 <View style={styles.pageContainer}>
                     <Image src="/img/no_to_fixer.png" style={styles.headerImage} />
                     <PermitBodyBox1 permitInfo={permitInfo} />
@@ -103,7 +103,7 @@ export function MechanicalPermitComponent({ permitInfo }: {
                 </View>
             </Page>
 
-            <Page size="A4" style={styles.page}>
+            <Page size={{ width: 595.28, height: 1400 }} style={styles.page}>
                 <View style={styles.pageContainer3}>
                     <PermitBodyBox7 permitInfo={permitInfo} />
                     <PermitBodyBox8 permitInfo={permitInfo} />
@@ -119,7 +119,7 @@ export function MechanicalPermitComponent({ permitInfo }: {
 
             {
                 permitInfo && permitInfo.permit_type != "Building" && (
-                    <Page size="A4" style={styles.page}>
+                    <Page size={{ width: 595.28, height: 1400 }} style={styles.page}>
                         <View style={styles.pageContainer}>
                         <Image src="/img/no_to_fixer-mono.jpg" style={styles.headerImage} />
                             <PermitBodyBox12 permitInfo={permitInfo} />

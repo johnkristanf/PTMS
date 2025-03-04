@@ -204,7 +204,7 @@ export const AssessmentsModal: React.FC<AssessmentModalProps> = ({ applicantAsse
                                             disabled={data.disabled}
                                             {...register(data.registerName as keyof AssessmentTypes)}
                                             className={
-                                                `${data.disabled ? 'bg-gray-500 text-white': 'bg-gray-300 hover:opacity-75'} p-3 font-bold rounded-md placeholder-gray-600 focus:outline-orange-500`
+                                                `${data.disabled ? 'bg-gray-500 text-white': 'bg-gray-300 hover:opacity-75'} p-3  rounded-md placeholder-gray-600 focus:outline-orange-500`
                                             }
                                         />
                                         
@@ -223,7 +223,7 @@ export const AssessmentsModal: React.FC<AssessmentModalProps> = ({ applicantAsse
                                             type="number" 
                                             defaultValue={data.value}
                                             {...register(data.registerName as keyof AssessmentTypes)}
-                                            className="p-3 bg-gray-300 font-bold rounded-md placeholder-gray-600 focus:outline-none hover:opacity-75"
+                                            className="p-3 bg-gray-300 rounded-md placeholder-gray-600 focus:outline-none hover:opacity-75"
                                         />
 
                                     </div>

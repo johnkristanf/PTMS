@@ -170,6 +170,13 @@ export type ApplicationByBarangay = {
 }
 
 
+export type MonthlyAssessment = {
+    month_name: string,
+    total_assessment: number
+    month_number: number
+}
+
+
 
 export type AssessmentApplicationData = {
     application_id?: number,

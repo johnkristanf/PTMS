@@ -52,7 +52,6 @@ export function EditAccountForm() {
             queryClient.invalidateQueries({ queryKey: ["staff_account"] });
 
             Swal.fire({
-                position: "top-end",
                 icon: "success",
                 title: "Account Edited!",
                 showConfirmButton: false,

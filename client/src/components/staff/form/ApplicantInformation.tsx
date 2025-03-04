@@ -111,7 +111,7 @@ export function ApplicantInformationFormStaff({ applicantInfo, setInformationMod
                 maxLength={5}
                 className={classNames(
                   isPending ? "hover:cursor-not-allowed": "",
-                  "bg-gray-400 placeholder-black font-semibold rounded-md p-2 focus:outline-orange-500"
+                  "bg-gray-400 placeholder-black rounded-md p-2 focus:outline-orange-500"
                 )}
                 {...register("application_code")}
                 defaultValue={applicantInfo?.applicationCode}
@@ -126,7 +126,7 @@ export function ApplicantInformationFormStaff({ applicantInfo, setInformationMod
           <input 
             type="text"
             value={`${applicantInfo?.firstname} ${applicantInfo?.middleInitial} ${applicantInfo?.lastName}`} 
-            className={classNames("bg-gray-400 placeholder-black font-semibold rounded-md p-2 focus:outline-orange-500 w-full")}
+            className={classNames("bg-gray-400 placeholder-black rounded-md p-2 focus:outline-orange-500 w-full")}
             readOnly
           />
         </div>
@@ -138,7 +138,7 @@ export function ApplicantInformationFormStaff({ applicantInfo, setInformationMod
               <input 
                 type={data.inputType} 
                 value={data.value} 
-                className={classNames("bg-gray-400 placeholder-black font-semibold rounded-md p-2 focus:outline-orange-500 w-full")}
+                className={classNames("bg-gray-400 placeholder-black rounded-md p-2 focus:outline-orange-500 w-full")}
                 readOnly
               />
             </div>
@@ -150,7 +150,7 @@ export function ApplicantInformationFormStaff({ applicantInfo, setInformationMod
           <input 
             type="text"
             value={`${applicantInfo?.barangay} ${applicantInfo?.street} ${applicantInfo?.municipality} ${applicantInfo?.zipCode}`} 
-            className={classNames("bg-gray-400 placeholder-black font-semibold rounded-md p-2 focus:outline-orange-500 w-full")}
+            className={classNames("bg-gray-400 placeholder-black  rounded-md p-2 focus:outline-orange-500 w-full")}
             readOnly
           />
         </div>
@@ -160,7 +160,7 @@ export function ApplicantInformationFormStaff({ applicantInfo, setInformationMod
           <input 
             type="text"
             value={applicantInfo?.locationForConstruct_Install} 
-            className={classNames("bg-gray-400 placeholder-black font-semibold rounded-md p-2 focus:outline-orange-500 w-full")}
+            className={classNames("bg-gray-400 placeholder-black rounded-md p-2 focus:outline-orange-500 w-full")}
             readOnly
           />
         </div>
@@ -172,7 +172,7 @@ export function ApplicantInformationFormStaff({ applicantInfo, setInformationMod
               <input 
                 type={data.inputType} 
                 value={data.value} 
-                className={classNames("bg-gray-400 placeholder-black font-semibold rounded-md p-2 focus:outline-orange-500 w-full")}
+                className={classNames("bg-gray-400 placeholder-black rounded-md p-2 focus:outline-orange-500 w-full")}
                 readOnly
               />
             </div>

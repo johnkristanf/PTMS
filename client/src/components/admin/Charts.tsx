@@ -1,7 +1,7 @@
 import { Chart } from "react-google-charts";
 import { useQuery } from "@tanstack/react-query";
-import { FetchApplicationsByBarangay, FetchApplicationsByPermitType, FetchApplicationsByYear } from "../../http/get/application";
-import { ApplicationByBarangay, ApplicationByPermitType, ApplicationByYear } from "../../types/application";
+import { FetchApplicationsByBarangay, FetchApplicationsByPermitType, FetchApplicationsByYear, FetchMonthlyAssesssment } from "../../http/get/application";
+import { ApplicationByBarangay, ApplicationByPermitType, ApplicationByYear, MonthlyAssessment } from "../../types/application";
 
 export function ApplicationPerYearChart(){
 
@@ -148,3 +148,49 @@ export function ApplicationPerBarangay() {
         />
     );
 }
+
+
+
+export function MonthlyAssessmentChart() {
+    const { data: response } = useQuery({
+      queryKey: ["monthly_assessment"],
+      queryFn: async () => {
+        return await FetchMonthlyAssesssment();
+      },
+    });
+  
+    const monthlyAssessments: MonthlyAssessment[] = response?.data ?? [];
+
+    // const monthlyAssessments: MonthlyAssessment[] = [
+    //     {month_name: 'January', month_number: 1, total_assessment: 500.34},
+    //     {month_name: 'Febuary', month_number: 2, total_assessment: 543.34},
+    //     {month_name: 'March', month_number: 3, total_assessment: 900.12},
+    // ]
+  
+    
+    const chartData: (string | number)[][] = [
+      ["Month", "Total Assessment"],
+      ...monthlyAssessments.map((item) => [item.month_name, Math.round(item.total_assessment)]),
+    ];
+  
+    const options = {
+      title: "Total Assessment per Month",
+      hAxis: { title: "Month" },
+      vAxis: { title: "Total Assessment", format: '0' },
+      curveType: "function",
+      legend: { position: "none" },
+
+    };
+  
+    return (
+      <div>
+        <Chart
+          chartType="LineChart"
+          data={chartData}
+          options={options}
+          width="100%"
+          height="350px"
+        />
+      </div>
+    );
+  }

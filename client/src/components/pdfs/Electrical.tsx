@@ -81,7 +81,7 @@ export function ElectricalComponentPermit({ permitInfo }: {
         }
 
 
-        <Page size="A4" style={styles.page}>
+        <Page size={{ width: 595.28, height: 1400 }} style={styles.page}>
             <View style={styles.pageContainer}>
                 <PermitBodyBox1 permitInfo={permitInfo} />
                 <PermitBodyBox2 permitInfo={permitInfo} />
@@ -91,7 +91,7 @@ export function ElectricalComponentPermit({ permitInfo }: {
             </View>
         </Page>
 
-        <Page size="A4" style={styles.page}>
+        <Page size={{ width: 595.28, height: 1400 }} style={styles.page}>
             <View style={styles.pageContainer}>
                     <PermitBodyBox6  />
                 </View>

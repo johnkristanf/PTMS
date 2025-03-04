@@ -868,3 +868,15 @@ func (h * ApplicationHandler) FetchDocumentFirstStepRequirementsHandler(c echo.C
 
 	return c.JSON(http.StatusOK, requirements)
 }
+
+
+
+func (h *ApplicationHandler) FetchMonthlyAssessmentHandler(c echo.Context) error {
+	monthlyData, err := h.DB_METHOD.FetchMonthlyAssessment()
+	if err != nil{
+		return err
+	}
+
+	return c.JSON(http.StatusOK, monthlyData)
+
+}

@@ -74,7 +74,7 @@ export function DisapprovedModal({ disapprovalData, setOpenDisapprovedModal }: {
 
                     <textarea
                         placeholder="Enter your message here..."
-                        className="bg-gray-200 p-3 font-bold rounded-md placeholder-black focus:outline-none h-[150px]"
+                        className="bg-gray-200 p-3 rounded-md placeholder-black focus:outline-none h-[150px]"
                         style={{ resize: "none" }}
                         onChange={(e) => setMessage(e.target.value)} 
                         value={message}

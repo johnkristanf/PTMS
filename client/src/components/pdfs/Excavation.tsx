@@ -79,7 +79,7 @@ export function ExcavationPermitComponent({ permitInfo }: {
             )
         }
 
-        <Page size="A4" style={styles.page}>
+        <Page size={{ width: 595.28, height: 1400 }} style={styles.page}>
             <View style={styles.pageContainer}>
                 <Image src="/img/no_to_fixer.png" style={styles.headerImage} />
                 <PermitBodyBox1 permitInfo={permitInfo} />
@@ -99,7 +99,7 @@ export function ExcavationPermitComponent({ permitInfo }: {
             </View>
         </Page>
 
-        <Page size="A4" style={styles.page}>
+        <Page size={{ width: 595.28, height: 1400 }} style={styles.page}>
             <View style={styles.pageContainer2}>
                     <PermitBodyBox78  />
                     <PermitBodyBox9  />

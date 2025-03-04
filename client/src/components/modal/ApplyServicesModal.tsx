@@ -1,10 +1,8 @@
 import { classNames } from '../../helpers/classNames';
 import { ServiceModalForm } from '../../components/modal/ServiceModalForm';
 import { useState } from 'react';
-import { SideBar } from '../../components/SideBar';
-import { PTMSHeader } from '../../components/PtmsHeader';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faInfoCircle } from '@fortawesome/free-solid-svg-icons';
+import { faInfoCircle, faX } from '@fortawesome/free-solid-svg-icons';
 
 
 import {
@@ -14,7 +12,9 @@ import {
   } from "@/components/ui/hover-card"
   
 
-function ApplyServicesPage() {
+function ApplyServiceModal({ setServisesApplyModalOpen }: {
+    setServisesApplyModalOpen: React.Dispatch<React.SetStateAction<boolean>>
+}) {
     const [selectedService, setSelectedService] = useState<string>();
     const [serviceModalOpen, setServiceModalOpen] = useState<boolean>(false);
 
@@ -55,15 +55,23 @@ function ApplyServicesPage() {
     // FONT SIZE FOLLOW FORMAT TITLE, MENU, DESCRIPTION
 
     return (
-        <div className='flex justify-between items-start h-[120vh] w-full bg-white'>
-            <SideBar role='applicant' />
+        <div className='absolute top-6 w-full h-full flex justify-center'>
 
-            <div className="flex-col flex items-center w-full h-full rounded-md p-8 mt-24">
-                <PTMSHeader />
+            <div className="fixed top-0 bg-gray-600 opacity-75 w-[110%] h-screen"></div>
+
+            <div className="absolute top-0 bg-white flex-col flex items-center w-[80%] h-full rounded-md p-8 mt-24 overflow-y-auto">
 
                 <div className="flex w-full font-bold ">
                     {/* <h1 className='text-xl text-gray-600'>Step 1:</h1> */}
-                    <h1 className='text-[2rem] flex-1'>Apply Services: </h1>
+
+                    <div className="flex justify-between items-center w-full">
+                        <h1 className='text-[2rem] flex-1'>Apply Services: </h1>
+                        <FontAwesomeIcon 
+                            icon={faX} 
+                            className='text-2xl font-bold hover:opacity-75 hover:cursor-pointer'
+                            onClick={() => setServisesApplyModalOpen(false)}
+                        />
+                    </div>
                 </div>
 
                 
@@ -155,9 +163,9 @@ function ApplyServicesPage() {
                 {/* <h1 className='font-semibold text-lg mt-[12rem]'>2024 | PTMS</h1> */}
 
             </div>
-            {(serviceModalOpen && selectedService) && <ServiceModalForm selectedService={selectedService} setServiceModalOpen={setServiceModalOpen} role='applicant'/>}
+            {(serviceModalOpen && selectedService) && <ServiceModalForm selectedService={selectedService} setServiceModalOpen={setServiceModalOpen} role='receiver'/>}
         </div>
     );
 }
 
-export default ApplyServicesPage;
+export default ApplyServiceModal;

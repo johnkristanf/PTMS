@@ -70,12 +70,21 @@ export const FetchApplicationsByYear = async () => {
 }
 
 
+export const FetchMonthlyAssesssment = async () => {
+
+    return axios.get(`${DOMAIN_NAME}/application/monthly/assessment`, {
+        withCredentials: true
+    });
+}
+
+
 export const FetchApplicationsByBarangay = async () => {
 
     return axios.get(`${DOMAIN_NAME}/application/by/barangay`, {
         withCredentials: true
     });
 }
+
 
 
 export const FetchApplicationsByPermitType = async () => {

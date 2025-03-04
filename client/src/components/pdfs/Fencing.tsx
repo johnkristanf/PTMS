@@ -77,7 +77,7 @@ export function FencingPermitComponent({ permitInfo }: {
 
         {
             permitInfo && permitInfo.permit_type != "Building" && (
-                <Page size="A4" style={styles.page}>
+                <Page size={{ width: 595.28, height: 1400 }} style={styles.page}>
                     <View style={styles.pageContainer2}>
                         <PermitBodyBox13 permitInfo={permitInfo} />
                     </View>
@@ -86,7 +86,7 @@ export function FencingPermitComponent({ permitInfo }: {
         }
         
         
-        <Page size="A4" style={styles.page}>
+        <Page size={{ width: 595.28, height: 1400 }} style={styles.page}>
             <View style={styles.pageContainer}>
                 <PermitBodyBox1 permitInfo={permitInfo} />
                 <PermitBodyBox2 permitInfo={permitInfo} />
@@ -105,7 +105,7 @@ export function FencingPermitComponent({ permitInfo }: {
                     <PermitBodyBox6  />
             </View>
         </Page>
-    <Page size="A4" style={styles.page}>
+    <Page size={{ width: 595.28, height: 1400 }} style={styles.page}>
         <View style={styles.pageContainer}>
             <PermitBodyBox7 permitInfo={permitInfo} />
             <PermitBodyBox8 permitInfo={permitInfo} />
@@ -117,7 +117,7 @@ export function FencingPermitComponent({ permitInfo }: {
 
     {/* DLI NI COMPLETION EXTRA SHITS NI */}
 
-    {/* <Page size="A4" style={styles.page}>
+    {/* <Page size={{ width: 595.28, height: 1400 }} style={styles.page}>
         <View style={styles.pageContainer}>
             <PermitBodyBox11 permitInfo={permitInfo} />
             <PermitBodyBox12 permitInfo={permitInfo} />

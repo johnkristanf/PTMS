@@ -66,5 +66,6 @@ func ApplicationRoutes(e *echo.Echo, h *handlers.ApplicationHandler) {
 	
 	
 	g.GET("/first_step/:application_id", h.FetchDocumentFirstStepRequirementsHandler, h.JWT_METHOD.StaffAdminAutheticationMiddleware)
+	g.GET("/monthly/assessment", h.FetchMonthlyAssessmentHandler, h.JWT_METHOD.StaffAdminAutheticationMiddleware)
 	
 }

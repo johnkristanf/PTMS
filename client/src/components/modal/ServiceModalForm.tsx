@@ -15,11 +15,13 @@ import { generateScopeAndOccupancyOptions, groupByClass } from '@/lib/utils';
 
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { HoverCard, HoverCardContent, HoverCardTrigger } from '../ui/hover-card';
+import { capitalizeFirstLetter } from '@/helpers/capitalize';
 
 
-export const ServiceModalForm = ({ selectedService, setServiceModalOpen }: {
+export const ServiceModalForm = ({ selectedService, setServiceModalOpen, role }: {
     selectedService: string,
-    setServiceModalOpen: React.Dispatch<React.SetStateAction<boolean>>
+    setServiceModalOpen: React.Dispatch<React.SetStateAction<boolean>>,
+    role: string
 }) => {
 
     const { register, handleSubmit, reset } = useForm<ApplicantInfo>({
@@ -71,6 +73,8 @@ export const ServiceModalForm = ({ selectedService, setServiceModalOpen }: {
     });
 
     const login_applicant: { user_id: number, email: string } = response?.data;
+    console.log("login_applicant: ", login_applicant);
+    
 
     const onSubmit: SubmitHandler<ApplicantInfo> = (data) => {
        
@@ -150,16 +154,16 @@ export const ServiceModalForm = ({ selectedService, setServiceModalOpen }: {
                     applicationCode: "",
                     serviceType: serviceType,
                     
-                    firstname: data.firstName,
-                    middleInitial: data.middleInitial,
-                    lastName: data.lastName,
+                    firstname: capitalizeFirstLetter(data.firstName),
+                    middleInitial: capitalizeFirstLetter(data.middleInitial),
+                    lastName: capitalizeFirstLetter(data.lastName),
                     
                     addressNo: data.addressNo,
                     barangay: data.barangay,
-                    street: data.street,
+                    street: capitalizeFirstLetter(data.street),
                     municipality: data.municipality,
                     zipCode: data.zipCode,
-                    locationForConstruct_Install: data.locationForConstruct_Install,
+                    locationForConstruct_Install: capitalizeFirstLetter(data.locationForConstruct_Install),
         
                     formOwnership: data.formOwnership,
                     constructOwnbyEnterprise: data.constructOwnbyEnterprise,
@@ -168,8 +172,11 @@ export const ServiceModalForm = ({ selectedService, setServiceModalOpen }: {
                     telNo: data.telNo,
                     tctNo: data.tctNo,
                     permit_type: selectedService,
-                    email: login_applicant.email,
-                    user_id: login_applicant.user_id,
+
+                    // CATCHER IF THE INPUT IS WALK IN
+                    email: !login_applicant?.email ? 'walk_in@gmail.com': login_applicant.email,
+                    user_id: !login_applicant?.user_id ? -1 : login_applicant.user_id,
+                    
                     assessment_status: "",
                     
                     scopeType: scopeTypes.join(','),
@@ -189,7 +196,15 @@ export const ServiceModalForm = ({ selectedService, setServiceModalOpen }: {
 
                 }).then((result) => {
                     if (result.isConfirmed) {
-                        window.location.href = "/applied/services";
+                        let location;
+
+                        if(role == 'receiver'){
+                            location = '/receiver/pending/applications';
+                        } else {
+                            location = "/applied/services";
+                        }
+                        
+                        window.location.href = location;
                     }
                 });
             }
@@ -293,7 +308,7 @@ export const ServiceModalForm = ({ selectedService, setServiceModalOpen }: {
                                             <input 
                                                 key={data.registerName}
                                                 type={data.inputType} 
-                                                className={classNames(" placeholder-black font-semibold rounded-md p-2 border border-black focus:border-orange-700 focus:outline-none w-full")}
+                                                className={classNames("capitalize placeholder-black rounded-md p-2 border border-black focus:border-orange-700 focus:outline-none w-full")}
                                                 {...register(data.registerName as keyof ApplicantInfo)}
                                             />
 
@@ -321,7 +336,7 @@ export const ServiceModalForm = ({ selectedService, setServiceModalOpen }: {
                                             <input 
                                                 key={data.registerName}
                                                 type={data.inputType} 
-                                                className={classNames(" placeholder-black font-semibold rounded-md p-2 border border-black focus:border-orange-700 focus:outline-none w-full")}
+                                                className={classNames("capitalize placeholder-black  rounded-md p-2 border border-black focus:border-orange-700 focus:outline-none w-full")}
                                                 {...register(data.registerName as keyof ApplicantInfo)}
                                             />
 
@@ -354,7 +369,7 @@ export const ServiceModalForm = ({ selectedService, setServiceModalOpen }: {
                                                 type={data.inputType} 
                                                 defaultValue={data.value}
                                                 disabled={data.disabled}
-                                                className={classNames(`${data.value ? "bg-gray-400 text-white": ""} placeholder-black font-semibold rounded-md p-2 border border-black focus:border-orange-700 focus:outline-none w-full`)}
+                                                className={classNames(`${data.value ? "bg-gray-400 text-white": ""} capitalize placeholder-black  rounded-md p-2 border border-black focus:border-orange-700 focus:outline-none w-full`)}
                                                 {...register(data.registerName as keyof ApplicantInfo)}
                                             />
                                             {/* {errors[data.registerName as keyof ApplicantInfo] && (
@@ -367,7 +382,7 @@ export const ServiceModalForm = ({ selectedService, setServiceModalOpen }: {
                                             <label className='mt-3'>Barangay</label>
 
                                             <select 
-                                                className=" placeholder-black font-semibold rounded-md p-2 border border-black focus:border-orange-700 focus:outline-none w-full"
+                                                className=" placeholder-black rounded-md p-2 border border-black focus:border-orange-700 focus:outline-none w-full"
                                                 {...register("barangay")}
                                             >
                                                 <option disabled selected>Select Barangay</option>
@@ -392,7 +407,7 @@ export const ServiceModalForm = ({ selectedService, setServiceModalOpen }: {
                                                 type={data.inputType} 
                                                 defaultValue={data.value}
                                                 disabled={data.disabled}
-                                                className={classNames(`${data.value ? "bg-gray-400 text-white": ""} placeholder-black font-semibold rounded-md p-2 border border-black focus:border-orange-700 focus:outline-none w-full`)}
+                                                className={classNames(`${data.value ? "bg-gray-400 text-white": ""} capitalize placeholder-black  rounded-md p-2 border border-black focus:border-orange-700 focus:outline-none w-full`)}
                                                 {...register(data.registerName as keyof ApplicantInfo)}
                                             />
                                             {/* {errors[data.registerName as keyof ApplicantInfo] && (
@@ -448,7 +463,7 @@ export const ServiceModalForm = ({ selectedService, setServiceModalOpen }: {
                                                 type={data.inputType} 
                                                 maxLength={data.maxLength}
                                                 placeholder={data.placeHolder}
-                                                className={classNames(" placeholder-black placeholder-gray-600 opacity-70 font-semibold rounded-md p-2 border border-black focus:border-orange-700 focus:outline-none w-full")}
+                                                className={classNames("capitalize placeholder-black placeholder-gray-600 opacity-70 rounded-md p-2 border border-black focus:border-orange-700 focus:outline-none w-full")}
                                                 {...register(
                                                     data.registerName as keyof ApplicantInfo,
                                                     // data.label !== "Tax Account No." && data.label !== "TCT No."

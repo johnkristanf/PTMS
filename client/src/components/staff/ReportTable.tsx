@@ -36,7 +36,7 @@ export function ReportTable({ searchTerm, selectedMonth }: ApproveTableProps) {
         <>
             { openFile && <ApplicationFileModal setOpenFile={setOpenFile} selectedApplicationCode={selectedApplicationCode} />}
 
-            <div className="flex flex-col bg-blue-100 w-full h-[70%] rounded-md ">
+            <div className="flex flex-col bg-orange-100 w-full h-[70%] rounded-md ">
                 <div>
                     <div className="inline-block min-w-full py-2 ">
                         <div className="overflow-hidden overflow-y-auto h-[400px] p-5 custom-scrollbar">

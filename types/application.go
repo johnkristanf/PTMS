@@ -461,3 +461,12 @@ type AdditionalFormDocument struct {
 type FinishScanning struct {
 	ID              		  int64  `json:"application_id"`
 }
+
+
+
+type MonthlyAssessment struct {
+	MonthName       string  `json:"month_name"`
+	TotalAssessment float64 `json:"total_assessment"`
+	MonthNumber     int     `json:"month_number"`
+}
+
