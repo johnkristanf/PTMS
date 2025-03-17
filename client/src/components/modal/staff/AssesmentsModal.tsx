@@ -42,7 +42,8 @@ export const AssessmentsModal: React.FC<AssessmentModalProps> = ({ applicantAsse
         label: string;
         inputType: string;
         value: string;
-        disabled: boolean
+        disabled: boolean;
+        optional?: string
     }[] = []
 
    const assessmentList: {
@@ -60,7 +61,7 @@ export const AssessmentsModal: React.FC<AssessmentModalProps> = ({ applicantAsse
             { registerName: "applicant_name", label: "Name", inputType: "text", value: applicantAssessmentInfo.applicant_name, disabled: true },
             { registerName: "permit_type", label: "Permit Type", inputType: "text", value: applicantAssessmentInfo.permit_type, disabled: true  },
 
-            { registerName: "project_proposed", label: "Project Proposed", inputType: "text", value: assessments.project_proposed, disabled: false },
+            { registerName: "project_proposed", label: "Project Proposed", inputType: "text", value: assessments.project_proposed, disabled: false, optional: '(optional)' },
             { registerName: "location", label: "Location", inputType: "text", value: assessments.location, disabled: false },
 
             { registerName: "units", label: "Units", inputType: "number", value: assessments.units, disabled: false }
@@ -197,7 +198,7 @@ export const AssessmentsModal: React.FC<AssessmentModalProps> = ({ applicantAsse
 
                                     <div key={index} className="flex flex-col gap-2">
 
-                                        <label className="font-bold">{data.label}</label>
+                                        <label className="font-bold">{data.label} {data.optional}</label>
                                         <input 
                                             type={data.inputType} 
                                             defaultValue={data.value}

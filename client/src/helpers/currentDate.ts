@@ -9,3 +9,10 @@ export function getCurrentFormattedDate(): string {
 
     return date.toLocaleDateString('en-US', options);
 }
+
+export function formatDate(date: string) {
+    const parsedDate = new Date(date);
+
+    const options = { year: "2-digit", month: "2-digit", day: "2-digit" };
+    return parsedDate.toLocaleDateString("en-US", options);
+}

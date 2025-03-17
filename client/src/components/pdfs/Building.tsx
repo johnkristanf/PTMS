@@ -28,7 +28,44 @@ function BuildingPDF({ permitInfo, setPermitsInfo }: {
 }) {
 
   console.log("permitInfo in building pdf: ", permitInfo);
+
+  console.log("scopeType in building pdf: ", permitInfo.scopeType.split(','));
+
+  console.log("characterOfOccupancy in building pdf: ", permitInfo.characterOfOccupancy.split(','));
+
+  const scopeTypeArray = permitInfo.scopeType.split(',');
+  const characterOfOccupancyArray = permitInfo.characterOfOccupancy.split(',');
+
+
+  const scopeSet = new Set(scopeTypeArray);
+  const occupancySet = new Set(characterOfOccupancyArray);
+
+
+  console.log("scopeSet: ", scopeSet);
+  console.log("occupancySet: ", occupancySet);
   
+
+
+  // NOTE: WALAY CHARACTER OF OCCUPANCY ANG ELECTRONICS OG FENCING
+  const containsBuilding = [...scopeSet].some(item => item.startsWith("Building-")) ||
+                         [...occupancySet].some(item => item.startsWith("Building-"));
+
+  const containsElectrical = [...scopeSet].some(item => item.startsWith("Electrical-")) ||
+                            [...occupancySet].some(item => item.startsWith("Electrical-"));
+
+  const containsPlumbing = [...scopeSet].some(item => item.startsWith("Plumbing-")) ||
+                          [...occupancySet].some(item => item.startsWith("Plumbing-"));
+
+  const containsMechanical = [...scopeSet].some(item => item.startsWith("Mechanical-")) ||
+                            [...occupancySet].some(item => item.startsWith("Mechanical-"));
+
+  const containsElectronics = [...scopeSet].some(item => item.startsWith("Electronics-"));
+
+  const containsFencing = [...scopeSet].some(item => item.startsWith("Fencing-"));
+
+  const containsExcavation = [...scopeSet].some(item => item.startsWith("Excavation-")) ||
+                            [...occupancySet].some(item => item.startsWith("Excavation-"));
+
 
   const downloadPDF = async () => {
     const doc = (
@@ -36,13 +73,15 @@ function BuildingPDF({ permitInfo, setPermitsInfo }: {
       <>
         <Document>
           <ApplicationLetter applicationLetterInfo={applicationLetterInfo}/>
-          <BuildingPermit permitInfo={permitInfo} />
-          <ElectricalComponentPermit permitInfo={permitInfo} />
-          <PlumbingPermitComponent permitInfo={permitInfo} />
-          <MechanicalPermitComponent permitInfo={permitInfo} />
-          <ElectronicsPermitComponent permitInfo={permitInfo} />
-          <FencingPermitComponent permitInfo={permitInfo} />
-          <ExcavationPermitComponent permitInfo={permitInfo} />
+
+          {containsBuilding && <BuildingPermit permitInfo={permitInfo} />}
+          {containsElectrical && <ElectricalComponentPermit permitInfo={permitInfo} />}
+          {containsPlumbing && <PlumbingPermitComponent permitInfo={permitInfo} />}
+          {containsMechanical && <MechanicalPermitComponent permitInfo={permitInfo} />}
+          {containsElectronics && <ElectronicsPermitComponent permitInfo={permitInfo} />}
+          {containsFencing && <FencingPermitComponent permitInfo={permitInfo} />}
+          {containsExcavation && <ExcavationPermitComponent permitInfo={permitInfo} />}
+                
         </Document>
 
       </>
@@ -76,13 +115,15 @@ function BuildingPDF({ permitInfo, setPermitsInfo }: {
             <PDFViewer className='w-full h-full' showToolbar={false}>
               <Document>
                 <ApplicationLetter applicationLetterInfo={applicationLetterInfo}/>
-                <BuildingPermit permitInfo={permitInfo} />
-                <ElectricalComponentPermit permitInfo={permitInfo} />
-                <PlumbingPermitComponent permitInfo={permitInfo} />
-                <MechanicalPermitComponent permitInfo={permitInfo} />
-                <ElectronicsPermitComponent permitInfo={permitInfo} />
-                <FencingPermitComponent permitInfo={permitInfo} />
-                <ExcavationPermitComponent permitInfo={permitInfo} />
+
+                {containsBuilding && <BuildingPermit permitInfo={permitInfo} />}
+                {containsElectrical && <ElectricalComponentPermit permitInfo={permitInfo} />}
+                {containsPlumbing && <PlumbingPermitComponent permitInfo={permitInfo} />}
+                {containsMechanical && <MechanicalPermitComponent permitInfo={permitInfo} />}
+                {containsElectronics && <ElectronicsPermitComponent permitInfo={permitInfo} />}
+                {containsFencing && <FencingPermitComponent permitInfo={permitInfo} />}
+                {containsExcavation && <ExcavationPermitComponent permitInfo={permitInfo} />}
+
                 
               </Document>
             </PDFViewer>
@@ -174,6 +215,7 @@ const styles = StyleSheet.create({
   page: {
     flexDirection: 'column',
     alignItems: 'center',
+    padding: 30,
   },
   body1: {
     width: '100%',

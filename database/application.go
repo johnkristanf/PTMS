@@ -707,10 +707,17 @@ Thank you for your attention to this matter.
 Sincerely,
 Panabo City Engineering's Issuance of Permit Section`, applicantName)
 
+
+	now, err := helpers.GetPhTimeZone()
+	if err != nil {
+		return err
+	}
+
 	inbox := &Inbox{
 		Message: message,
 		UserID: user_id,
 		Subject: subject,
+		CreatedAt: now,
 	}
 
 	if result := sql.DB.Create(&inbox); result.Error != nil {
@@ -734,10 +741,18 @@ Thank you for your cooperation.
 Sincerely,
 Panabo City Engineering's Issuance of Permit Section`, applicantName, applicationCode)
 
+	
+
+	now, err := helpers.GetPhTimeZone()
+	if err != nil {
+		return err
+	}
+
 	inbox := &Inbox{
 		Message: message,
 		UserID: user_id,
 		Subject: subject,
+		CreatedAt: now,
 	}
 
 	if result := sql.DB.Create(&inbox); result.Error != nil {
@@ -761,10 +776,16 @@ func (sql *SQL) ApplicationApprovalInbox(user_id int64, applicantName string, su
 	Sincerely,
 	Panabo City Engineering's Issuance of Permit Section`, applicantName)
 
+	now, err := helpers.GetPhTimeZone()
+	if err != nil {
+		return err
+	}
+
 	inbox := &Inbox{
 		Message: message,
 		UserID: user_id,
 		Subject: subject,
+		CreatedAt: now,
 	}
 
 	if result := sql.DB.Create(&inbox); result.Error != nil {
@@ -776,10 +797,16 @@ func (sql *SQL) ApplicationApprovalInbox(user_id int64, applicantName string, su
 
 func (sql *SQL) DisapprovalInbox(user_id int64, disApprovalMessage string, subject string) error {
 
+	now, err := helpers.GetPhTimeZone()
+	if err != nil {
+		return err
+	}
+
 	inbox := &Inbox{
 		Message: disApprovalMessage,
 		UserID: user_id,
 		Subject: subject,
+		CreatedAt: now,
 	}
 
 	if result := sql.DB.Create(&inbox); result.Error != nil {
@@ -792,10 +819,16 @@ func (sql *SQL) DisapprovalInbox(user_id int64, disApprovalMessage string, subje
 
 func (sql *SQL) ReleaseDateInbox(user_id int64, releaseDateMessage string, subject string) error {
 
+	now, err := helpers.GetPhTimeZone()
+	if err != nil {
+		return err
+	}
+
 	inbox := &Inbox{
 		Message: releaseDateMessage,
 		UserID: user_id,
 		Subject: subject,
+		CreatedAt: now,
 	}
 
 	if result := sql.DB.Create(&inbox); result.Error != nil {
@@ -1031,7 +1064,7 @@ func (sql *SQL) FetchApplication(status string, searchName string, selectedMonth
 	query := sql.DB.Table("applications").
 		Select(`applications.id, applications.service_type, applications.application_code, applications.first_name, applications.middle_initial, applications.last_name, 
 		applications.barangay, applications.street, applications.municipality, applications.zip_code, applications.location_for_cons_and_install, applications.form_of_owner_ship, 
-		applications.construction_ownby_enterprise, applications.tax_account_number, applications.tel_number, applications.tct_number, applications.permit_type, 
+		applications.construction_ownby_enterprise, applications.tax_account_number, applications.tel_number, applications.tct_number, applications.permit_type, applications.created_at, 
 		applications.email, applications.admin_approved, applications.release_date, applications.user_id, assessments.id, assessments.status`).
 
 		Joins("INNER JOIN assessments ON applications.id = assessments.application_id").

@@ -62,7 +62,9 @@ export type Application = {
     is_finish_scanning: boolean,
 
     scopeType: string
-    characterOfOccupancy: string
+    characterOfOccupancy: string,
+
+    created_at: string
 }
 
 

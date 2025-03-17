@@ -1,6 +1,8 @@
 package types
 
 import (
+	"time"
+
 	"github.com/lib/pq"
 )
 
@@ -74,6 +76,8 @@ type ApplicantInfoFetching struct {
 
 	ReleaseDate					string `json:"release_date"`
 	AdminApproved    			string `json:"admin_approved"`
+
+	CreatedAt					time.Time `json:"created_at"`
 }
 
 

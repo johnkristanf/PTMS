@@ -35,10 +35,11 @@ function RequirementsModalStaff({ applicationID, setShowRequirements }: {
         "Bill of Materials and Cost Estimate",
         "Structural Analysis",
     ];
+
     const dulySignedSealed = [
-        "A duly licensed Architect or Civil Engineer",
-        "In case of architectural, A duly licensed Sanitary Engineer or Master Plumber, in case of",
-        "A duly licensed Professional Mechanical Engineer, in case of",
+        "A duly licensed Architect or Civil Engineer, in case of Architectural",
+        "A duly licensed Sanitary Engineer or Master Plumber, in case of Architectural",
+        "A duly licensed Professional Mechanical Engineer, in case of Mechanical",
         "A duly licensed Professional Electronics Engineer, in case of Electrical",
     ];
     const otherDocuments = ["Barangay Clearance where the project is located", "Locational Clearance"];
@@ -57,9 +58,9 @@ function RequirementsModalStaff({ applicationID, setShowRequirements }: {
         "Specifications": "specifications",
         "Bill of Materials and Cost Estimate": "billMaterials",
         "Structural Analysis": "structuralAnalysis",
-        "A duly licensed Architect or Civil Engineer": "architectEngineer",
-        "In case of architectural, A duly licensed Sanitary Engineer or Master Plumber, in case of": "sanitaryEngineer",
-        "A duly licensed Professional Mechanical Engineer, in case of": "mechanicalEngineer",
+        "A duly licensed Architect or Civil Engineer, in case of Architectural": "architectEngineer",
+        "A duly licensed Sanitary Engineer or Master Plumber, in case of Architectural": "sanitaryEngineer",
+        "A duly licensed Professional Mechanical Engineer, in case of Mechanical": "mechanicalEngineer",
         "A duly licensed Professional Electronics Engineer, in case of Electrical": "electronicsEngineer",
         "Barangay Clearance where the project is located": "barangayClearance",
         "Locational Clearance": "locationalClearance",

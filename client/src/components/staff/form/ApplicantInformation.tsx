@@ -108,7 +108,7 @@ export function ApplicantInformationFormStaff({ applicantInfo, setInformationMod
             <div className="flex gap-2">
               <input 
                 type="text"
-                maxLength={5}
+                maxLength={20}
                 className={classNames(
                   isPending ? "hover:cursor-not-allowed": "",
                   "bg-gray-400 placeholder-black rounded-md p-2 focus:outline-orange-500"

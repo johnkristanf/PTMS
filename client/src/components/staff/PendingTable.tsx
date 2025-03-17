@@ -17,6 +17,7 @@ import {
     HoverCardContent,
     HoverCardTrigger,
 } from "@/components/ui/hover-card"
+import { formatDate } from "@/helpers/currentDate";
 
 export function PendingTable({ searchTerm, selectedMonth }: dropDownSelectType) {
 
@@ -61,6 +62,9 @@ export function PendingTable({ searchTerm, selectedMonth }: dropDownSelectType) 
     });
 
     const pendingApplications: Application[] = response?.data || [];
+
+    console.log("pendingApplications: ", pendingApplications);
+    
 
     const openApplicationInformationModal = (data: Application) => {
         setApplicantInfo(data);
@@ -121,6 +125,7 @@ export function PendingTable({ searchTerm, selectedMonth }: dropDownSelectType) 
                                         <th scope="col" className="px-4 py-4">Address</th>
                                         <th scope="col" className="px-4 py-4">Permit Type</th>
                                         <th scope="col" className="px-4 py-4">Verification</th>
+                                        <th scope="col" className="px-4 py-4">Date</th>
                                     </tr>
                                 </thead>
 
@@ -136,7 +141,7 @@ export function PendingTable({ searchTerm, selectedMonth }: dropDownSelectType) 
                                         pendingApplications.map((data) => (
                                             <tr
                                                 key={data.application_id}
-                                                className="font-bold border-b border-gray-500"
+                                                className=" border-b border-gray-500"
                                             >
                                                 <td className="whitespace-nowrap px-2 py-3">
                                                     {data.firstname} {data.middleInitial} {data.lastName}
@@ -216,6 +221,11 @@ export function PendingTable({ searchTerm, selectedMonth }: dropDownSelectType) 
 
                                                     </div>
                                                 </td>
+
+                                                <td className="whitespace-nowrap px-2 py-3">
+                                                    {formatDate(data.created_at)}
+                                                </td>
+
                                             </tr>
 
                                         ))

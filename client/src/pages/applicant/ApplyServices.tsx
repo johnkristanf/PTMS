@@ -63,7 +63,7 @@ function ApplyServicesPage() {
 
                 <div className="flex w-full font-bold ">
                     {/* <h1 className='text-xl text-gray-600'>Step 1:</h1> */}
-                    <h1 className='text-[2rem] flex-1'>Apply Services: </h1>
+                    <h1 className='flex-1' style={{ fontSize: 21 }}>Apply Services: </h1>
                 </div>
 
                 
@@ -75,6 +75,7 @@ function ApplyServicesPage() {
                             <button
                                 onClick={() => clickService("Building")}
                                 className={classNames("p-2 w-[60%] h-full border border-orange-700 text-orange-700 rounded-md font-bold hover:bg-orange-700 hover:text-white")}
+                                style={{ fontSize: 16 }}
                             >
                                 Building Permit
                             </button>
@@ -108,6 +109,7 @@ function ApplyServicesPage() {
                                     className={classNames(
                                         "p-2 w-[80%] h-full  border border-orange-700 text-orange-700 rounded-md font-bold hover:bg-orange-700 hover:text-white"
                                     )}
+                                    style={{ fontSize: 16 }}
                                 >
                                     {permit.name}
                                 </button>
@@ -132,6 +134,7 @@ function ApplyServicesPage() {
                                     <button
                                         onClick={() => clickService(permit.permit_type)}
                                         className={classNames("p-2 w-[30%] h-full border border-orange-700 text-orange-700 rounded-md font-bold hover:bg-orange-700 hover:text-white")}
+                                        style={{ fontSize: 16 }}
                                     >
                                         {permit.name}
                                     </button>

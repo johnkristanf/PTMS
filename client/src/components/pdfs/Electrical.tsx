@@ -109,6 +109,8 @@ const styles = StyleSheet.create({
         height: '100%',
         flexDirection: 'column',
         alignItems: 'center',
+        padding: 30,
+
     },
     pageContainer: {
         width: '90%',

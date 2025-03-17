@@ -25,10 +25,10 @@ export const ServiceModalForm = ({ selectedService, setServiceModalOpen, role }:
 }) => {
 
     const { register, handleSubmit, reset } = useForm<ApplicantInfo>({
-        defaultValues: {
-            municipality: "Panabo City Davao Del Norte",
-            zipCode: "8105"
-        }
+        // defaultValues: {
+        //     municipality: "Panabo City Davao Del Norte",
+        //     zipCode: "8105"
+        // }
     });
 
     // const [value, setValue] = useState('');
@@ -182,31 +182,53 @@ export const ServiceModalForm = ({ selectedService, setServiceModalOpen, role }:
                     scopeType: scopeTypes.join(','),
                     characterOfOccupancy: occupancyTypes.join(','),
                 };
+
+
+
+                // console.log("scopeTypes: ", scopeTypes);
+                // console.log("occupancyTypes: ", occupancyTypes);
+                // return;
         
                 Apply(applyData).catch(err => console.error(err));
-        
-                // BLUE CONFIRM BUTTON AND RED CANCEL
+
 
                 Swal.fire({
-                    icon: "success",
-                    title: "Permit Applied Successfully",
-                    text: "See the Applied Services for Application Instruction",
+                    icon: "info",
+                    title: "Application Note",
+                    text: "Please secure copies of requirements and permits to be submitted to City's Engineering Office. Completion and occupancy cannot be access once your application is disapproved",
                     showConfirmButton: true,
                     confirmButtonColor: "#c2410c",
 
                 }).then((result) => {
-                    if (result.isConfirmed) {
-                        let location;
 
-                        if(role == 'receiver'){
-                            location = '/receiver/pending/applications';
-                        } else {
-                            location = "/applied/services";
-                        }
-                        
-                        window.location.href = location;
+                    if(result.isConfirmed || result.isDismissed || result.isDenied) {
+
+                        Swal.fire({
+                            icon: "success",
+                            title: "Permit Applied Successfully",
+                            text: "See the Applied Services for Application Instruction",
+                            showConfirmButton: true,
+                            confirmButtonColor: "#c2410c",
+        
+                        }).then((result) => {
+                            if (result.isConfirmed) {
+                                let location;
+        
+                                if(role == 'receiver'){
+                                    location = '/receiver/pending/applications';
+                                } else {
+                                    location = "/applied/services";
+                                }
+                                
+                                window.location.href = location;
+                            }
+                        });
+
                     }
+
                 });
+        
+                
             }
         });
         
@@ -244,6 +266,10 @@ export const ServiceModalForm = ({ selectedService, setServiceModalOpen, role }:
 
     console.log("scopeTypes: ", scopeTypes);
     console.log("occupancyTypes: ", occupancyTypes);
+
+    console.log("groupedScopeOptions: ", groupedScopeOptions);
+    console.log("groupedOccupancyOptions: ", groupedOccupancyOptions);
+    
     
 
 
@@ -273,7 +299,7 @@ export const ServiceModalForm = ({ selectedService, setServiceModalOpen, role }:
                     
                     </div>
 
-                    <div className="flex justify-center w-full gap-5 font-semibold mb-5">
+                    <div className="flex justify-center w-full gap-5  mb-5">
 
                         {
                             selectedService == "Electrical" && (
@@ -303,7 +329,7 @@ export const ServiceModalForm = ({ selectedService, setServiceModalOpen, role }:
                             <div className="flex gap-2">
                                 {
                                     applicantName.map((data) => (
-                                        <div className='flex flex-col font-semibold'>
+                                        <div className='flex flex-col '>
                                             <label>{data.placeHolder}</label>
                                             <input 
                                                 key={data.registerName}
@@ -327,11 +353,11 @@ export const ServiceModalForm = ({ selectedService, setServiceModalOpen, role }:
                         
                         <div className="w-full border border-gray-300 p-3 rounded-md">
 
-                            {/* <label className="font-semibold">Enter Ownership</label> */}
+                            {/* <label className="">Enter Ownership</label> */}
                             <div className="flex gap-5">
                                 {
                                     applicantOwnership.map((data) => (
-                                        <div className='flex flex-col font-semibold w-full'>
+                                        <div className='flex flex-col  w-full'>
                                             <label>{data.placeHolder}</label>
                                             <input 
                                                 key={data.registerName}
@@ -355,8 +381,8 @@ export const ServiceModalForm = ({ selectedService, setServiceModalOpen, role }:
 
                         <div className="w-full border border-gray-300 p-3 rounded-md">
 
-                            {/* <label className="font-semibold">Enter Address</label> */}
-                            <div className="flex flex-col gap-5 font-semibold">
+                            {/* <label className="">Enter Address</label> */}
+                            <div className="flex flex-col gap-5 ">
 
                             {applicantAddress.map((data) => (
                                 <div key={data.registerName} className="flex flex-col w-full">
@@ -367,9 +393,8 @@ export const ServiceModalForm = ({ selectedService, setServiceModalOpen, role }:
 
                                             <input 
                                                 type={data.inputType} 
-                                                defaultValue={data.value}
                                                 disabled={data.disabled}
-                                                className={classNames(`${data.value ? "bg-gray-400 text-white": ""} capitalize placeholder-black  rounded-md p-2 border border-black focus:border-orange-700 focus:outline-none w-full`)}
+                                                className={classNames(`capitalize placeholder-black  rounded-md p-2 border border-black focus:border-orange-700 focus:outline-none w-full`)}
                                                 {...register(data.registerName as keyof ApplicantInfo)}
                                             />
                                             {/* {errors[data.registerName as keyof ApplicantInfo] && (
@@ -381,15 +406,21 @@ export const ServiceModalForm = ({ selectedService, setServiceModalOpen, role }:
                                             {/* Insert Barangay Select Right After Municipality */}
                                             <label className='mt-3'>Barangay</label>
 
-                                            <select 
+                                            {/* <select 
                                                 className=" placeholder-black rounded-md p-2 border border-black focus:border-orange-700 focus:outline-none w-full"
-                                                {...register("barangay")}
+                                                {...register("baranagay")}
                                             >
                                                 <option disabled selected>Select Barangay</option>
                                                 {barangayOptions.map((barangay, index) => (
                                                     <option key={index} value={barangay}>{barangay}</option>
                                                 ))}
-                                            </select>
+                                            </select> */}
+
+                                                <input 
+                                                    type='text' 
+                                                    className={classNames("capitalize placeholder-black  rounded-md p-2 border border-black focus:border-orange-700 focus:outline-none w-full")}
+                                                    {...register("barangay")}
+                                                />
 
                                             {/* {errors["barangay" as keyof ApplicantInfo] && (
                                                 <p className="text-red-500 text-sm mt-1">
@@ -405,9 +436,8 @@ export const ServiceModalForm = ({ selectedService, setServiceModalOpen, role }:
                                             <label>{data.placeHolder}</label>
                                             <input 
                                                 type={data.inputType} 
-                                                defaultValue={data.value}
                                                 disabled={data.disabled}
-                                                className={classNames(`${data.value ? "bg-gray-400 text-white": ""} capitalize placeholder-black  rounded-md p-2 border border-black focus:border-orange-700 focus:outline-none w-full`)}
+                                                className={classNames(`capitalize placeholder-black  rounded-md p-2 border border-black focus:border-orange-700 focus:outline-none w-full`)}
                                                 {...register(data.registerName as keyof ApplicantInfo)}
                                             />
                                             {/* {errors[data.registerName as keyof ApplicantInfo] && (
@@ -423,8 +453,63 @@ export const ServiceModalForm = ({ selectedService, setServiceModalOpen, role }:
 
                         </div>
 
+
+                        
                         <div className="w-full border border-gray-300 p-3 rounded-md">
-                            {/* <label className="font-semibold">Enter Numbers</label> */}
+
+                            {/* <label className="">Enter Ownership</label> */}
+                            <div className="flex gap-5">
+                                {
+                                    applicantOwnership.map((data) => (
+                                        <div className='flex flex-col  w-full'>
+                                            <label>{data.placeHolder}</label>
+                                            <input 
+                                                key={data.registerName}
+                                                type={data.inputType} 
+                                                className={classNames("capitalize placeholder-black  rounded-md p-2 border border-black focus:border-orange-700 focus:outline-none w-full")}
+                                                {...register(data.registerName as keyof ApplicantInfo)}
+                                            />
+
+                                            {/* {errors[data.registerName as keyof ApplicantInfo] && (
+                                                <p className="text-red-500 text-sm mt-1">
+                                                    {errors[data.registerName as keyof ApplicantInfo]?.message}
+                                                </p>
+                                            )} */}
+
+                                        </div>
+                                    ))
+                                }
+                            </div>
+                        </div>
+
+
+                        <div className="w-full border border-gray-300 p-3 rounded-md">
+
+                            {/* <label className="">Enter Address</label> */}
+                            <div className="flex flex-col gap-5 ">
+
+                            {location.map((data) => (
+                                <div key={data.registerName} className="flex flex-col w-full">
+
+                                            <label>{data.placeHolder}</label>
+                                            <input 
+                                                type={data.inputType} 
+                                                className={classNames(`capitalize placeholder-black  rounded-md p-2 border border-black focus:border-orange-700 focus:outline-none w-full`)}
+                                                {...register(data.registerName as keyof ApplicantInfo)}
+                                            />
+                                            {/* {errors[data.registerName as keyof ApplicantInfo] && (
+                                                <p className="text-red-500 text-sm mt-1">
+                                                    {errors[data.registerName as keyof ApplicantInfo]?.message}
+                                                </p>
+                                            )} */}
+                                </div>
+                            ))}
+                        </div>
+
+                        </div>
+
+                        <div className="w-full border border-gray-300 p-3 rounded-md">
+                            {/* <label className="">Enter Numbers</label> */}
 
 
                             {/* THE OPTIONAL PLACEHOLDER IS BLURRY */}
@@ -432,7 +517,7 @@ export const ServiceModalForm = ({ selectedService, setServiceModalOpen, role }:
                                 {
                                     applicantNumber.map((data) => (
                                         
-                                        <div className='flex flex-col font-semibold w-full'>
+                                        <div className='flex flex-col  w-full'>
 
                                             <div className="flex items-center gap-2">
                                                 <label>{data.label}</label>
@@ -613,67 +698,72 @@ const applicantOwnership = [
 ];
 
 const applicantAddress = [
-    { registerName: "municipality", placeHolder: "City/Municipality", inputType: "text", value: "Panabo City Davao Del Norte", disabled: true },
+    { registerName: "municipality", placeHolder: "City/Municipality", inputType: "text", disabled: false },
     { registerName: "street", placeHolder: "Street", inputType: "text" },
+    { registerName: "zipCode", placeHolder: "Zip Code", inputType: "number", disabled: false },
+];
+
+
+const location = [
     { registerName: "locationForConstruct_Install", placeHolder: "Location of Construction/Installation", inputType: "text" },
-    { registerName: "zipCode", placeHolder: "Zip Code", inputType: "number", value: "8105", disabled: true },
-];
+
+]
 
 
 
-const barangayOptions = [
-    "A. O. Floirendo", 
-    "Buenavista",
+// const barangayOptions = [
+//     "A. O. Floirendo", 
+//     "Buenavista",
 
-    "Cacao", 
-    "Cagangohan", 
-    "Consolacion",
+//     "Cacao", 
+//     "Cagangohan", 
+//     "Consolacion",
 
-    "Dapco",
-    "Datu Addul Dadia",
+//     "Dapco",
+//     "Datu Addul Dadia",
 
-    "Gredu(POB.)",
-    "J.P. Laurel",
+//     "Gredu(POB.)",
+//     "J.P. Laurel",
 
-    "Kasilak",
-    "Katipunan",
-    "Katualan",
-    "Kauswagan",
-    "Kiotoy",
+//     "Kasilak",
+//     "Katipunan",
+//     "Katualan",
+//     "Kauswagan",
+//     "Kiotoy",
 
-    "Little Panay",
-    "Lower Panaga (Roxas)",
+//     "Little Panay",
+//     "Lower Panaga (Roxas)",
 
-    "Mabunao",
-    "Maduao",
-    "Malativas",
-    "Manay",
-    "Nanyo",
-    "New Malaga (Dalisay)",
-    "New Malitbog",
-    "New Pandan (POB.)",
-    "New Visayas",
+//     "Mabunao",
+//     "Maduao",
+//     "Malativas",
+//     "Manay",
+//     "Nanyo",
+//     "New Malaga (Dalisay)",
+//     "New Malitbog",
+//     "New Pandan (POB.)",
+//     "New Visayas",
 
-    "Quezon",
+//     "Quezon",
 
-    "Salvacion",
-    "San Francisco (POB.)",
-    "San Nicolas",
-    "San Pedro",
-    "San Roque",
-    "San Vicente",
-    "Santa Cruz",
-    "Santo Nino (POB.)",
-    "Santo Nino (POB.)",
-    "Sindaton",
-    "Southern Davao",
+//     "Salvacion",
+//     "San Francisco (POB.)",
+//     "San Nicolas",
+//     "San Pedro",
+//     "San Roque",
+//     "San Vicente",
+//     "Santa Cruz",
+//     "Santo Nino (POB.)",
+//     "Santo Nino (POB.)",
+//     "Sindaton",
+//     "Southern Davao",
 
-    "Tagpore",
-    "Tibungol",
+//     "Tagpore",
+//     "Tibungol",
 
-    "Upper Licanan",
+//     "Upper Licanan",
 
-    "Waterfall",
-];
+//     "Waterfall",
+// ];
 
 export default ServiceModalForm;

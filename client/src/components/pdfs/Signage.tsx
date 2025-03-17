@@ -112,6 +112,8 @@ const styles = StyleSheet.create({
     page: {
         flexDirection: 'column',
         alignItems: 'center',
+        padding: 30,
+
     },
     pageContainer: {
         width: '100%',

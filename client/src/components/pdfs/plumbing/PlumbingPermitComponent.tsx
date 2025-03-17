@@ -77,6 +77,8 @@ export function PlumbingPermitComponent({ permitInfo }: {
     page: {
       flexDirection: 'column',
       alignItems: 'center',
+      padding: 30,
+
     },
     body1: {
       width: '100%',
