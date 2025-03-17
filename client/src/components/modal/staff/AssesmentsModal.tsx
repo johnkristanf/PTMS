@@ -221,7 +221,8 @@ export const AssessmentsModal: React.FC<AssessmentModalProps> = ({ applicantAsse
 
                                         <label className="font-bold">{data.label}</label>
                                         <input 
-                                            type="number" 
+                                            type="text"
+                                            pattern="[0-9]+(\.[0-9]+)?"
                                             defaultValue={data.value}
                                             {...register(data.registerName as keyof AssessmentTypes)}
                                             className="p-3 bg-gray-300 rounded-md placeholder-gray-600 focus:outline-none hover:opacity-75"
