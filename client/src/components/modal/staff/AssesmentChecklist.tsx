@@ -5,6 +5,7 @@ import { FetchAssessments } from '../../../http/get/assesments';
 import { AssessmentRender, AssessmentsFormData } from '../../../types/assessment';
 import { SetPaidAssessment } from '../../../http/post/assessment';
 import Swal from 'sweetalert2';
+import { ChangeEvent, useEffect, useState } from 'react';
 
 type FeeKey = 
     "building_construction" |
@@ -23,7 +24,9 @@ export const AssessmentCheckListModal = ({ applicationID, setAssessmentChecklist
     applicationID: number | undefined
     setAssessmentChecklist: React.Dispatch<React.SetStateAction<boolean>>
 }) => {
+    
     const queryClient = useQueryClient();
+    const [orNumberType, setOrNumberType] = useState<string>();
 
     const assessmentQuery = useQuery({
         queryKey: ['assessments', applicationID],
@@ -49,7 +52,7 @@ export const AssessmentCheckListModal = ({ applicationID, setAssessmentChecklist
         { name: "Total Assessments", key: "total_assessments" }
     ];
 
-    const { register, handleSubmit, formState: { errors } } = useForm<AssessmentsFormData>({
+    const { register, handleSubmit, formState: { errors }, setValue } = useForm<AssessmentsFormData>({
         defaultValues: {
             applicationID: applicationID,
             datePaid: new Date().toISOString().split("T")[0],
@@ -80,6 +83,17 @@ export const AssessmentCheckListModal = ({ applicationID, setAssessmentChecklist
         console.log(data);
         mutation.mutate(data);
     };
+
+    useEffect(() => {
+        if (orNumberType === 'exempted') {
+          setValue('orNumber', 'Exempted');
+        }   
+    }, [orNumberType, setValue]);
+
+
+    const onORTypeChange = (e: ChangeEvent<HTMLSelectElement>) => {
+        setOrNumberType(e.target.value);
+    }
 
     const statusColor = assessments?.status.toLowerCase() === 'paid' ? 'text-green-500' : 'text-gray-500';
     const isPaid = assessments?.status.toLowerCase() === 'paid';
@@ -113,15 +127,36 @@ export const AssessmentCheckListModal = ({ applicationID, setAssessmentChecklist
 
                                         <div className="flex flex-col gap-2">
                                             <label className="font-semibold">OR Number:</label>
-                                                <input 
-                                                type="number" 
-                                                placeholder="Enter OR Number" 
-                                                {...register("orNumber")} 
-                                                required
-                                                className={`bg-gray-400 rounded-md p-1 placeholder-black focus:outline-white text-white placeholder:text-white ${errors.orNumber ? "border-red-500" : ""}`} 
-                                            />
-                                            {!isPaid && errors.orNumber && <span className="text-red-500">This field is required</span>}
-                                        </div>
+
+                                            <div className="relative"> 
+                                                {orNumberType === "number" ? (
+                                                    <input
+                                                        type="number"
+                                                        placeholder="Enter OR Number"
+                                                        {...register("orNumber")}
+                                                        required
+                                                        className={`bg-gray-400 rounded-md p-2 placeholder-black focus:outline-white text-white placeholder:text-white w-full ${
+                                                        errors.orNumber ? "border-red-500" : ""
+                                                        }`}
+                                                    />
+                                                ) : (
+                                                    <input
+                                                        type="text"
+                                                        value="Exempted"
+                                                        {...register("orNumber")}
+                                                        disabled
+                                                        className="bg-gray-400 rounded-md p-2 text-white w-full hover:cursor-not-allowed"
+                                                    />
+                                                )}
+                                                    <select
+                                                        className="w-[12%] absolute right-[2px] top-[1px] bg-gray-400 rounded-r-md p-1 text-white focus:outline-none w-16" // Adjust width as needed
+                                                        onChange={onORTypeChange}
+                                                    >
+                                                        <option value="number">Number</option>
+                                                        <option value="exempted">Exempted</option>
+                                                    </select>
+                                            </div>
+                                            </div>
                                     </div>
 
                                 ) : (
