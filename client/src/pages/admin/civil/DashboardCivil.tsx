@@ -1,4 +1,4 @@
-import { useState } from "react"
+import { ChangeEvent, useState } from "react"
 import { SideBar } from "../../../components/SideBar"
 import { PTMSHeader } from "../../../components/PtmsHeader";
 
@@ -9,13 +9,16 @@ import DashboardAdminARModal from "../../../components/admin/DashboardAdminARMod
 import DashboardStaffARModal from "../../../components/admin/DashboardStaffARModal";
 import { ApplicationPerBarangay, ApplicationPerPermitTypeChart, ApplicationPerYearChart, MonthlyAssessmentChart } from "../../../components/admin/Charts";
 import StaffARNotifButton from "../../../components/staff/StaffARNotifButton";
+import AssessmentDropDown from "@/components/admin/AssessmentDropdown";
 
 
 function CivilDashboardPage() {
 
     const [openStaffAccessModal, setOpenStaffAccessModal] = useState<boolean>(false);
     const [openAdminAccessModal, setOpenAdminAccessModal] = useState<boolean>(false);
+    const [selectedAssessmentPermit, setSelectedAssessmentPermit] = useState<string>("All");
    
+
     const toggleStaffAccessModal = () => {
         setOpenStaffAccessModal((prevState) => {
             if (!prevState) setOpenAdminAccessModal(false);
@@ -30,7 +33,9 @@ function CivilDashboardPage() {
         });
     };
 
-    
+     const onPermitChange = (e: ChangeEvent<HTMLSelectElement>) => {
+        setSelectedAssessmentPermit(e.target.value)
+    }
 
     return (
 
@@ -76,7 +81,8 @@ function CivilDashboardPage() {
                             </div>
                         
                             <div className="w-1/2 p-2">
-                                <MonthlyAssessmentChart />
+                                <AssessmentDropDown onPermitChange={onPermitChange} />
+                                <MonthlyAssessmentChart selectedAssessmentPermit={selectedAssessmentPermit} />
                             </div>
                         </div>
 

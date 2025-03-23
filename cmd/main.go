@@ -38,12 +38,12 @@ func main(){
 
 	// LEARNING NOTE: THIS CORS CONFIG IS GOOD FOR LOCAL ONLY
 
-	e.Use(middleware.CORSWithConfig(middleware.CORSConfig{
-		AllowOrigins: []string{"http://localhost:9090", "https://ptms-alpha.vercel.app"},
-		AllowMethods: []string{echo.GET, echo.POST, echo.PUT, echo.DELETE},
-		AllowHeaders: []string{echo.HeaderOrigin, echo.HeaderContentType, echo.HeaderAccept},
-		AllowCredentials: true,
-	}))
+	// e.Use(middleware.CORSWithConfig(middleware.CORSConfig{
+	// 	AllowOrigins: []string{"http://localhost:9090", "https://ptms-alpha.vercel.app"},
+	// 	AllowMethods: []string{echo.GET, echo.POST, echo.PUT, echo.DELETE},
+	// 	AllowHeaders: []string{echo.HeaderOrigin, echo.HeaderContentType, echo.HeaderAccept},
+	// 	AllowCredentials: true,
+	// }))
 
 	e.Use(middleware.RequestLoggerWithConfig(middleware.RequestLoggerConfig{
 		LogStatus: true,
