@@ -70,9 +70,12 @@ export const FetchApplicationsByYear = async () => {
 }
 
 
-export const FetchMonthlyAssesssment = async () => {
+export const FetchMonthlyAssesssment = async (selectedAssessmentPermit: string) => {
 
-    return axios.get(`${DOMAIN_NAME}/application/monthly/assessment`, {
+    console.log("selectedAssessmentPermit in request", selectedAssessmentPermit);
+    
+
+    return axios.get(`${DOMAIN_NAME}/application/monthly/assessment/${selectedAssessmentPermit}`, {
         withCredentials: true
     });
 }

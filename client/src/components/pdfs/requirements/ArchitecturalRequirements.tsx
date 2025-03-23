@@ -7,6 +7,7 @@ import { ArchitecturalRequirementFormData } from '../../../types/application';
 import { FetchArchiteturalRequirements } from '../../../http/get/application';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCheck, faX } from '@fortawesome/free-solid-svg-icons';
+import { formatDateWithTime } from '@/helpers/currentDate';
 
 const ArchitecturalRequirements = ({ applicationID, setRequirementsModal, setAllRequirementsChecked, allRequirementsChecked }: {
     applicationID: number
@@ -54,6 +55,9 @@ const ArchitecturalRequirements = ({ applicationID, setRequirementsModal, setAll
         
     });
 
+    console.log("architect requirements: ", response?.data);
+    
+
 
     useEffect(() => {
         if (response?.data) {
@@ -99,7 +103,12 @@ const ArchitecturalRequirements = ({ applicationID, setRequirementsModal, setAll
                         </span> 
                     </h1>
 
-                    <div className="flex justify-end mb-5 w-full pr-9">
+                    <div className="flex justify-between mb-5 w-full px-[4rem]">
+
+                        <div className="flex flex-col">
+                            <h1>Latest Date Check:</h1>
+                            <p className='text-gray-500 text-md'>{formatDateWithTime(response?.data.updated_at)}</p>
+                        </div>
                        
                         <button
                             type="button"

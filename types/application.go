@@ -397,6 +397,9 @@ type ArchitecturalRequirements struct {
     DetailsWindowsFireExits               bool `json:"Details_Windows_FireExits"`
     DetailsFireResistiveVerticalOpenings  bool `json:"Details_FireResistive_Vertical_Openings"`
     DetailsFireResistiveDecorativeMaterials bool `json:"Details_FireResistive_Decorative_Materials"`
+
+    UpdatedAt 								time.Time `json:"updated_at"`
+
 }
 
 
@@ -409,6 +412,9 @@ type CivilRequirements struct{
 	Structural_Analysis_Design            bool    `json:"Structural_Analysis_Design"`
 	Boring_Load_Test                      bool    `json:"Boring_Load_Test"`
 	Seismic_Analysis                      bool    `json:"Seismic_Analysis"`
+
+    UpdatedAt 							  time.Time `json:"updated_at"`
+
 }
 
 
@@ -421,6 +427,9 @@ type ElectricalRequirements struct{
 	Schedule_Loads            			  bool    `json:"Schedule_Loads"`
 	Design_Analysis                       bool    `json:"Design_Analysis"`
 	One_Line_Diagram                      bool    `json:"One_Line_Diagram"`
+
+    UpdatedAt 							  time.Time `json:"updated_at"`
+
 }
 
 

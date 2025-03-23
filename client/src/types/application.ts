@@ -338,6 +338,9 @@ export type ArchitecturalRequirementFormData = {
     Details_Windows_FireExits: boolean;
     Details_FireResistive_Vertical_Openings: boolean;
     Details_FireResistive_Decorative_Materials: boolean;
+
+    updated_at: string;
+
 };
 
 
@@ -350,6 +353,9 @@ export type CivilRequirementFormData = {
     Structural_Analysis_Design: boolean;
     Boring_Load_Test: boolean;
     Seismic_Analysis: boolean;
+
+    updated_at: string;
+
 }
 
 export type  ElectricalRequirementFormData = {
@@ -361,6 +367,9 @@ export type  ElectricalRequirementFormData = {
     Schedule_Loads: boolean;
     Design_Analysis: boolean;
     One_Line_Diagram: boolean;
+
+    updated_at: string;
+
 }
 
 

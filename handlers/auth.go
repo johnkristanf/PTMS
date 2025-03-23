@@ -46,8 +46,8 @@ type AuthHandler struct {
 
 func (h *AuthHandler) StaffAccountLoginHandler(c echo.Context) error {
 
-	ctx, cancel := context.WithTimeout(c.Request().Context(), time.Millisecond * 200)
-	defer cancel()
+	// ctx, cancel := context.WithTimeout(c.Request().Context(), time.Millisecond * 200)
+	// defer cancel()
 
 	loginResponseChan := make(chan *types.LoginResponse)
 	var lc *types.LoginCredentialsBind
@@ -76,12 +76,12 @@ func (h *AuthHandler) StaffAccountLoginHandler(c echo.Context) error {
 		loginResponseChan <- &types.LoginResponse{UserInfo: userInfo, Error: nil}
 	}()
 
-	select {
+	// select {
 
-	case <-ctx.Done():
-		return c.JSON(http.StatusRequestTimeout, "Request Timeout: took too long to respond")
+	// case <-ctx.Done():
+	// 	return c.JSON(http.StatusRequestTimeout, "Request Timeout: took too long to respond")
 
-	case response := <-loginResponseChan:
+		response := <-loginResponseChan
 
 		userInfo, err := response.UserInfo, response.Error
 		fmt.Println("response.Error: ", response.Error)
@@ -144,7 +144,7 @@ func (h *AuthHandler) StaffAccountLoginHandler(c echo.Context) error {
 		}
 
         return c.JSON(http.StatusUnauthorized, "Invalid role")
-	}
+	// }
 
 }
 

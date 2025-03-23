@@ -43,9 +43,9 @@ export function SideBar({role}: {
 
         </SheetTrigger>
 
-        <SheetContent side="left" className="z-[99999]">
+        <SheetContent side="left" className="z-[99999] overflow-y-auto custom-scrollbar">
 
-          <div className="flex flex-col items-center gap-2 h-[90vh] w-full z-[9999] mt-4 overflow-y-auto custom-scrollbar">
+          <div className="flex flex-col items-center gap-2 h-[90vh] w-full z-[9999] mt-4 ">
             <img src="/img/ENGINEER_LOGO.png" alt="City Engineering Logo" width={90} className="mt-8" />
 
             <UserInfo />
@@ -454,7 +454,7 @@ function NavLinks({ role }: { role: string }) {
         
           <Collapsible>
 
-            <CollapsibleTrigger className="relative flex items-center w-full text-lg p-2 rounded-md gap-2 text-gray-600 hover:bg-orange-700 hover:text-white">
+            <CollapsibleTrigger className="relative flex items-center w-full text-lg p-2 rounded-md gap-2 text-gray-600 hover:bg-orange-700 border-2 border-orange-700 hover:text-white">
               <img 
                 src="/img/icons/staff_picture.png"             
                 className="rounded-full" 
@@ -494,7 +494,7 @@ function NavLinks({ role }: { role: string }) {
         
           <Collapsible>
 
-            <CollapsibleTrigger className="relative flex items-center w-full text-lg p-2 rounded-md gap-2 text-gray-600 hover:bg-orange-700 hover:text-white">
+            <CollapsibleTrigger className="relative flex items-center w-full text-lg p-2 rounded-md gap-2 text-gray-600 hover:bg-orange-700 border-2 border-orange-700 hover:text-white">
               <img 
                 src="/img/icons/staff_picture.png"             
                 className="rounded-full" 

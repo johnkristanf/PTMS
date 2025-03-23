@@ -872,7 +872,11 @@ func (h * ApplicationHandler) FetchDocumentFirstStepRequirementsHandler(c echo.C
 
 
 func (h *ApplicationHandler) FetchMonthlyAssessmentHandler(c echo.Context) error {
-	monthlyData, err := h.DB_METHOD.FetchMonthlyAssessment()
+
+	permitType := c.Param("selectedAssessmentPermit")
+	fmt.Println("permitType: ", permitType)
+
+	monthlyData, err := h.DB_METHOD.FetchMonthlyAssessment(permitType)
 	if err != nil{
 		return err
 	}

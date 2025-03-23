@@ -133,6 +133,8 @@ type Architectural_Requirements struct {
 
 	ApplicationID                          int64     `gorm:"not null"`
 	CreatedAt                              time.Time `gorm:"not null;autoCreateTime"`
+	UpdatedAt                             time.Time `gorm:"not null;autoCreateTime"`
+
 }
 
 type Civil_Requirements struct {
@@ -147,6 +149,8 @@ type Civil_Requirements struct {
 
 	ApplicationID                         int64     `gorm:"not null"`
 	CreatedAt                             time.Time `gorm:"not null;autoCreateTime"`
+	UpdatedAt                             time.Time `gorm:"not null;autoCreateTime"`
+
 }
 
 type Electrical_Requirements struct {
@@ -160,6 +164,7 @@ type Electrical_Requirements struct {
 	One_Line_Diagram                      bool      `gorm:"not null;default:false"`
 	ApplicationID                         int64     `gorm:"not null"`
 	CreatedAt                             time.Time `gorm:"not null;autoCreateTime"`
+	UpdatedAt                             time.Time `gorm:"not null;autoCreateTime"`
 }
 
 
@@ -274,7 +279,7 @@ type APPLICATION_DB_METHOD interface {
 
 	UpdateFinishScanning(int64) error
 
-	FetchMonthlyAssessment() ([]*types.MonthlyAssessment, error)
+	FetchMonthlyAssessment(string) ([]*types.MonthlyAssessment, error)
 }
 
 
@@ -441,7 +446,7 @@ func (sql *SQL) FetchArchitechturalRequirements(applicationID int64) (*types.Arc
 	var requirements *types.ArchitecturalRequirements
 
 	result := sql.DB.Table("architectural_requirements").
-        Select("application_id, ramps, stairs, walk_ways, comfort_rooms, drinking_fountains, switches_controls, telephone_booth, automatic_alarm_system, directional_signs, reserved_parking, wallbay_sections, stairs_interior_exterior, fire_exit, built_in_cabinets, partitions, schedule_doors_windows, schedule_finishes, other_architectural_elements, space_plan, architecture_interior, furniture_funishing_equipments, detail_design_architectural, plan_layout_interior, interior_wall_elevations, floor_ceiling_wall_patterns_details, list_material_used, cost_estimates, plans_specific_locations, design_accessibility_facilities, plan_evacuation_route, details_windows_fire_exits, details_fire_resistive_vertical_openings, details_fire_resistive_decorative_materials").
+        Select("application_id, ramps, stairs, walk_ways, comfort_rooms, drinking_fountains, switches_controls, telephone_booth, automatic_alarm_system, directional_signs, reserved_parking, wallbay_sections, stairs_interior_exterior, fire_exit, built_in_cabinets, partitions, schedule_doors_windows, schedule_finishes, other_architectural_elements, space_plan, architecture_interior, furniture_funishing_equipments, detail_design_architectural, plan_layout_interior, interior_wall_elevations, floor_ceiling_wall_patterns_details, list_material_used, cost_estimates, plans_specific_locations, design_accessibility_facilities, plan_evacuation_route, details_windows_fire_exits, details_fire_resistive_vertical_openings, details_fire_resistive_decorative_materials, updated_at").
         Where("application_id = ?", applicationID).
         First(&requirements)
 
@@ -457,7 +462,7 @@ func (sql *SQL) FetchCivilRequirements(applicationID int64) (*types.CivilRequire
 	var requirements *types.CivilRequirements
 
 	result := sql.DB.Table("civil_requirements").
-        Select("application_id, site_development_plan, foundation_plans, roof_floor_framing_plans, details_schedule_civil_work_elements, structural_analysis_design, boring_load_test, seismic_analysis").
+        Select("application_id, site_development_plan, foundation_plans, roof_floor_framing_plans, details_schedule_civil_work_elements, structural_analysis_design, boring_load_test, seismic_analysis, updated_at").
         Where("application_id = ?", applicationID).
         First(&requirements)
 
@@ -474,7 +479,7 @@ func (sql *SQL) FetchElectricalRequirements(applicationID int64) (*types.Electri
 	var requirements *types.ElectricalRequirements
 
 	result := sql.DB.Table("electrical_requirements").
-        Select("application_id, location_site_plan, legend_symbols, general_notes, electrical_layout, schedule_loads, design_analysis, one_line_diagram").
+        Select("application_id, location_site_plan, legend_symbols, general_notes, electrical_layout, schedule_loads, design_analysis, one_line_diagram, updated_at").
         Where("application_id = ?", applicationID).
         First(&requirements)
 
@@ -1546,19 +1551,24 @@ func (sql *SQL) UpdateFinishScanning(applicationID int64) error {
 }
 
 
-func (sql *SQL) FetchMonthlyAssessment() ([]*types.MonthlyAssessment, error) {
+func (sql *SQL) FetchMonthlyAssessment(permitType string) ([]*types.MonthlyAssessment, error) {
+    monthlyData := make([]*types.MonthlyAssessment, 0)
 
-	monthlyData := make([]*types.MonthlyAssessment, 0)
+    query := sql.DB.Table("assessments").
+        Select("TO_CHAR(assessments.created_at, 'FMMonth') AS month_name, DATE_PART('month', assessments.created_at)::int AS month_number, SUM(assessments.total_assesment) AS total_assessment").
+        Joins("JOIN applications ON assessments.application_id = applications.id")
 
-	err := sql.DB.Table("assessments").
-		Select("TO_CHAR(created_at, 'FMMonth') AS month_name, DATE_PART('month', created_at)::int AS month_number, SUM(total_assesment) AS total_assessment").
-		Group("month_name, month_number").
-		Order("month_number").
-		Scan(&monthlyData).Error
+    if permitType != "All" {
+        query = query.Where("applications.permit_type = ?", permitType)
+    }
 
-	if err != nil {
-		return nil, err
-	}
+    err := query.Group("month_name, month_number").
+        Order("month_number").
+        Scan(&monthlyData).Error
 
-	return monthlyData, nil
+    if err != nil {
+        return nil, err
+    }
+
+    return monthlyData, nil
 }

@@ -1,4 +1,4 @@
-import { useState } from "react"
+import { ChangeEvent, useState } from "react"
 import { SideBar } from "../../../components/SideBar"
 import { PTMSHeader } from "../../../components/PtmsHeader";
 
@@ -18,11 +18,26 @@ import { ApplicationPerBarangay, ApplicationPerPermitTypeChart, ApplicationPerYe
 import StaffARNotifButton from "../../../components/staff/StaffARNotifButton";
 
 
+const permitTypes = [
+    { permit_type: "All" },
+    { permit_type: "Plumbing" },
+    { permit_type: "Electrical" },
+    { permit_type: "Electronics" },
+    { permit_type: "Excavation" },
+    { permit_type: "Mechanical" },
+    { permit_type: "Fencing" },
+    { permit_type: "Signed" },
+    { permit_type: "Demolition"},
+
+];
+
+
 function ArchitecturalDashboardPage() {
 
     const [openStaffAccessModal, setOpenStaffAccessModal] = useState<boolean>(false);
     const [openAdminAccessModal, setOpenAdminAccessModal] = useState<boolean>(false);
-   
+    const [selectedAssessmentPermit, setSelectedAssessmentPermit] = useState<string>(permitTypes[0].permit_type);
+
     const toggleStaffAccessModal = () => {
         setOpenStaffAccessModal((prevState) => {
             if (!prevState) setOpenAdminAccessModal(false);
@@ -36,6 +51,14 @@ function ArchitecturalDashboardPage() {
             return !prevState;
         });
     };
+
+
+    const onPermitChange = (e: ChangeEvent<HTMLSelectElement>) => {
+        setSelectedAssessmentPermit(e.target.value)
+    }
+
+    console.log("selectedAssessmentPermit: ", selectedAssessmentPermit);
+    
 
 
     return (
@@ -101,7 +124,25 @@ function ArchitecturalDashboardPage() {
                             </div>
 
                             <div className="w-1/2 p-2">
-                                <MonthlyAssessmentChart />
+                                <div className="w-[80%] flex justify-end">
+                                    <select 
+                                        id="permitTypes" 
+                                        className="w-[40%] focus:outline-none border-2 border-orange-700 p-1 rounded-md"
+                                        onChange={onPermitChange}
+                                    >
+                                        {
+                                            permitTypes.map((permit, index) => (
+                                                <option 
+                                                    key={index} 
+                                                    value={permit.permit_type}
+                                                >
+                                                    {permit.permit_type}
+                                                </option>
+                                            ))
+                                        }
+                                    </select>
+                                </div>
+                                <MonthlyAssessmentChart selectedAssessmentPermit={selectedAssessmentPermit} />
                             </div>
                         </div>
 

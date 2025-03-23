@@ -151,11 +151,16 @@ export function ApplicationPerBarangay() {
 
 
 
-export function MonthlyAssessmentChart() {
+export function MonthlyAssessmentChart({
+    selectedAssessmentPermit
+}: {
+    selectedAssessmentPermit: string
+}) {
+
     const { data: response } = useQuery({
-      queryKey: ["monthly_assessment"],
+      queryKey: ["monthly_assessment", selectedAssessmentPermit],
       queryFn: async () => {
-        return await FetchMonthlyAssesssment();
+        return await FetchMonthlyAssesssment(selectedAssessmentPermit);
       },
     });
   
