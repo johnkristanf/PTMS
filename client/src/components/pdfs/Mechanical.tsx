@@ -12,7 +12,7 @@ import { PermitBodyBox9 } from './mechanical/box/box9';
 import { PermitBodyBox10 } from './mechanical/box/box10';
 import { PermitBodyBox11 } from './mechanical/box/box11';
 import { AppliedServices } from '../../types/application';
-import { PermitBodyBox12 } from './mechanical/box/box12';
+// import { PermitBodyBox12 } from './mechanical/box/box12';
 
 function MechanicalPermit({ permitInfo, setPermitsInfo }: { 
     permitInfo: AppliedServices,
@@ -72,7 +72,7 @@ export function MechanicalPermitComponent({ permitInfo }: {
 
             {
                 permitInfo && permitInfo.permit_type != "Building" && (
-                    <Page size={{ width: 595.28, height: 1400 }} style={styles.page}>
+                    <Page size="LETTER" style={styles.page}>
                         <View style={styles.pageContainer2}>
                             <PermitBodyBox11 permitInfo={permitInfo} />
                         </View>
@@ -81,13 +81,17 @@ export function MechanicalPermitComponent({ permitInfo }: {
             }
             
 
-            <Page size={{ width: 595.28, height: 1400 }} style={styles.page}>
+            <Page size="LETTER" style={styles.page}>
                 <View style={styles.pageContainer}>
                     <Image src="/img/no_to_fixer.png" style={styles.headerImage} />
                     <PermitBodyBox1 permitInfo={permitInfo} />
                     <PermitBodyBox2 permitInfo={permitInfo} />
                     
-                    {/* Container for Box4 and Box6 */}
+                </View>
+            </Page>
+
+                <Page size="LETTER" style={styles.page}>
+                    
                     <View style={styles.box4And6Container}>
                         <View style={styles.box4}>
                             <PermitBodyBox3 permitInfo={permitInfo} />
@@ -98,35 +102,34 @@ export function MechanicalPermitComponent({ permitInfo }: {
                             <PermitBodyBox6 permitInfo={permitInfo} />
                         </View>
                     </View>
-                    {/* End Container */}
-                    
-                </View>
-            </Page>
+                </Page>
 
-            <Page size={{ width: 595.28, height: 1400 }} style={styles.page}>
-                <View style={styles.pageContainer3}>
-                    <PermitBodyBox7 permitInfo={permitInfo} />
-                    <PermitBodyBox8 permitInfo={permitInfo} />
-                    <PermitBodyBox9 permitInfo={permitInfo} />
-                    <PermitBodyBox10 permitInfo={permitInfo} />
-                </View>
-            </Page>
+
+                <Page size="LETTER" style={styles.page}>
+
+                    <View style={styles.pageContainer3}>
+                        <PermitBodyBox7 permitInfo={permitInfo} />
+                        <PermitBodyBox8 permitInfo={permitInfo} />
+                        <PermitBodyBox9 permitInfo={permitInfo} />
+                        <PermitBodyBox10 permitInfo={permitInfo} />
+                    </View>
+                </Page>
 
          
 
             {/* COMPLETION NI SA MECHANICAL */}
 
 
-            {
+            {/* {
                 permitInfo && permitInfo.permit_type != "Building" && (
-                    <Page size={{ width: 595.28, height: 1400 }} style={styles.page}>
+                    <Page size="LETTER" style={styles.page}>
                         <View style={styles.pageContainer}>
                         <Image src="/img/no_to_fixer-mono.jpg" style={styles.headerImage} />
                             <PermitBodyBox12 permitInfo={permitInfo} />
                         </View>
                     </Page>
                 )
-            }
+            } */}
 
            
         </>
@@ -160,14 +163,12 @@ const styles = StyleSheet.create({
     },
     pageContainer3: {
         width: '100%',
-        marginTop: 60,
         paddingHorizontal: 20,
     },
     box4And6Container: {
         flexDirection: 'row',
         justifyContent: 'space-between',
         width: '100%',
-        marginTop: 2, // Adjust as needed
     },
     box4: {
         width: '48%', // Adjust the width to fit side by side

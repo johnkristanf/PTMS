@@ -81,21 +81,28 @@ export function ElectricalComponentPermit({ permitInfo }: {
         }
 
 
-        <Page size={{ width: 595.28, height: 1400 }} style={styles.page}>
+        <Page size="LETTER" style={styles.page}>
             <View style={styles.pageContainer}>
                 <PermitBodyBox1 permitInfo={permitInfo} />
                 <PermitBodyBox2 permitInfo={permitInfo} />
                 <PermitBodyBox3  />
                 <PermitBodyBox4 permitInfo={permitInfo} />
                 <PermitBodyBox5  />
+                <PermitBodyBox6  />
+
             </View>
+
+            {/* <View style={styles.pageContainer}>
+                <PermitBodyBox6  />
+
+            </View> */}
         </Page>
 
-        <Page size={{ width: 595.28, height: 1400 }} style={styles.page}>
-            <View style={styles.pageContainer}>
+        {/* <Page size="LETTER" style={styles.page}>
+                <View style={styles.pageContainer}>
                     <PermitBodyBox6  />
                 </View>
-        </Page>
+        </Page> */}
         </>
         
     );

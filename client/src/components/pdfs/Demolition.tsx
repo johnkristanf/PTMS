@@ -70,13 +70,13 @@ function MyPDFDocument({ permitInfo }: {
     return (
     <>
 
-        <Page size={{ width: '595.28pt', height: '1000pt' }} style={styles.page}>
+        <Page size="LETTER" style={styles.page}>
             <View style={styles.pageContainer2}>
                 <PermitBodyBox14 permitInfo={permitInfo} />
             </View>
         </Page>
     
-        <Page size={{ width: '595.28pt', height: '1000pt' }} style={styles.page}>
+        <Page size="LETTER" style={styles.page}>
             <View style={styles.pageContainer}>
             <Image src="/img/no_to_fixer.png" style={styles.headerImage} />
                 <PermitBodyBox1 permitInfo={permitInfo} />
@@ -85,14 +85,14 @@ function MyPDFDocument({ permitInfo }: {
             </View>
         </Page>
 
-        <Page size={{ width: '595.28pt', height: '1000pt' }} style={styles.page}>
+        <Page size="LETTER" style={styles.page}>
             <View style={styles.pageContainer}>
                 <PermitBodyBox5  />
                 <PermitBodyBox6  />
             </View>
         </Page>
 
-        <Page size={{ width: '595.28pt', height: '1000pt' }} style={styles.page}>
+        <Page size="LETTER" style={styles.page}>
             <View style={styles.pageContainer}>
                 <PermitBodyBox789  />
                 <PermitBodyBox10  />
@@ -100,7 +100,7 @@ function MyPDFDocument({ permitInfo }: {
         </Page>
 
 
-        <Page size={{ width: '595.28pt', height: '1000pt' }} style={styles.page}>
+        <Page size="LETTER" style={styles.page}>
             <View style={styles.pageContainer}>
                 <PermitBodyBox11 permitInfo={permitInfo} />
                 <PermitBodyBox12 />

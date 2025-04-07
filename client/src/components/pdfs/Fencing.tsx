@@ -77,7 +77,7 @@ export function FencingPermitComponent({ permitInfo }: {
 
         {
             permitInfo && permitInfo.permit_type != "Building" && (
-                <Page size={{ width: 595.28, height: 1400 }} style={styles.page}>
+                <Page size="LETTER" style={styles.page}>
                     <View style={styles.pageContainer2}>
                         <PermitBodyBox13 permitInfo={permitInfo} />
                     </View>
@@ -86,7 +86,7 @@ export function FencingPermitComponent({ permitInfo }: {
         }
         
         
-        <Page size={{ width: 595.28, height: 1400 }} style={styles.page}>
+        <Page size="LETTER" style={styles.page}>
             <View style={styles.pageContainer}>
                 <PermitBodyBox1 permitInfo={permitInfo} />
                 <PermitBodyBox2 permitInfo={permitInfo} />
@@ -102,13 +102,20 @@ export function FencingPermitComponent({ permitInfo }: {
                         </View>
                     </View>
                     {/* End Container */}
-                    <PermitBodyBox6  />
             </View>
         </Page>
-    <Page size={{ width: 595.28, height: 1400 }} style={styles.page}>
+
+    <Page size="LETTER" style={styles.page}>
         <View style={styles.pageContainer}>
+            <PermitBodyBox6  />
             <PermitBodyBox7 permitInfo={permitInfo} />
             <PermitBodyBox8 permitInfo={permitInfo} />
+           
+        </View>
+    </Page>
+
+    <Page size="LETTER" style={styles.page}>
+        <View style={styles.pageContainer}>
             <PermitBodyBox9 permitInfo={permitInfo} />
             <PermitBodyBox10 />
         </View>
@@ -117,7 +124,7 @@ export function FencingPermitComponent({ permitInfo }: {
 
     {/* DLI NI COMPLETION EXTRA SHITS NI */}
 
-    {/* <Page size={{ width: 595.28, height: 1400 }} style={styles.page}>
+    {/* <Page size="LETTER" style={styles.page}>
         <View style={styles.pageContainer}>
             <PermitBodyBox11 permitInfo={permitInfo} />
             <PermitBodyBox12 permitInfo={permitInfo} />

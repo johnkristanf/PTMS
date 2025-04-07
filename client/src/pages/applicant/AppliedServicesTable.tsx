@@ -129,7 +129,7 @@ function ServicesPage(){
                 }
 
                 {
-                    !openCompletion && permits && permits.permit_type === "Fence" && <FencingPermit permitInfo={permits} setPermitsInfo={setPermits} />
+                    !openCompletion && permits && permits.permit_type === "Fencing" && <FencingPermit permitInfo={permits} setPermitsInfo={setPermits} />
                 }
 
                 {
@@ -187,7 +187,7 @@ function ServicesPage(){
                 }
 
                 {
-                    openCompletion && permits && permits.permit_type === "Fence"  && <FenceCompletionPDF permitInfo={permits} setPermitsInfo={setPermits} /> 
+                    openCompletion && permits && permits.permit_type === "Fencing"  && <FenceCompletionPDF permitInfo={permits} setPermitsInfo={setPermits} /> 
                 }
 
                 {

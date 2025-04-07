@@ -1,6 +1,7 @@
 import { Text, StyleSheet, View, Svg, Path } from '@react-pdf/renderer';
 import { AppliedServices, ConstructionOwnership, PermitAddress, PermitName } from '../../../types/application';
 import { PermitBodyBox2 } from './box2';
+// import PermitBodyBox3 from './box3';
 
 export function PermitBodyBox1({permitInfo}:{ 
     permitInfo: AppliedServices 
@@ -62,6 +63,8 @@ export function PermitBodyBox1({permitInfo}:{
                 
 
                 <PermitBodyBox2 />
+
+                {/* <PermitBodyBox3 /> */}
                
             </View>
 

@@ -10,7 +10,7 @@ export function PermitBodyBox5() {
     // ]
 
     return (
-        <Image source="/img/plumbing/plumbing_box5.png" style={{width: '90%', height: "15%", marginTop: 15}}/>
+        <Image source="/img/plumbing/plumbing_box5.png" style={{width: '100%', height: "15%", marginTop: 15}}/>
     )
 }
 

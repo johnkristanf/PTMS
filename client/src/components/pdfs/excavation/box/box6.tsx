@@ -5,7 +5,7 @@ import box1Image from '/img/excavation/box6.png';
 export function PermitBodyBox6() {
     return (
         <View style={styles.imageContainer}>
-            <Image source={ box1Image }/>
+            <Image source={ box1Image } style={{ width: '100%' }}/>
         </View>
     );
 }

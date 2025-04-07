@@ -75,7 +75,7 @@ export function PermitBodyBox1({ permitInfo }: { permitInfo: AppliedServices }) 
                             {/* Insert individual digits of APPLICATION NO. here */}
                             {/* Multi-Cell Box (for data entry) */}
                         <View style={styles.multiCellBox}>
-                            {Array.from({ length: 5 }).map((_, index) => (
+                            {Array.from({ length: 10 }).map((_, index) => (
                                 <View key={index} style={styles.cell}>
                                     {/* Replace `permitInfo.cellData[index]` with actual data you want to display */}
                                     <Text style={styles.cellData}>{data.applicationCode ? data.applicationCode[index] : ''}</Text>

@@ -38,7 +38,7 @@ export function PlumbingPermitComponent({ permitInfo }: {
             )
         }
 
-        <Page size={{ width: 595.28, height: 1400 }} style={styles.page}>
+        <Page size="LETTER" style={styles.page}>
   
           <PermitHeader  applicationCode={applicationCode} />
     
@@ -47,14 +47,22 @@ export function PlumbingPermitComponent({ permitInfo }: {
           </View>
 
     
-          <View style={styles.body3}>
             <PermitBodyBox4 />
-          </View>
     
             <PermitBodyBox5 />
+
+            <PermitBodyBox6 />
+      
+            <PermitBodyBox7 />
+
+            <PermitBodyBox8 />
+
+            <PermitBodyBox9 />
+
+            <PermitBodyBox10 />
         </Page>
 
-        <Page size={{ width: 595.28, height: 1400 }} style={styles.page}>
+        {/* <Page size="LETTER" style={styles.page}>
           <PermitBodyBox6 />
       
           <PermitBodyBox7 />
@@ -65,7 +73,7 @@ export function PlumbingPermitComponent({ permitInfo }: {
 
           <PermitBodyBox10 />
 
-        </Page>
+        </Page> */}
     
            
       </>

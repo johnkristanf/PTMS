@@ -10,7 +10,7 @@ export function ApplicationLetter({applicationLetterInfo}: {
 }) {
 
     return (
-      <Page size="A4" style={styles.page}>
+      <Page size="LETTER" style={styles.page}>
         <LetterHeader />
 
         <View style={styles.letter_body}>

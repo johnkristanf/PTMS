@@ -70,13 +70,13 @@ function MyPDFDocument({ permitInfo }: {
     return (
         <>
 
-            <Page size={{ width: '595.28pt', height: '1000pt' }} style={styles.page}>
+            <Page size="LETTER" style={styles.page}>
                 <View style={styles.pageContainer2}>
                     <PermitBodyBox9 permitInfo={permitInfo} />
                 </View>
             </Page>
             
-            <Page size={{ width: '595.28pt', height: '1000pt' }} style={styles.page}>
+            <Page size="LETTER" style={styles.page}>
                 <View style={styles.pageContainer}>
                     <PermitBodyBox1 permitInfo={permitInfo} />
                     <PermitBodyBox2 permitInfo={permitInfo} />
@@ -87,7 +87,7 @@ function MyPDFDocument({ permitInfo }: {
                 </View>
             </Page>
 
-            <Page size={{ width: '595.28pt', height: '1000pt' }} style={styles.page}>
+            <Page size="LETTER" style={styles.page}>
                 <View style={styles.pageContainer}>
                     <PermitBodyBox7 permitInfo={permitInfo} />
                     <PermitBodyBox8 permitInfo={permitInfo} />
@@ -96,7 +96,7 @@ function MyPDFDocument({ permitInfo }: {
 
             
 
-            <Page size={{ width: '595.28pt', height: '1000pt' }} style={styles.page}>
+            <Page size="LETTER" style={styles.page}>
                 <View style={styles.pageContainer}>
                     <PermitBodyBox10 />
                     <PermitBodyBox11 permitInfo={permitInfo} />
