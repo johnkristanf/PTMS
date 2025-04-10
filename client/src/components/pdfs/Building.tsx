@@ -215,13 +215,13 @@ const styles = StyleSheet.create({
   page: {
     flexDirection: 'column',
     alignItems: 'center',
-    padding: 30,
+    padding: 10,
   },
   body1: {
     width: '100%',
     height: '50%',
     marginTop: 60,
-    paddingHorizontal: 20
+    paddingHorizontal: 20,
   },
   body2: {
     width: '100%',

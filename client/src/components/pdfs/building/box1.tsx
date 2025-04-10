@@ -1,4 +1,4 @@
-import { Text, StyleSheet, View, Svg, Path } from '@react-pdf/renderer';
+import { Text, StyleSheet, View, Svg, Path, Image } from '@react-pdf/renderer';
 import { AppliedServices, ConstructionLocationTypes, ConstructionOwnership, PermitAddress, PermitName } from '../../../types/application';
 
 export function PermitBodyBox1({permitInfo}:{ 
@@ -57,8 +57,10 @@ export function PermitBodyBox1({permitInfo}:{
                         <OccupancyOFBuilding />
 
                         <OccupancyOFCharacter characterOccupancy={permitInfo.characterOfOccupancy}/>
+                        
                     </View>
 
+                    <Image source="/img/building/shaded-boxes.png" style={{width: 300}}/>
 
                 </View>
 
@@ -434,7 +436,7 @@ function OccupancyOFCharacter({ characterOccupancy }: { characterOccupancy: stri
     ];
 
     return (
-        <View style={{ borderBottom: '2px solid black', padding: 5, flexDirection: 'column', gap: 5 }}>
+        <View style={{ borderBottom: '2px solid black', padding: 6, flexDirection: 'column', gap: 4 }}>
 
             <Text style={styles.boxes_text}>USE OR CHARACTER OF OCCUPANCY : </Text>
 
@@ -584,7 +586,6 @@ const styles = StyleSheet.create({
         border: '2px solid black',
     },
 
-    
     checkMark: {
         backgroundColor: 'black',
     },
@@ -604,7 +605,7 @@ const styles = StyleSheet.create({
         width: '150%',
         flexDirection: 'row',
         justifyContent: 'space-around',
-        padding: 10
+        padding: 6
     },
 
    
@@ -630,7 +631,7 @@ const styles = StyleSheet.create({
     },
 
     boxes_text: {
-        fontSize: 8
+        fontSize: 5.8
     },
 
     checkbox: {
