@@ -8,6 +8,7 @@ import { PermitBodyBox5 } from './electrical/box/box5';
 import { PermitBodyBox6 } from './electrical/box/box6';
 import { ApplicationLetterInfoTypes, AppliedServices } from '../../types/application';
 import { ApplicationLetter } from './application_letter/ApplicationLetter';
+import BackPageElectricalPDF from './electrical/backPage/BackPageElectrical';
 
 function ElectricalPermit({ permitInfo, setPermitsInfo }: { 
     permitInfo: AppliedServices,
@@ -91,18 +92,12 @@ export function ElectricalComponentPermit({ permitInfo }: {
                 <PermitBodyBox6  />
 
             </View>
-
-            {/* <View style={styles.pageContainer}>
-                <PermitBodyBox6  />
-
-            </View> */}
         </Page>
 
-        {/* <Page size="LETTER" style={styles.page}>
-                <View style={styles.pageContainer}>
-                    <PermitBodyBox6  />
-                </View>
-        </Page> */}
+        
+        <BackPageElectricalPDF permitInfo={permitInfo} />
+
+
         </>
         
     );
