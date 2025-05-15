@@ -784,6 +784,28 @@ func (h *ApplicationHandler) UpdateApplicantFormDocumentHandler(c echo.Context) 
 }
 
 
+func (h *ApplicationHandler) UpdateFirstStepReqDocumentHandler(c echo.Context) error {
+
+	firstStepReqDocument := &types.FirstStepReqDocuments{}
+	if err := c.Bind(&firstStepReqDocument); err != nil {
+        return c.JSON(http.StatusBadRequest, err.Error())
+    }
+
+
+	if err := h.DB_METHOD.UpdateFirstStepReqDocument(firstStepReqDocument); err != nil {
+		return c.JSON(http.StatusInternalServerError, map[string]error{
+			"internal server error": err,
+		})
+	}
+	
+	return c.JSON(http.StatusOK, map[string]interface{}{
+		"id": firstStepReqDocument.ID,
+		"document array": firstStepReqDocument.FirstStepReqDocuments,
+	})
+
+}
+
+
 func (h *ApplicationHandler) UpdateCompletionFormDocumentHandler(c echo.Context) error {
 
 	completionFormDocument := &types.CompletionFormDocument{}

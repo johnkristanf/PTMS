@@ -60,6 +60,7 @@ func ApplicationRoutes(e *echo.Echo, h *handlers.ApplicationHandler) {
 	g.GET("/fetch/occupancy/:application_id", h.FetchOccupancyDataHandler, h.JWT_METHOD.AutheticationMiddleware)
 
 	g.PUT("/update/applicantForm/document", h.UpdateApplicantFormDocumentHandler, h.JWT_METHOD.StaffAdminAutheticationMiddleware)
+	g.PUT("/update/firstStepReq/document", h.UpdateFirstStepReqDocumentHandler, h.JWT_METHOD.StaffAdminAutheticationMiddleware)
 	g.PUT("/update/completionForm/document", h.UpdateCompletionFormDocumentHandler, h.JWT_METHOD.StaffAdminAutheticationMiddleware)
 	g.PUT("/update/additionalForm/document", h.UpdateAdditionalFormDocumentHandler, h.JWT_METHOD.StaffAdminAutheticationMiddleware)
 	g.PUT("/finish/scanning", h.UpdateFinishScanningHandler, h.JWT_METHOD.StaffAdminAutheticationMiddleware)

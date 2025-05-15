@@ -56,12 +56,13 @@ export type Application = {
     assessment_status: string
 
     applicant_form_documents: string[]
+    first_step_req_documents: string[]
     completion_form_documents: string[]
     additional_form_documents: string[]
 
     is_finish_scanning: boolean,
 
-    scopeType: string
+    scope_type: string
     characterOfOccupancy: string,
 
     created_at: string
@@ -339,9 +340,11 @@ export type ArchitecturalRequirementFormData = {
     Details_FireResistive_Vertical_Openings: boolean;
     Details_FireResistive_Decorative_Materials: boolean;
 
-    updated_at: string;
+    updated_at?: string;
 
 };
+
+
 
 
 export type CivilRequirementFormData = {

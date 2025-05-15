@@ -1,6 +1,6 @@
 import axios from "axios";
 import { DOMAIN_NAME } from "../../envPaths";
-import { AdditionalFormDocument, ApplicantFormDocument, CompletionFormDocument } from "@/types/document";
+import { AdditionalFormDocument, ApplicantFormDocument, CompletionFormDocument, FirstStepReqDocument } from "@/types/document";
 
 export const UpdateApplicantFormDocuments = async (data: ApplicantFormDocument) => {
     return axios.put(`${DOMAIN_NAME}/application/update/applicantForm/document`, data, {
@@ -8,6 +8,12 @@ export const UpdateApplicantFormDocuments = async (data: ApplicantFormDocument) 
     });
 }
 
+
+export const UpdateFirstStepReqDocuments = async (data: FirstStepReqDocument) => {
+    return axios.put(`${DOMAIN_NAME}/application/update/firstStepReq/document`, data, {
+        withCredentials: true
+    });
+}
 
 
 export const UpdateCompletionFormDocuments = async (data: CompletionFormDocument) => {

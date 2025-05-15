@@ -455,32 +455,6 @@ export const ServiceModalForm = ({ selectedService, setServiceModalOpen, role }:
 
 
                         
-                        <div className="w-full border border-gray-300 p-3 rounded-md">
-
-                            {/* <label className="">Enter Ownership</label> */}
-                            <div className="flex gap-5">
-                                {
-                                    applicantOwnership.map((data) => (
-                                        <div className='flex flex-col  w-full'>
-                                            <label>{data.placeHolder}</label>
-                                            <input 
-                                                key={data.registerName}
-                                                type={data.inputType} 
-                                                className={classNames("capitalize placeholder-black  rounded-md p-2 border border-black focus:border-orange-700 focus:outline-none w-full")}
-                                                {...register(data.registerName as keyof ApplicantInfo)}
-                                            />
-
-                                            {/* {errors[data.registerName as keyof ApplicantInfo] && (
-                                                <p className="text-red-500 text-sm mt-1">
-                                                    {errors[data.registerName as keyof ApplicantInfo]?.message}
-                                                </p>
-                                            )} */}
-
-                                        </div>
-                                    ))
-                                }
-                            </div>
-                        </div>
 
 
                         <div className="w-full border border-gray-300 p-3 rounded-md">

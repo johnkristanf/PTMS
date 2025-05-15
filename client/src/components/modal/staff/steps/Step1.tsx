@@ -1,31 +1,28 @@
-import { useEffect, useRef, useState } from "react";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { UploadDocument } from "@/http/post/document";
-import Swal from "sweetalert2";
-import { UpdateApplicantFormDocuments } from "@/http/put/document";
-import { ApplicantFormDocument } from "@/types/document";
+import { useEffect, useState } from 'react'
+import { useMutation, useQueryClient } from '@tanstack/react-query'
+import { UploadDocument } from '@/http/post/document'
+import Swal from 'sweetalert2'
+import { UpdateApplicantFormDocuments } from '@/http/put/document'
+import { ApplicantFormDocument } from '@/types/document'
+import { Application } from '@/types/application'
 
-export function DocumentStep1({ applicationID, applicantCode, applicant_form_documents }: {
-    applicationID: number
-    applicantCode: string | undefined,
-    applicant_form_documents: string[]
+export function DocumentStep1({
+    applicationData
+}: {
+    applicationData: Application
 }) {
+    console.log('applicationScopeType: ', applicationData.scope_type)
+    console.log('applicant_form_documents: ', applicationData.applicant_form_documents)
 
-    console.log("applicant_form_documents (from DB): ", applicant_form_documents);
-    
-
-    const [documents, setDocuments] = useState<string[]>(applicant_form_documents || []);
-    const [newDocument, setNewDocument] = useState("");
-    const fileInputRef = useRef<HTMLInputElement | null>(null);
-    const queryClient = useQueryClient();
-
+    const [documents, setDocuments] = useState<string[]>(applicationData.applicant_form_documents || [])
+    const queryClient = useQueryClient()
 
     const updateApplicantFormDocumentsMutation = useMutation({
         mutationFn: UpdateApplicantFormDocuments,
         onSuccess: (response) => {
-            Swal.close();
-            queryClient.invalidateQueries({ queryKey: ["approved_applications"] });
-            console.log("Update Response: ", response);
+            Swal.close()
+            queryClient.invalidateQueries({ queryKey: ['approved_applications'] })
+            console.log('Update Response: ', response)
         },
 
         onMutate: () => {
@@ -35,57 +32,30 @@ export function DocumentStep1({ applicationID, applicantCode, applicant_form_doc
                 allowOutsideClick: false,
                 showConfirmButton: false,
                 willOpen: () => {
-                    Swal.showLoading();
+                    Swal.showLoading()
                 },
-            });
+            })
         },
 
         onError: (error: unknown) => {
-            Swal.close();
-            console.error("Document Upload Error:", error);
+            Swal.close()
+            console.error('Document Upload Error:', error)
         },
         onSettled: () => {
-            Swal.close();
+            Swal.close()
         },
-    });
+    })
 
-
-    const addDocument = () => {
-        if (newDocument.trim() !== "") {
-            const updatedDocuments = [...documents, newDocument];
-            setDocuments(updatedDocuments);
-
-            const data: ApplicantFormDocument = {
-                application_id: applicationID,
-                applicant_form_documents: updatedDocuments
-            }
-            
-            updateApplicantFormDocumentsMutation.mutate(data)
-            setNewDocument("");
-        }
-
-    };
-
+   
 
     useEffect(() => {
-        setDocuments(applicant_form_documents || []);
-    }, [applicant_form_documents]);
+        setDocuments(applicationData.applicant_form_documents || [])
+    }, [applicationData.applicant_form_documents])
 
-    console.log("document new: ", documents);
-
+    console.log('document new: ', documents)
 
     const uploadDocumentMutation = useMutation({
         mutationFn: UploadDocument,
-        onSuccess: () => {
-            queryClient.invalidateQueries({ queryKey: ["approved_applications"] });
-
-            Swal.fire({
-                icon: "success",
-                title: "File Uploaded Successfully",
-                showConfirmButton: false,
-                timer: 1500,
-            });
-        },
 
         onMutate: () => {
             Swal.fire({
@@ -94,98 +64,151 @@ export function DocumentStep1({ applicationID, applicantCode, applicant_form_doc
                 allowOutsideClick: false,
                 showConfirmButton: false,
                 willOpen: () => {
-                    Swal.showLoading();
+                    Swal.showLoading()
                 },
-            });
+            })
         },
 
         onError: (error: unknown) => {
-            console.error("Document Upload Error:", error);
+            console.error('Document Upload Error:', error)
         },
-    });
+    })
 
-
-    const handleDocumentUpload = async (file : File, applicationCode: string) => {
-    
+    const handleDocumentUpload = async (file: File, applicationCode: string, key: string) => {
         try {
-            const formData = new FormData();
-            formData.append("document", file);
-            formData.append("application_code", applicationCode);
-    
-            uploadDocumentMutation.mutate(formData)
-                
+            const formData = new FormData()
+            formData.append('document', file)
+            formData.append('application_code', applicationCode)
+
+            uploadDocumentMutation.mutate(formData, {
+                onSuccess: () => {
+                    const updatedDocuments = [...new Set([...documents, key])] // Prevent duplicates
+
+                    const data: ApplicantFormDocument = {
+                        application_id: applicationData.application_id,
+                        applicant_form_documents: updatedDocuments,
+                    }
+
+                    updateApplicantFormDocumentsMutation.mutate(data)
+                    setDocuments(updatedDocuments)
+
+                    queryClient.invalidateQueries({ queryKey: ['approved_applications'] })
+
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'File Uploaded Successfully',
+                        showConfirmButton: false,
+                        timer: 1500,
+                    })
+                },
+            })
         } catch (error) {
-            console.error("File upload failed", error);
-            alert("File upload failed");
+            console.error('File upload failed', error)
+            alert('File upload failed')
         }
     }
-    
-    
-    const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const file = e.target.files?.[0];
-    
-        console.log("filename: ", file?.name);
-            
-        if (file && applicantCode) {
-            handleDocumentUpload(file, applicantCode); 
+
+    const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>, key: string) => {
+        const file = e.target.files?.[0]
+
+        console.log('filename: ', file?.name)
+
+        if (file && applicationData.applicationCode) {
+            handleDocumentUpload(file, applicationData.applicationCode, key)
         }
-    };
+    }
+
+    const scopeTypeArray = applicationData.scope_type.split(',')
+    const scopeSet = new Set(scopeTypeArray)
+
+    const scopeMappings = [
+        {
+            key: 'building',
+            label: 'Building Applicant Form',
+            condition: [...scopeSet].some((item) => item.startsWith('Building-')),
+        },
+        {
+            key: 'electrical',
+            label: 'Electrical Applicant Form',
+            condition: [...scopeSet].some((item) => item.startsWith('Electrical-')),
+        },
+        {
+            key: 'plumbing',
+            label: 'Plumbing Applicant Form',
+            condition: [...scopeSet].some((item) => item.startsWith('Plumbing-')),
+        },
+        {
+            key: 'mechanical',
+            label: 'Mechanical Applicant Form',
+            condition: [...scopeSet].some((item) => item.startsWith('Mechanical-')),
+        },
+        {
+            key: 'electronics',
+            label: 'Electronics Applicant Form',
+            condition: [...scopeSet].some((item) => item.startsWith('Electronics-')),
+        },
+        {
+            key: 'fencing',
+            label: 'Fencing Applicant Form',
+            condition: [...scopeSet].some((item) => item.startsWith('Fencing-')),
+        },
+        {
+            key: 'excavation',
+            label: 'Excavation Applicant Form',
+            condition: [...scopeSet].some((item) => item.startsWith('Excavation-')),
+        },
+    ]
 
 
+    return (
+        <div className="p-4">
+            <h1 className="text-xl font-bold mb-4">Only Applicant Form for every Services</h1>
 
-  return (
-    <div className="p-4">
-        <h1 className="text-xl font-bold mb-4">Only Applicant Form for every Services</h1>
+            {/* Display List */}
+            <div className="flex flex-col gap-2">
+                {scopeMappings
+                    .filter((scope) => scope.condition)
+                    .map(({ key, label }) => {
+                        const isUploaded = documents.includes(key)
 
-        {/* Display List */}
-        <div className="flex flex-col gap-2">
-            {applicant_form_documents.map((doc, index) => (
+                        return (
+                            <div
+                                key={key}
+                                className="flex justify-between items-center border p-2 rounded"
+                            >
+                                <input
+                                    type="file"
+                                    id={`file-${key}`}
+                                    style={{ display: 'none' }}
+                                    onClick={(e) => e.stopPropagation()}
+                                    onChange={(e) => handleFileChange(e, key)}
+                                />
 
-            <div key={index} className="flex justify-between items-center border p-2 rounded">
+                                <span className="font-semibold">
+                                    {label}
+                                    {isUploaded && (
+                                        <span className="ml-2 text-green-600 text-sm">
+                                            Scanned
+                                        </span>
+                                    )}
+                                </span>
 
-                <input
-                    type="file"
-                    ref={fileInputRef}
-                    style={{ display: "none" }}
-                    onClick={(e) => e.stopPropagation()}
-                    onChange={handleFileChange}
-                />
-
-                <span>{doc}</span>
-
-                <button 
-                    onClick={() => fileInputRef.current?.click() }
-                    className="bg-orange-700 text-white px-4 py-1 rounded hover:opacity-75"
-                >
-                    Scan
-                </button>
-
+                                {!isUploaded && (
+                                    <button
+                                        onClick={() =>
+                                            document.getElementById(`file-${key}`)?.click()
+                                        }
+                                        className="bg-orange-700 text-white px-4 py-1 rounded hover:opacity-75"
+                                    >
+                                        Scan
+                                    </button>
+                                )}
+                            </div>
+                        )
+                    })}
             </div>
-            ))}
+
+          
         </div>
-
-
-        {/* Input and Add Button */}
-        <div className="flex gap-2 mb-4 mt-5">
-            <input
-                type="text"
-                value={newDocument}
-                onChange={(e) => setNewDocument(e.target.value)}
-                className="border p-2 rounded w-[85%] focus:outline-orange-700"
-                placeholder="Enter document name"
-            />
-
-            <button
-                onClick={addDocument}
-                className="bg-orange-700 text-white px-4 py-2 rounded hover:bg-orange-800"
-            >
-            +
-            </button>
-
-        </div>
-
-        
-
-    </div>
-  );
+    )
 }

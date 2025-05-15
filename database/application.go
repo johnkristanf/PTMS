@@ -13,201 +13,193 @@ import (
 	"github.com/lib/pq"
 )
 
-
 type Application struct {
-	ID        					int64		`gorm:"primaryKey;autoIncrement:true;uniqueIndex:idx_userID"`
+	ID int64 `gorm:"primaryKey;autoIncrement:true;uniqueIndex:idx_userID"`
 
-	ServiceType					string		`gorm:"not null"`
-	ApplicationCode				string		`gorm:"not null"`
-	FirstName  					string		`gorm:"not null"`
-	MiddleInitial  				string		`gorm:"not null"`
-	LastName  					string		`gorm:"not null"`
+	ServiceType     string `gorm:"not null"`
+	ApplicationCode string `gorm:"not null"`
+	FirstName       string `gorm:"not null"`
+	MiddleInitial   string `gorm:"not null"`
+	LastName        string `gorm:"not null"`
 
-	Barangay 					string 		`gorm:"not null"`
-	Street 						string 		`gorm:"not null"`
-	Municipality 				string 		`gorm:"not null"`
-	ZipCode 					string 		`gorm:"not null"`
-	LocationForConsAndInstall 	string 		`gorm:"not null"`
+	Barangay                  string `gorm:"not null"`
+	Street                    string `gorm:"not null"`
+	Municipality              string `gorm:"not null"`
+	ZipCode                   string `gorm:"not null"`
+	LocationForConsAndInstall string `gorm:"not null"`
 
-	FormOfOwnerShip 			string 		`gorm:"not null"`
-	ConstructionOwnbyEnterprise string 		`gorm:"not null"`
+	FormOfOwnerShip             string `gorm:"not null"`
+	ConstructionOwnbyEnterprise string `gorm:"not null"`
 
+	TaxAccountNumber string `gorm:"not null"`
+	TelNumber        string `gorm:"not null"`
+	TctNumber        string `gorm:"not null"`
 
-	TaxAccountNumber			string		`gorm:"not null"`
-	TelNumber 					string 		`gorm:"not null"`
-	TctNumber					string		`gorm:"not null"`
+	PermitType string `gorm:"not null"`
+	Status     string `gorm:"not null"`
+	Email      string `gorm:"not null;index"`
+	UserID     int64  `gorm:"not null"`
 
-	PermitType					string		`gorm:"not null"`
-	Status						string		`gorm:"not null"`
-	Email     					string 		`gorm:"not null;index"`
-	UserID						int64		`gorm:"not null"`
+	ScopeType            string `gorm:"type:text"`
+	CharacterOfOccupancy string `gorm:"type:text"`
 
-	ScopeType                   string 		`gorm:"type:text"`
-	CharacterOfOccupancy        string 		`gorm:"type:text"`
+	StaffProccessStatus string `gorm:"not null"`
 
-	StaffProccessStatus 		string      `gorm:"not null"`
+	AdminApproved string `gorm:"not null"`
 
-	AdminApproved				string		`gorm:"not null"`
+	ApplicantFormDocuments  pq.StringArray `gorm:"column:applicant_form_documents;type:text[];default:'{}'" json:"applicant_form_documents"`
+	FirstStepReqDocuments   pq.StringArray `gorm:"column:first_step_req_documents;type:text[];default:'{}'" json:"first_step_req_documents"`
+	CompletionFormDocuments pq.StringArray `gorm:"column:completion_form_documents;type:text[];default:'{}'" json:"completion_form_documents"`
+	AdditionalDocuments     pq.StringArray `gorm:"column:additional_documents;type:text[];default:'{}'" json:"additional_form_documents"`
 
-	ApplicantFormDocuments      pq.StringArray  	`gorm:"column:applicant_form_documents;type:text[];default:'{}'" json:"applicant_form_documents"`
-	CompletionFormDocuments     pq.StringArray  	`gorm:"column:completion_form_documents;type:text[];default:'{}'" json:"completion_form_documents"`
-	AdditionalDocuments         pq.StringArray  	`gorm:"column:additional_documents;type:text[];default:'{}'" json:"additional_form_documents"`
+	IsFinishScanning bool `gorm:"not null;default:false"`
 
-	IsFinishScanning         	bool      			`gorm:"not null;default:false"`
-
-	ReleaseDate					string		`gorm:"not null"`
-	CreatedAt 					time.Time 	`gorm:"not null;autoCreateTime"`
+	ReleaseDate string    `gorm:"not null"`
+	CreatedAt   time.Time `gorm:"not null;autoCreateTime"`
 }
 
 type First_Step_Requirements struct {
-	ID                             int64     `gorm:"primaryKey;autoIncrement:true;uniqueIndex:idx_userID"`
-	Fully_Accomplished_Form        bool      `gorm:"not null;default:false"`
-	
-	Latest_Copy_Land_Title         bool      `gorm:"not null;default:false"`
-	Latest_Tax_Declaration         bool      `gorm:"not null;default:false"`
-	Latest_Tax_Clearance           bool      `gorm:"not null;default:false"`
+	ID                      int64 `gorm:"primaryKey;autoIncrement:true;uniqueIndex:idx_userID"`
+	Fully_Accomplished_Form bool  `gorm:"not null;default:false"`
 
-	Notarized_Deed_AbsoluteSale    bool      `gorm:"not null;default:false"`
-	Notarized_Contract_LeaseSale   bool      `gorm:"not null;default:false"`
-	Notarized_Affidavit_Consent    bool      `gorm:"not null;default:false"`
-	Notarized_ExtraJuridicial      bool      `gorm:"not null;default:false"`
-	Certificate_Award_Affidavit    bool      `gorm:"not null;default:false"`
+	Latest_Copy_Land_Title bool `gorm:"not null;default:false"`
+	Latest_Tax_Declaration bool `gorm:"not null;default:false"`
+	Latest_Tax_Clearance   bool `gorm:"not null;default:false"`
 
-	Plans                          bool      `gorm:"not null;default:false"`
-	Specifications                 bool      `gorm:"not null;default:false"`
-	Bill_Materials_Cost_Estimate   bool      `gorm:"not null;default:false"`
-	Structural_Analysis            bool      `gorm:"not null;default:false"`
+	Notarized_Deed_AbsoluteSale  bool `gorm:"not null;default:false"`
+	Notarized_Contract_LeaseSale bool `gorm:"not null;default:false"`
+	Notarized_Affidavit_Consent  bool `gorm:"not null;default:false"`
+	Notarized_ExtraJuridicial    bool `gorm:"not null;default:false"`
+	Certificate_Award_Affidavit  bool `gorm:"not null;default:false"`
 
-	Licensed_Architect_Civil       bool      `gorm:"not null;default:false"`
-	Licensed_Sanitary_Plumber      bool      `gorm:"not null;default:false"`
-	Licensed_Mechanical            bool      `gorm:"not null;default:false"`
-	Licensed_Electronics           bool      `gorm:"not null;default:false"`
+	Plans                        bool `gorm:"not null;default:false"`
+	Specifications               bool `gorm:"not null;default:false"`
+	Bill_Materials_Cost_Estimate bool `gorm:"not null;default:false"`
+	Structural_Analysis          bool `gorm:"not null;default:false"`
 
-	Barangay_Clearance             bool      `gorm:"not null;default:false"`
-	Locational_Clearance           bool      `gorm:"not null;default:false"`
-	ApplicationID                  int64     `gorm:"not null"`
-	CreatedAt                      time.Time `gorm:"not null;autoCreateTime"`
+	Licensed_Architect_Civil  bool `gorm:"not null;default:false"`
+	Licensed_Sanitary_Plumber bool `gorm:"not null;default:false"`
+	Licensed_Mechanical       bool `gorm:"not null;default:false"`
+	Licensed_Electronics      bool `gorm:"not null;default:false"`
+
+	Barangay_Clearance   bool      `gorm:"not null;default:false"`
+	Locational_Clearance bool      `gorm:"not null;default:false"`
+	ApplicationID        int64     `gorm:"not null"`
+	CreatedAt            time.Time `gorm:"not null;autoCreateTime"`
 }
-
 
 // Don't change the spelling of the swtches controls cause it is based on the db schema name
 // if you wish to change it you need to migrate again the db schema
 type Architectural_Requirements struct {
-	ID                                     int64     `gorm:"primaryKey;autoIncrement:true;uniqueIndex:idx_userID"`
-	Ramps                                  bool    `gorm:"not null;default:false"`
-	Stairs                                 bool    `gorm:"not null;default:false"`
-	WalkWays                               bool    `gorm:"not null;default:false"`
-	Comfort_Rooms                          bool    `gorm:"not null;default:false"`
-	Drinking_Fountains                     bool    `gorm:"not null;default:false"`
-	Switches_Controls                      bool    `gorm:"not null;default:false"`
-	Telephone_Booth                        bool    `gorm:"not null;default:false"`
-	Automatic_AlarmSystem                  bool    `gorm:"not null;default:false"`
-	Directional_Signs                      bool    `gorm:"not null;default:false"`
-	Reserved_Parking                       bool    `gorm:"not null;default:false"`
-	Wallbay_Sections                       bool    `gorm:"not null;default:false"`
-	Stairs_Interior_Exterior               bool    `gorm:"not null;default:false"`
-	Fire_Exit                              bool    `gorm:"not null;default:false"`
-	BuiltIn_Cabinets                       bool    `gorm:"not null;default:false"`
-	Partitions                             bool    `gorm:"not null;default:false"`
+	ID                       int64 `gorm:"primaryKey;autoIncrement:true;uniqueIndex:idx_userID"`
+	Ramps                    bool  `gorm:"not null;default:false"`
+	Stairs                   bool  `gorm:"not null;default:false"`
+	WalkWays                 bool  `gorm:"not null;default:false"`
+	Comfort_Rooms            bool  `gorm:"not null;default:false"`
+	Drinking_Fountains       bool  `gorm:"not null;default:false"`
+	Switches_Controls        bool  `gorm:"not null;default:false"`
+	Telephone_Booth          bool  `gorm:"not null;default:false"`
+	Automatic_AlarmSystem    bool  `gorm:"not null;default:false"`
+	Directional_Signs        bool  `gorm:"not null;default:false"`
+	Reserved_Parking         bool  `gorm:"not null;default:false"`
+	Wallbay_Sections         bool  `gorm:"not null;default:false"`
+	Stairs_Interior_Exterior bool  `gorm:"not null;default:false"`
+	Fire_Exit                bool  `gorm:"not null;default:false"`
+	BuiltIn_Cabinets         bool  `gorm:"not null;default:false"`
+	Partitions               bool  `gorm:"not null;default:false"`
 
-	Schedule_Doors_Windows                 bool    `gorm:"not null;default:false"`
-	Schedule_Finishes                      bool    `gorm:"not null;default:false"`
-	Other_Architectural_Elements           bool    `gorm:"not null;default:false"`
+	Schedule_Doors_Windows       bool `gorm:"not null;default:false"`
+	Schedule_Finishes            bool `gorm:"not null;default:false"`
+	Other_Architectural_Elements bool `gorm:"not null;default:false"`
 
-	Space_Plan                             bool    `gorm:"not null;default:false"`
-	Architecture_Interior                  bool    `gorm:"not null;default:false"`
-	Furniture_Funishing_Equipments         bool    `gorm:"not null;default:false"`
-	Detail_Design_Architectural            bool    `gorm:"not null;default:false"`
-	Plan_Layout_Interior                   bool    `gorm:"not null;default:false"`
-	Interior_Wall_Elevations               bool    `gorm:"not null;default:false"`
-	Floor_Ceiling_WallPatterns_Details     bool    `gorm:"not null;default:false"`
-	List_Material_Used                     bool    `gorm:"not null;default:false"`
-	Cost_Estimates                         bool    `gorm:"not null;default:false"`
+	Space_Plan                         bool `gorm:"not null;default:false"`
+	Architecture_Interior              bool `gorm:"not null;default:false"`
+	Furniture_Funishing_Equipments     bool `gorm:"not null;default:false"`
+	Detail_Design_Architectural        bool `gorm:"not null;default:false"`
+	Plan_Layout_Interior               bool `gorm:"not null;default:false"`
+	Interior_Wall_Elevations           bool `gorm:"not null;default:false"`
+	Floor_Ceiling_WallPatterns_Details bool `gorm:"not null;default:false"`
+	List_Material_Used                 bool `gorm:"not null;default:false"`
+	Cost_Estimates                     bool `gorm:"not null;default:false"`
 
-	Plans_Specific_Locations               bool    `gorm:"not null;default:false"`
-	Design_Accessibility_Facilities        bool    `gorm:"not null;default:false"`
-	Plan_Evacuation_Route                  bool    `gorm:"not null;default:false"`
-	Details_Windows_FireExits              bool    `gorm:"not null;default:false"`
-	Details_FireResistive_Vertical_Openings bool    `gorm:"not null;default:false"`
+	Plans_Specific_Locations                   bool `gorm:"not null;default:false"`
+	Design_Accessibility_Facilities            bool `gorm:"not null;default:false"`
+	Plan_Evacuation_Route                      bool `gorm:"not null;default:false"`
+	Details_Windows_FireExits                  bool `gorm:"not null;default:false"`
+	Details_FireResistive_Vertical_Openings    bool `gorm:"not null;default:false"`
 	Details_FireResistive_Decorative_Materials bool `gorm:"not null;default:false"`
 
-	ApplicationID                          int64     `gorm:"not null"`
-	CreatedAt                              time.Time `gorm:"not null;autoCreateTime"`
-	UpdatedAt                             time.Time `gorm:"not null;autoCreateTime"`
-
+	ApplicationID int64     `gorm:"not null"`
+	CreatedAt     time.Time `gorm:"not null;autoCreateTime"`
+	UpdatedAt     time.Time `gorm:"not null;autoCreateTime"`
 }
 
 type Civil_Requirements struct {
-	ID                                    int64     `gorm:"primaryKey;autoIncrement:true;uniqueIndex:idx_userID"`
-	Site_Development_Plan                 bool    `gorm:"not null;default:false"`
-	Foundation_Plans                      bool    `gorm:"not null;default:false"`
-	Roof_Floor_Framing_Plans              bool    `gorm:"not null;default:false"`
-	Details_Schedule_Civil_WorkElements   bool    `gorm:"not null;default:false"`
-	Structural_Analysis_Design            bool    `gorm:"not null;default:false"`
-	Boring_Load_Test                      bool    `gorm:"not null;default:false"`
-	Seismic_Analysis                      bool    `gorm:"not null;default:false"`
+	ID                                  int64 `gorm:"primaryKey;autoIncrement:true;uniqueIndex:idx_userID"`
+	Site_Development_Plan               bool  `gorm:"not null;default:false"`
+	Foundation_Plans                    bool  `gorm:"not null;default:false"`
+	Roof_Floor_Framing_Plans            bool  `gorm:"not null;default:false"`
+	Details_Schedule_Civil_WorkElements bool  `gorm:"not null;default:false"`
+	Structural_Analysis_Design          bool  `gorm:"not null;default:false"`
+	Boring_Load_Test                    bool  `gorm:"not null;default:false"`
+	Seismic_Analysis                    bool  `gorm:"not null;default:false"`
 
-	ApplicationID                         int64     `gorm:"not null"`
-	CreatedAt                             time.Time `gorm:"not null;autoCreateTime"`
-	UpdatedAt                             time.Time `gorm:"not null;autoCreateTime"`
-
+	ApplicationID int64     `gorm:"not null"`
+	CreatedAt     time.Time `gorm:"not null;autoCreateTime"`
+	UpdatedAt     time.Time `gorm:"not null;autoCreateTime"`
 }
 
 type Electrical_Requirements struct {
-	ID                                    int64     `gorm:"primaryKey;autoIncrement:true;uniqueIndex:idx_userID"`
-	Location_Site_Plan                    bool      `gorm:"not null;default:false"`
-	Legend_Symbols                        bool      `gorm:"not null;default:false"`
-	General_Notes                         bool      `gorm:"not null;default:false"`
-	Electrical_Layout   				  bool      `gorm:"not null;default:false"`
-	Schedule_Loads            			  bool      `gorm:"not null;default:false"`
-	Design_Analysis                       bool      `gorm:"not null;default:false"`
-	One_Line_Diagram                      bool      `gorm:"not null;default:false"`
-	ApplicationID                         int64     `gorm:"not null"`
-	CreatedAt                             time.Time `gorm:"not null;autoCreateTime"`
-	UpdatedAt                             time.Time `gorm:"not null;autoCreateTime"`
+	ID                 int64     `gorm:"primaryKey;autoIncrement:true;uniqueIndex:idx_userID"`
+	Location_Site_Plan bool      `gorm:"not null;default:false"`
+	Legend_Symbols     bool      `gorm:"not null;default:false"`
+	General_Notes      bool      `gorm:"not null;default:false"`
+	Electrical_Layout  bool      `gorm:"not null;default:false"`
+	Schedule_Loads     bool      `gorm:"not null;default:false"`
+	Design_Analysis    bool      `gorm:"not null;default:false"`
+	One_Line_Diagram   bool      `gorm:"not null;default:false"`
+	ApplicationID      int64     `gorm:"not null"`
+	CreatedAt          time.Time `gorm:"not null;autoCreateTime"`
+	UpdatedAt          time.Time `gorm:"not null;autoCreateTime"`
 }
-
 
 type Assessment struct {
-	ID        					int64			`gorm:"primaryKey;autoIncrement:true;uniqueIndex:idx_assesmentID"`
-	DatePaid					string			`gorm:"not null"`
-	ORNumber					string			`gorm:"not null"`
-	ReceiptNumber				string			`gorm:"not null"`
+	ID            int64  `gorm:"primaryKey;autoIncrement:true;uniqueIndex:idx_assesmentID"`
+	DatePaid      string `gorm:"not null"`
+	ORNumber      string `gorm:"not null"`
+	ReceiptNumber string `gorm:"not null"`
 
-	AssControlNumber  			string			`gorm:"not null"`
-	Date						string			`gorm:"not null"`
-	ProjectProposed  			string			`gorm:"not null"`
-	Location  					string			`gorm:"not null"`
-	Units  						string			`gorm:"not null"`
+	AssControlNumber string `gorm:"not null"`
+	Date             string `gorm:"not null"`
+	ProjectProposed  string `gorm:"not null"`
+	Location         string `gorm:"not null"`
+	Units            string `gorm:"not null"`
 
+	BuildingConstruction    float64 `gorm:"type:numeric;not null"`
+	ElectricalInstallation  float64 `gorm:"type:numeric;not null"`
+	MechanicalInstallation  float64 `gorm:"type:numeric;not null"`
+	PlumbingInstallation    float64 `gorm:"type:numeric;not null"`
+	ElectronicInstallation  float64 `gorm:"type:numeric;not null"`
+	BuildingAccessories     float64 `gorm:"type:numeric;not null"`
+	OtherAccessories        float64 `gorm:"type:numeric;not null"`
+	BuildingOccupancy       float64 `gorm:"type:numeric;not null"`
+	BuildingInspection      float64 `gorm:"type:numeric;not null"`
+	FinesSurchargePenalties float64 `gorm:"type:numeric;not null"`
+	TotalAssesment          float64 `gorm:"type:numeric;not null"`
+	ApplicationID           int64   `gorm:"not null"`
+	Status                  string  `gorm:"not null"`
 
-	BuildingConstruction  		float64			`gorm:"type:numeric;not null"`
-	ElectricalInstallation  	float64			`gorm:"type:numeric;not null"`
-	MechanicalInstallation  	float64			`gorm:"type:numeric;not null"`
-	PlumbingInstallation  		float64			`gorm:"type:numeric;not null"`
-	ElectronicInstallation  	float64			`gorm:"type:numeric;not null"`
-	BuildingAccessories  		float64			`gorm:"type:numeric;not null"`
-	OtherAccessories  			float64			`gorm:"type:numeric;not null"`
-	BuildingOccupancy  			float64			`gorm:"type:numeric;not null"`
-	BuildingInspection  		float64			`gorm:"type:numeric;not null"`
-	FinesSurchargePenalties  	float64			`gorm:"type:numeric;not null"`
-	TotalAssesment  			float64			`gorm:"type:numeric;not null"`
-	ApplicationID  				int64			`gorm:"not null"`
-	Status 						string			`gorm:"not null"`
-
-	CreatedAt 					time.Time 		`gorm:"not null;autoCreateTime"`
+	CreatedAt time.Time `gorm:"not null;autoCreateTime"`
 }
-
 
 type Inbox struct {
-	ID   			int64		`gorm:"primaryKey;autoIncrement:true;uniqueIndex:idx_inboxID"`
-	Message  		string    	`gorm:"type:text;not null"`
-	Subject  		string    	`gorm:"type:text;not null"`
-	Status     		string    	`gorm:"type:text;not null;default:unread"`
-	UserID			int64		`gorm:"not null"`
-	CreatedAt 		time.Time 	`gorm:"not null;autoCreateTime"`
+	ID        int64     `gorm:"primaryKey;autoIncrement:true;uniqueIndex:idx_inboxID"`
+	Message   string    `gorm:"type:text;not null"`
+	Subject   string    `gorm:"type:text;not null"`
+	Status    string    `gorm:"type:text;not null;default:unread"`
+	UserID    int64     `gorm:"not null"`
+	CreatedAt time.Time `gorm:"not null;autoCreateTime"`
 }
-
 
 type APPLICATION_DB_METHOD interface {
 	AddApplication(applicantInfo *types.ApplicantInfo) error
@@ -223,14 +215,13 @@ type APPLICATION_DB_METHOD interface {
 	ApplicationByYear() ([]*types.ApplicationByYear, error)
 	ApplicationByBarangay() ([]*types.ApplicationByBarangay, error)
 	ApplicationByPermitType() ([]*types.ApplicationByPermitType, error)
-	
 
 	FetchAppliedServices(int64) ([]*types.AppliedServicesFetching, error)
 	FetchRequirements(int64) (*types.FirstStepRequirementsFetching, error)
 
-	FetchArchitechturalRequirements(int64) (*types.ArchitecturalRequirements, error)
-	FetchCivilRequirements(int64) (*types.CivilRequirements, error)
-	FetchElectricalRequirements(int64) (*types.ElectricalRequirements, error)
+	FetchArchitechturalRequirements(int64) (*types.FetchArchitecturalRequirements, error)
+	FetchCivilRequirements(int64) (*types.FetchCivilRequirements, error)
+	FetchElectricalRequirements(int64) (*types.FetchElectricalRequirements, error)
 
 	UpdateAssessment(*types.AssessmentTypes) error
 	UpdateApplicationCode(int64, string) error
@@ -251,7 +242,6 @@ type APPLICATION_DB_METHOD interface {
 	CreateElectricalRequirements(int64) error
 	CreateFirstStepRequirements(int64) error
 
-	
 	UpdateApplicationStatus(int64, string) error
 	UpdateReleaseDateAndSubmitToReport(int64, string, string) error
 
@@ -274,6 +264,7 @@ type APPLICATION_DB_METHOD interface {
 
 	FetchOccupancyData(int64) ([]*types.OccupancyData, error)
 	UpdateApplicantFormDocument(*types.ApplicantFormDocument) error
+	UpdateFirstStepReqDocument(*types.FirstStepReqDocuments) error
 	UpdateCompletionFormDocument(*types.CompletionFormDocument) error
 	UpdateAdditionalFormDocument(*types.AdditionalFormDocument) error
 
@@ -282,26 +273,24 @@ type APPLICATION_DB_METHOD interface {
 	FetchMonthlyAssessment(string) ([]*types.MonthlyAssessment, error)
 }
 
-
 // ----------------------ASSESSMENTS----------------------
 func (sql *SQL) CreateAssessments(applicationID int64) error {
 
 	assessments := &Assessment{
-        BuildingConstruction:     0,
-        ElectricalInstallation:   0,
-        MechanicalInstallation:   0,
-        PlumbingInstallation:     0,
-        ElectronicInstallation:   0,
-        BuildingAccessories:      0,
-        OtherAccessories:         0,
-        BuildingOccupancy:        0,
-        BuildingInspection:       0,
-        FinesSurchargePenalties:  0,
-		TotalAssesment: 		  0,
-        ApplicationID:            applicationID,
-		Status: "set",
-    }
-
+		BuildingConstruction:    0,
+		ElectricalInstallation:  0,
+		MechanicalInstallation:  0,
+		PlumbingInstallation:    0,
+		ElectronicInstallation:  0,
+		BuildingAccessories:     0,
+		OtherAccessories:        0,
+		BuildingOccupancy:       0,
+		BuildingInspection:      0,
+		FinesSurchargePenalties: 0,
+		TotalAssesment:          0,
+		ApplicationID:           applicationID,
+		Status:                  "set",
+	}
 
 	if result := sql.DB.Create(&assessments); result.Error != nil {
 		return result.Error
@@ -311,9 +300,7 @@ func (sql *SQL) CreateAssessments(applicationID int64) error {
 
 }
 
-
 func (sql *SQL) UpdateAssessment(assessments *types.AssessmentTypes) error {
-
 
 	totalAssessment := assessments.BuildingConstruction +
 		assessments.ElectricalInstallation +
@@ -326,38 +313,36 @@ func (sql *SQL) UpdateAssessment(assessments *types.AssessmentTypes) error {
 		assessments.BuildingInspection +
 		assessments.FinesSurChargesPenalties
 
-
 	result := sql.DB.Model(&Assessment{}).Where("application_id = ?", assessments.ApplicationID).Updates(&Assessment{
 		AssControlNumber: assessments.AssessmentControlNumber,
-		Date: assessments.Date,
-		ProjectProposed: assessments.ProjectProposed,
-		Location: assessments.Location,
-		Units: assessments.Units,
+		Date:             assessments.Date,
+		ProjectProposed:  assessments.ProjectProposed,
+		Location:         assessments.Location,
+		Units:            assessments.Units,
 
-		BuildingConstruction: assessments.BuildingConstruction,
+		BuildingConstruction:   assessments.BuildingConstruction,
 		ElectricalInstallation: assessments.ElectricalInstallation,
 		MechanicalInstallation: assessments.MechanicallInstallation,
-		PlumbingInstallation: assessments.PlumbingInstallation,
+		PlumbingInstallation:   assessments.PlumbingInstallation,
 		ElectronicInstallation: assessments.ElectronicsInstallation,
 
 		BuildingAccessories: assessments.BuildingAccessories,
-		OtherAccessories: assessments.OtherAccessories,
+		OtherAccessories:    assessments.OtherAccessories,
 
-		BuildingOccupancy: assessments.BuildingOccupancy,
-		BuildingInspection: assessments.BuildingInspection,
+		BuildingOccupancy:       assessments.BuildingOccupancy,
+		BuildingInspection:      assessments.BuildingInspection,
 		FinesSurchargePenalties: assessments.FinesSurChargesPenalties,
 
 		TotalAssesment: totalAssessment,
-		Status: "pending",
+		Status:         "pending",
 	})
 
-	if result.Error != nil{
+	if result.Error != nil {
 		return result.Error
 	}
 
 	return nil
 }
-
 
 func FormatDate(dateStr string) (string, error) {
 	parsedDate, err := time.Parse("2006-01-02", dateStr)
@@ -377,19 +362,18 @@ func (sql *SQL) SetPaidAsssesment(assessments types.AssessmentsPaidFormData) err
 	}
 
 	result := sql.DB.Model(&Assessment{}).Where("application_id = ?", assessments.ApplicationID).Updates(&Assessment{
-		DatePaid: formattedDate,
-		ORNumber: assessments.ORNumber,
-		Status: "paid",
+		DatePaid:      formattedDate,
+		ORNumber:      assessments.ORNumber,
+		Status:        "paid",
 		ReceiptNumber: helpers.GenerateRandomNumber(),
 	})
 
-	if result.Error != nil{
+	if result.Error != nil {
 		return result.Error
 	}
 
 	return nil
 }
-
 
 func (sql *SQL) FetchAssessments(applicationID int64) (assessments *types.AssessmentRender, err error) {
 	result := sql.DB.Table("assessments").
@@ -404,11 +388,6 @@ func (sql *SQL) FetchAssessments(applicationID int64) (assessments *types.Assess
 
 	return assessments, nil
 }
-
-
-
-
-
 
 // ----------------------REQUIREMENTS----------------------
 
@@ -428,64 +407,63 @@ func (sql *SQL) FetchRequirements(applicationID int64) (*types.FirstStepRequirem
 
 	var requirements types.FirstStepRequirementsFetching
 
-    result := sql.DB.Table("first_step_requirements").
-        Select("id, fully_accomplished_form, latest_copy_land_title, latest_tax_declaration, latest_tax_clearance, notarized_deed_absolute_sale, notarized_contract_lease_sale, notarized_affidavit_consent, notarized_extra_juridicial, certificate_award_affidavit, plans, specifications, bill_materials_cost_estimate, structural_analysis, licensed_architect_civil, licensed_sanitary_plumber, licensed_mechanical, licensed_electronics, barangay_clearance, locational_clearance").
-        Where("application_id = ?", applicationID).
-        First(&requirements)
+	result := sql.DB.Table("first_step_requirements").
+		Select("id, fully_accomplished_form, latest_copy_land_title, latest_tax_declaration, latest_tax_clearance, notarized_deed_absolute_sale, notarized_contract_lease_sale, notarized_affidavit_consent, notarized_extra_juridicial, certificate_award_affidavit, plans, specifications, bill_materials_cost_estimate, structural_analysis, licensed_architect_civil, licensed_sanitary_plumber, licensed_mechanical, licensed_electronics, barangay_clearance, locational_clearance").
+		Where("application_id = ?", applicationID).
+		First(&requirements)
 
-    if err := result.Error; err != nil {
-        return nil, err
-    }
+	if err := result.Error; err != nil {
+		return nil, err
+	}
 
-    return &requirements, nil
+	return &requirements, nil
 
 }
 
-func (sql *SQL) FetchArchitechturalRequirements(applicationID int64) (*types.ArchitecturalRequirements, error){
+func (sql *SQL) FetchArchitechturalRequirements(applicationID int64) (*types.FetchArchitecturalRequirements, error) {
 
-	var requirements *types.ArchitecturalRequirements
+	var requirements *types.FetchArchitecturalRequirements
 
 	result := sql.DB.Table("architectural_requirements").
-        Select("application_id, ramps, stairs, walk_ways, comfort_rooms, drinking_fountains, switches_controls, telephone_booth, automatic_alarm_system, directional_signs, reserved_parking, wallbay_sections, stairs_interior_exterior, fire_exit, built_in_cabinets, partitions, schedule_doors_windows, schedule_finishes, other_architectural_elements, space_plan, architecture_interior, furniture_funishing_equipments, detail_design_architectural, plan_layout_interior, interior_wall_elevations, floor_ceiling_wall_patterns_details, list_material_used, cost_estimates, plans_specific_locations, design_accessibility_facilities, plan_evacuation_route, details_windows_fire_exits, details_fire_resistive_vertical_openings, details_fire_resistive_decorative_materials, updated_at").
-        Where("application_id = ?", applicationID).
-        First(&requirements)
+		Select("application_id, ramps, stairs, walk_ways, comfort_rooms, drinking_fountains, switches_controls, telephone_booth, automatic_alarm_system, directional_signs, reserved_parking, wallbay_sections, stairs_interior_exterior, fire_exit, built_in_cabinets, partitions, schedule_doors_windows, schedule_finishes, other_architectural_elements, space_plan, architecture_interior, furniture_funishing_equipments, detail_design_architectural, plan_layout_interior, interior_wall_elevations, floor_ceiling_wall_patterns_details, list_material_used, cost_estimates, plans_specific_locations, design_accessibility_facilities, plan_evacuation_route, details_windows_fire_exits, details_fire_resistive_vertical_openings, details_fire_resistive_decorative_materials, updated_at").
+		Where("application_id = ?", applicationID).
+		First(&requirements)
 
-    if err := result.Error; err != nil {
-        return nil, err
-    }
+	if err := result.Error; err != nil {
+		return nil, err
+	}
 
 	return requirements, nil
 }
 
-func (sql *SQL) FetchCivilRequirements(applicationID int64) (*types.CivilRequirements, error){
+func (sql *SQL) FetchCivilRequirements(applicationID int64) (*types.FetchCivilRequirements, error) {
 
-	var requirements *types.CivilRequirements
+	var requirements *types.FetchCivilRequirements
 
 	result := sql.DB.Table("civil_requirements").
-        Select("application_id, site_development_plan, foundation_plans, roof_floor_framing_plans, details_schedule_civil_work_elements, structural_analysis_design, boring_load_test, seismic_analysis, updated_at").
-        Where("application_id = ?", applicationID).
-        First(&requirements)
+		Select("application_id, site_development_plan, foundation_plans, roof_floor_framing_plans, details_schedule_civil_work_elements, structural_analysis_design, boring_load_test, seismic_analysis, updated_at").
+		Where("application_id = ?", applicationID).
+		First(&requirements)
 
-    if err := result.Error; err != nil {
-        return nil, err
-    }
+	if err := result.Error; err != nil {
+		return nil, err
+	}
 
 	return requirements, nil
 }
 
+func (sql *SQL) FetchElectricalRequirements(applicationID int64) (*types.FetchElectricalRequirements, error) {
 
-func (sql *SQL) FetchElectricalRequirements(applicationID int64) (*types.ElectricalRequirements, error){
-
-	var requirements *types.ElectricalRequirements
+	var requirements *types.FetchElectricalRequirements
 
 	result := sql.DB.Table("electrical_requirements").
-        Select("application_id, location_site_plan, legend_symbols, general_notes, electrical_layout, schedule_loads, design_analysis, one_line_diagram, updated_at").
-        Where("application_id = ?", applicationID).
-        First(&requirements)
+		Select("application_id, location_site_plan, legend_symbols, general_notes, electrical_layout, schedule_loads, design_analysis, one_line_diagram, updated_at").
+		Where("application_id = ?", applicationID).
+		First(&requirements)
 
-    if err := result.Error; err != nil {
-        return nil, err
-    }
+	if err := result.Error; err != nil {
+		return nil, err
+	}
 
 	return requirements, nil
 }
@@ -494,19 +472,19 @@ func (sql *SQL) BuildAdminsRequirements(applicationID int64) error {
 	errorChan := make(chan error, 3)
 
 	go func() {
-		if err := sql.CreateArchitecturalRequirements(applicationID); err != nil{
+		if err := sql.CreateArchitecturalRequirements(applicationID); err != nil {
 			errorChan <- err
 		}
 	}()
-	
+
 	go func() {
-		if err := sql.CreateCivilRequirements(applicationID); err != nil{
+		if err := sql.CreateCivilRequirements(applicationID); err != nil {
 			errorChan <- err
 		}
 	}()
-	
+
 	go func() {
-		if err := sql.CreateElectricalRequirements(applicationID); err != nil{
+		if err := sql.CreateElectricalRequirements(applicationID); err != nil {
 			errorChan <- err
 		}
 	}()
@@ -526,33 +504,32 @@ func (sql *SQL) BuildAdminsRequirements(applicationID int64) error {
 	return nil
 }
 
-
 func (sql *SQL) UpdateFirstStepRequirements(requirements *types.FirstStepRequirements) error {
 
 	result := sql.DB.Model(&First_Step_Requirements{}).Where("application_id = ?", requirements.ApplicationID).Updates(&First_Step_Requirements{
-		Fully_Accomplished_Form:    		requirements.AccomplishedForm,
-		Latest_Copy_Land_Title:           	requirements.LandTitle,
-		Latest_Tax_Declaration:      		requirements.TaxDeclaration,
-		Latest_Tax_Clearance:        		requirements.TaxClearance,
+		Fully_Accomplished_Form: requirements.AccomplishedForm,
+		Latest_Copy_Land_Title:  requirements.LandTitle,
+		Latest_Tax_Declaration:  requirements.TaxDeclaration,
+		Latest_Tax_Clearance:    requirements.TaxClearance,
 
-		Notarized_Deed_AbsoluteSale:        requirements.DeedSale,
-		Notarized_Contract_LeaseSale:       requirements.LeaseSale,
-		Notarized_Affidavit_Consent:    	requirements.AffidavitConsent,
-		Notarized_ExtraJuridicial:   		requirements.PartitionHeirship,
-		Certificate_Award_Affidavit:    	requirements.CertificateAward,
+		Notarized_Deed_AbsoluteSale:  requirements.DeedSale,
+		Notarized_Contract_LeaseSale: requirements.LeaseSale,
+		Notarized_Affidavit_Consent:  requirements.AffidavitConsent,
+		Notarized_ExtraJuridicial:    requirements.PartitionHeirship,
+		Certificate_Award_Affidavit:  requirements.CertificateAward,
 
-		Plans:               				requirements.Plans,
-		Specifications:      				requirements.Specifications,
-		Bill_Materials_Cost_Estimate:       requirements.BillMaterials,
-		Structural_Analysis:  				requirements.StructuralAnalysis,
+		Plans:                        requirements.Plans,
+		Specifications:               requirements.Specifications,
+		Bill_Materials_Cost_Estimate: requirements.BillMaterials,
+		Structural_Analysis:          requirements.StructuralAnalysis,
 
-		Licensed_Architect_Civil:   		requirements.ArchitectEngineer,
-		Licensed_Sanitary_Plumber:    		requirements.SanitaryEngineer,
-		Licensed_Mechanical:  				requirements.MechanicalEngineer,
-		Licensed_Electronics: 				requirements.ElectronicsEngineer,
+		Licensed_Architect_Civil:  requirements.ArchitectEngineer,
+		Licensed_Sanitary_Plumber: requirements.SanitaryEngineer,
+		Licensed_Mechanical:       requirements.MechanicalEngineer,
+		Licensed_Electronics:      requirements.ElectronicsEngineer,
 
-		Barangay_Clearance:   				requirements.BarangayClearance,
-		Locational_Clearance: 				requirements.LocationalClearance,
+		Barangay_Clearance:   requirements.BarangayClearance,
+		Locational_Clearance: requirements.LocationalClearance,
 	})
 
 	if result.Error != nil {
@@ -562,43 +539,41 @@ func (sql *SQL) UpdateFirstStepRequirements(requirements *types.FirstStepRequire
 	return nil
 }
 
-
-
 func (sql *SQL) CheckArchitecturalRequirements(requirements *types.ArchitecturalRequirements) error {
 
 	updateData := &Architectural_Requirements{
-		Ramps:                                  requirements.Ramps,
-		Stairs:                                 requirements.Stairs,
-		WalkWays:                               requirements.WalkWays,
-		Comfort_Rooms:                          requirements.ComfortRooms,
-		Drinking_Fountains:                     requirements.DrinkingFountains,
-		Switches_Controls:                      requirements.Switches_Controls,
-		Telephone_Booth:                        requirements.TelephoneBooth,
-		Automatic_AlarmSystem:                  requirements.AutomaticAlarmSystem,
-		Directional_Signs:                      requirements.DirectionalSigns,
-		Reserved_Parking:                       requirements.ReservedParking,
-		Wallbay_Sections:                       requirements.WallbaySections,
-		Stairs_Interior_Exterior:               requirements.StairsInteriorExterior,
-		Fire_Exit:                              requirements.FireExit,
-		BuiltIn_Cabinets:                       requirements.BuiltInCabinets,
-		Partitions:                             requirements.Partitions,
-		Schedule_Doors_Windows:                 requirements.ScheduleDoorsWindows,
-		Schedule_Finishes:                      requirements.ScheduleFinishes,
-		Other_Architectural_Elements:           requirements.OtherArchitecturalElements,
-		Space_Plan:                             requirements.SpacePlan,
-		Architecture_Interior:                  requirements.ArchitectureInterior,
-		Furniture_Funishing_Equipments:         requirements.FurnitureFunishingEquipments,
-		Detail_Design_Architectural:            requirements.DetailDesignArchitectural,
-		Plan_Layout_Interior:                   requirements.PlanLayoutInterior,
-		Interior_Wall_Elevations:               requirements.InteriorWallElevations,
-		Floor_Ceiling_WallPatterns_Details:     requirements.FloorCeilingWallPatternsDetails,
-		List_Material_Used:                     requirements.ListMaterialUsed,
-		Cost_Estimates:                         requirements.CostEstimates,
-		Plans_Specific_Locations:               requirements.PlansSpecificLocations,
-		Design_Accessibility_Facilities:        requirements.DesignAccessibilityFacilities,
-		Plan_Evacuation_Route:                  requirements.PlanEvacuationRoute,
-		Details_Windows_FireExits:              requirements.DetailsWindowsFireExits,
-		Details_FireResistive_Vertical_Openings: requirements.DetailsFireResistiveVerticalOpenings,
+		Ramps:                                      requirements.Ramps,
+		Stairs:                                     requirements.Stairs,
+		WalkWays:                                   requirements.WalkWays,
+		Comfort_Rooms:                              requirements.ComfortRooms,
+		Drinking_Fountains:                         requirements.DrinkingFountains,
+		Switches_Controls:                          requirements.Switches_Controls,
+		Telephone_Booth:                            requirements.TelephoneBooth,
+		Automatic_AlarmSystem:                      requirements.AutomaticAlarmSystem,
+		Directional_Signs:                          requirements.DirectionalSigns,
+		Reserved_Parking:                           requirements.ReservedParking,
+		Wallbay_Sections:                           requirements.WallbaySections,
+		Stairs_Interior_Exterior:                   requirements.StairsInteriorExterior,
+		Fire_Exit:                                  requirements.FireExit,
+		BuiltIn_Cabinets:                           requirements.BuiltInCabinets,
+		Partitions:                                 requirements.Partitions,
+		Schedule_Doors_Windows:                     requirements.ScheduleDoorsWindows,
+		Schedule_Finishes:                          requirements.ScheduleFinishes,
+		Other_Architectural_Elements:               requirements.OtherArchitecturalElements,
+		Space_Plan:                                 requirements.SpacePlan,
+		Architecture_Interior:                      requirements.ArchitectureInterior,
+		Furniture_Funishing_Equipments:             requirements.FurnitureFunishingEquipments,
+		Detail_Design_Architectural:                requirements.DetailDesignArchitectural,
+		Plan_Layout_Interior:                       requirements.PlanLayoutInterior,
+		Interior_Wall_Elevations:                   requirements.InteriorWallElevations,
+		Floor_Ceiling_WallPatterns_Details:         requirements.FloorCeilingWallPatternsDetails,
+		List_Material_Used:                         requirements.ListMaterialUsed,
+		Cost_Estimates:                             requirements.CostEstimates,
+		Plans_Specific_Locations:                   requirements.PlansSpecificLocations,
+		Design_Accessibility_Facilities:            requirements.DesignAccessibilityFacilities,
+		Plan_Evacuation_Route:                      requirements.PlanEvacuationRoute,
+		Details_Windows_FireExits:                  requirements.DetailsWindowsFireExits,
+		Details_FireResistive_Vertical_Openings:    requirements.DetailsFireResistiveVerticalOpenings,
 		Details_FireResistive_Decorative_Materials: requirements.DetailsFireResistiveDecorativeMaterials,
 	}
 
@@ -613,13 +588,13 @@ func (sql *SQL) CheckArchitecturalRequirements(requirements *types.Architectural
 func (sql *SQL) CheckCivilRequirements(requirements *types.CivilRequirements) error {
 
 	updateData := &Civil_Requirements{
-		Site_Development_Plan: requirements.Site_Development_Plan,
-		Foundation_Plans: requirements.Foundation_Plans,
-		Roof_Floor_Framing_Plans: requirements.Roof_Floor_Framing_Plans,
+		Site_Development_Plan:               requirements.Site_Development_Plan,
+		Foundation_Plans:                    requirements.Foundation_Plans,
+		Roof_Floor_Framing_Plans:            requirements.Roof_Floor_Framing_Plans,
 		Details_Schedule_Civil_WorkElements: requirements.Details_Schedule_Civil_WorkElements,
-		Structural_Analysis_Design: requirements.Structural_Analysis_Design,
-		Boring_Load_Test: requirements.Boring_Load_Test,
-		Seismic_Analysis: requirements.Seismic_Analysis,
+		Structural_Analysis_Design:          requirements.Structural_Analysis_Design,
+		Boring_Load_Test:                    requirements.Boring_Load_Test,
+		Seismic_Analysis:                    requirements.Seismic_Analysis,
 	}
 
 	result := sql.DB.Model(&Civil_Requirements{}).Where("application_id = ?", requirements.ApplicationID).Updates(updateData)
@@ -634,12 +609,12 @@ func (sql *SQL) CheckElectricalRequirements(requirements *types.ElectricalRequir
 
 	updateData := &Electrical_Requirements{
 		Location_Site_Plan: requirements.Location_Site_Plan,
-		Legend_Symbols: requirements.Legend_Symbols,
-		General_Notes: requirements.General_Notes,
-		Electrical_Layout: requirements.Electrical_Layout,
-		Schedule_Loads: requirements.Schedule_Loads,
-		Design_Analysis: requirements.Design_Analysis,
-		One_Line_Diagram: requirements.One_Line_Diagram,
+		Legend_Symbols:     requirements.Legend_Symbols,
+		General_Notes:      requirements.General_Notes,
+		Electrical_Layout:  requirements.Electrical_Layout,
+		Schedule_Loads:     requirements.Schedule_Loads,
+		Design_Analysis:    requirements.Design_Analysis,
+		One_Line_Diagram:   requirements.One_Line_Diagram,
 	}
 
 	result := sql.DB.Model(&Electrical_Requirements{}).Where("application_id = ?", requirements.ApplicationID).Updates(updateData)
@@ -649,8 +624,6 @@ func (sql *SQL) CheckElectricalRequirements(requirements *types.ElectricalRequir
 
 	return nil
 }
-
-
 
 func (sql *SQL) CreateArchitecturalRequirements(applicationID int64) error {
 	requirements := &Architectural_Requirements{
@@ -688,12 +661,6 @@ func (sql *SQL) CreateElectricalRequirements(applicationID int64) error {
 	return nil
 }
 
-
-
-
-
-
-
 // ----------------------INBOXES----------------------
 
 func (sql *SQL) ApplicationInbox(user_id int64, applicantName string, subject string) error {
@@ -712,16 +679,15 @@ Thank you for your attention to this matter.
 Sincerely,
 Panabo City Engineering's Issuance of Permit Section`, applicantName)
 
-
 	now, err := helpers.GetPhTimeZone()
 	if err != nil {
 		return err
 	}
 
 	inbox := &Inbox{
-		Message: message,
-		UserID: user_id,
-		Subject: subject,
+		Message:   message,
+		UserID:    user_id,
+		Subject:   subject,
 		CreatedAt: now,
 	}
 
@@ -731,7 +697,6 @@ Panabo City Engineering's Issuance of Permit Section`, applicantName)
 
 	return nil
 }
-
 
 func (sql *SQL) SetApplicationCodeInbox(user_id int64, applicantName string, applicationCode string, subject string) error {
 
@@ -746,17 +711,15 @@ Thank you for your cooperation.
 Sincerely,
 Panabo City Engineering's Issuance of Permit Section`, applicantName, applicationCode)
 
-	
-
 	now, err := helpers.GetPhTimeZone()
 	if err != nil {
 		return err
 	}
 
 	inbox := &Inbox{
-		Message: message,
-		UserID: user_id,
-		Subject: subject,
+		Message:   message,
+		UserID:    user_id,
+		Subject:   subject,
 		CreatedAt: now,
 	}
 
@@ -766,7 +729,6 @@ Panabo City Engineering's Issuance of Permit Section`, applicantName, applicatio
 
 	return nil
 }
-
 
 func (sql *SQL) ApplicationApprovalInbox(user_id int64, applicantName string, subject string) error {
 
@@ -787,9 +749,9 @@ func (sql *SQL) ApplicationApprovalInbox(user_id int64, applicantName string, su
 	}
 
 	inbox := &Inbox{
-		Message: message,
-		UserID: user_id,
-		Subject: subject,
+		Message:   message,
+		UserID:    user_id,
+		Subject:   subject,
 		CreatedAt: now,
 	}
 
@@ -808,9 +770,9 @@ func (sql *SQL) DisapprovalInbox(user_id int64, disApprovalMessage string, subje
 	}
 
 	inbox := &Inbox{
-		Message: disApprovalMessage,
-		UserID: user_id,
-		Subject: subject,
+		Message:   disApprovalMessage,
+		UserID:    user_id,
+		Subject:   subject,
 		CreatedAt: now,
 	}
 
@@ -820,7 +782,6 @@ func (sql *SQL) DisapprovalInbox(user_id int64, disApprovalMessage string, subje
 
 	return nil
 }
-
 
 func (sql *SQL) ReleaseDateInbox(user_id int64, releaseDateMessage string, subject string) error {
 
@@ -830,9 +791,9 @@ func (sql *SQL) ReleaseDateInbox(user_id int64, releaseDateMessage string, subje
 	}
 
 	inbox := &Inbox{
-		Message: releaseDateMessage,
-		UserID: user_id,
-		Subject: subject,
+		Message:   releaseDateMessage,
+		UserID:    user_id,
+		Subject:   subject,
 		CreatedAt: now,
 	}
 
@@ -842,10 +803,6 @@ func (sql *SQL) ReleaseDateInbox(user_id int64, releaseDateMessage string, subje
 
 	return nil
 }
-
-
-
-
 
 func (sql *SQL) FetchAllInboxes(userID int64) ([]*types.FormattedInbox, error) {
 	var inboxes []*types.FormattedInbox
@@ -858,12 +815,12 @@ func (sql *SQL) FetchAllInboxes(userID int64) ([]*types.FormattedInbox, error) {
 
 	for _, inbox := range dbInboxes {
 		formattedInbox := &types.FormattedInbox{
-			ID:         inbox.ID,
-			Message:    inbox.Message,
-			Status: 	inbox.Status,	
-			UserID:     inbox.UserID,
-			Subject:    inbox.Subject,
-			TimeCreated:  inbox.CreatedAt.Local().Format("Jan 02, 2006 3:04 PM"),
+			ID:          inbox.ID,
+			Message:     inbox.Message,
+			Status:      inbox.Status,
+			UserID:      inbox.UserID,
+			Subject:     inbox.Subject,
+			TimeCreated: inbox.CreatedAt.Local().Format("Jan 02, 2006 3:04 PM"),
 		}
 		inboxes = append(inboxes, formattedInbox)
 	}
@@ -887,11 +844,11 @@ func (sql *SQL) FetchInboxesToday(userID int64) ([]*types.FormattedInbox, error)
 
 	for _, inbox := range dbInboxes {
 		formattedInbox := &types.FormattedInbox{
-			ID:         inbox.ID,
-			Message:    inbox.Message,
-			UserID:     inbox.UserID,
-			Subject:    inbox.Subject,
-			TimeCreated:  inbox.CreatedAt.Local().Format("03:04 PM"), 
+			ID:          inbox.ID,
+			Message:     inbox.Message,
+			UserID:      inbox.UserID,
+			Subject:     inbox.Subject,
+			TimeCreated: inbox.CreatedAt.Local().Format("03:04 PM"),
 		}
 		inboxes = append(inboxes, formattedInbox)
 	}
@@ -899,33 +856,32 @@ func (sql *SQL) FetchInboxesToday(userID int64) ([]*types.FormattedInbox, error)
 	return inboxes, nil
 }
 
-
 func (sql *SQL) FetchUnreadInboxes(userID int64) ([]*types.FormattedInbox, error) {
-
 	var inboxes []*types.FormattedInbox
-
 	var dbInboxes []*Inbox
 
-	err := sql.DB.Table("inboxes").Where("status = 'unread' ").Order("created_at DESC").Find(&dbInboxes).Error
+	err := sql.DB.
+		Table("inboxes").
+		Where("status = ? AND user_id = ?", "unread", userID).
+		Order("created_at DESC").
+		Find(&dbInboxes).Error
 	if err != nil {
 		return nil, err
 	}
 
 	for _, inbox := range dbInboxes {
 		formattedInbox := &types.FormattedInbox{
-			ID:         inbox.ID,
-			Message:    inbox.Message,
-			UserID:     inbox.UserID,
-			Subject:    inbox.Subject,
-			
-			TimeCreated:  inbox.CreatedAt.Local().Format("03:04 PM"), 
+			ID:          inbox.ID,
+			Message:     inbox.Message,
+			UserID:      inbox.UserID,
+			Subject:     inbox.Subject,
+			TimeCreated: inbox.CreatedAt.Local().Format("03:04 PM"),
 		}
 		inboxes = append(inboxes, formattedInbox)
 	}
 
 	return inboxes, nil
 }
-
 
 func (sql *SQL) UpdateInboxStatus(inboxID int64) error {
 
@@ -935,7 +891,7 @@ func (sql *SQL) UpdateInboxStatus(inboxID int64) error {
 		Status: "read",
 	})
 
-	if result.Error != nil{
+	if result.Error != nil {
 		return result.Error
 	}
 
@@ -951,12 +907,6 @@ func (sql *SQL) DeleteInbox(inbox_id string) error {
 	return nil
 }
 
-
-
-
-
-
-
 // ----------------------APPLICATIONS----------------------
 
 func (sql *SQL) AddApplication(applicantInfo *types.ApplicantInfo) error {
@@ -964,34 +914,34 @@ func (sql *SQL) AddApplication(applicantInfo *types.ApplicantInfo) error {
 	errorChan := make(chan error, 2)
 
 	application := Application{
-		ApplicationCode: 			"",
-		ServiceType:				applicantInfo.ServiceType,
-		FirstName: 					applicantInfo.FirstName,
-		MiddleInitial: 				applicantInfo.MiddleInitial,
-		LastName: 					applicantInfo.LastName,
+		ApplicationCode: "",
+		ServiceType:     applicantInfo.ServiceType,
+		FirstName:       applicantInfo.FirstName,
+		MiddleInitial:   applicantInfo.MiddleInitial,
+		LastName:        applicantInfo.LastName,
 
-		Barangay: 					applicantInfo.Barangay,
-		Street: 					applicantInfo.Street,
-		Municipality: 				applicantInfo.Municipality,
-		ZipCode: 					applicantInfo.ZipCode,
-		LocationForConsAndInstall: 	applicantInfo.LocationForConsAndInstall,
+		Barangay:                  applicantInfo.Barangay,
+		Street:                    applicantInfo.Street,
+		Municipality:              applicantInfo.Municipality,
+		ZipCode:                   applicantInfo.ZipCode,
+		LocationForConsAndInstall: applicantInfo.LocationForConsAndInstall,
 
-		FormOfOwnerShip: 			applicantInfo.FormOfOwnerShip,
+		FormOfOwnerShip:             applicantInfo.FormOfOwnerShip,
 		ConstructionOwnbyEnterprise: applicantInfo.ConstructionOwnbyEnterprise,
 
-		TaxAccountNumber: 			applicantInfo.TaxAccountNumber,
-		TelNumber: 					applicantInfo.TelNumber,
-		TctNumber: 					applicantInfo.TctNumber,
+		TaxAccountNumber: applicantInfo.TaxAccountNumber,
+		TelNumber:        applicantInfo.TelNumber,
+		TctNumber:        applicantInfo.TctNumber,
 
-		PermitType: 				applicantInfo.PermitType,
-		Status: 					"Pending",
-		Email:  					applicantInfo.Email,
-		UserID: 					applicantInfo.UserID,
+		PermitType: applicantInfo.PermitType,
+		Status:     "Pending",
+		Email:      applicantInfo.Email,
+		UserID:     applicantInfo.UserID,
 
-		ScopeType:           		applicantInfo.ScopeType,
-		CharacterOfOccupancy: 		applicantInfo.CharacterOfOccupancy,
+		ScopeType:            applicantInfo.ScopeType,
+		CharacterOfOccupancy: applicantInfo.CharacterOfOccupancy,
 
-		StaffProccessStatus: 		"not_set",	
+		StaffProccessStatus: "not_set",
 
 		AdminApproved: "",
 	}
@@ -1000,18 +950,17 @@ func (sql *SQL) AddApplication(applicantInfo *types.ApplicantInfo) error {
 		return result.Error
 	}
 
+	go func() {
+		if err := sql.CreateAssessments(application.ID); err != nil {
+			errorChan <- err
+		}
+	}()
 
 	go func() {
-        if err := sql.CreateAssessments(application.ID); err != nil {
-            errorChan <- err
-        }
-    }()
-
-	go func() {
-        if err := sql.CreateFirstStepRequirements(application.ID); err != nil {
-            errorChan <- err
-        }
-    }()
+		if err := sql.CreateFirstStepRequirements(application.ID); err != nil {
+			errorChan <- err
+		}
+	}()
 
 	var err error
 	for i := 0; i < 3; i++ {
@@ -1027,7 +976,6 @@ func (sql *SQL) AddApplication(applicantInfo *types.ApplicantInfo) error {
 
 	return nil
 }
-
 
 func (sql *SQL) IsApplicationExists(firstName string, lastName string, permitType string) (bool, error) {
 	var result types.IsApplicationExits
@@ -1048,19 +996,17 @@ func (sql *SQL) IsApplicationExists(firstName string, lastName string, permitTyp
 	return true, nil
 }
 
-
 func (sql *SQL) TrashApplication() error {
 
 	if err := sql.DB.Model(&Application{}).
 		Where("created_at < NOW() - INTERVAL '1 year'").
 		Where("status != ?", "Trash").
 		Update("status", "Trash").Error; err != nil {
-			return err
-		}
+		return err
+	}
 
 	return nil
 }
-
 
 func (sql *SQL) FetchApplication(status string, searchName string, selectedMonth string) ([]*types.ApplicantInfoFetching, error) {
 
@@ -1071,11 +1017,9 @@ func (sql *SQL) FetchApplication(status string, searchName string, selectedMonth
 		applications.barangay, applications.street, applications.municipality, applications.zip_code, applications.location_for_cons_and_install, applications.form_of_owner_ship, 
 		applications.construction_ownby_enterprise, applications.tax_account_number, applications.tel_number, applications.tct_number, applications.permit_type, applications.created_at, 
 		applications.email, applications.admin_approved, applications.release_date, applications.user_id, assessments.id, assessments.status`).
-
 		Joins("INNER JOIN assessments ON applications.id = assessments.application_id").
 		Where("applications.status = ?", status).
 		Order("applications.created_at DESC")
-
 
 	if searchName != "" {
 		searchName = "%" + searchName + "%"
@@ -1086,15 +1030,12 @@ func (sql *SQL) FetchApplication(status string, searchName string, selectedMonth
 		query = query.Where("TO_CHAR(applications.created_at, 'FMMonth') = ?", selectedMonth)
 	}
 
-
 	if err := query.Find(&results).Error; err != nil {
 		return nil, err
 	}
 
-
 	return results, nil
 }
-
 
 func (sql *SQL) FetchApplicationByStaffProccessStatus(status string, searchName string, selectedMonth string) ([]*types.ApplicantionByProccess, error) {
 
@@ -1102,13 +1043,11 @@ func (sql *SQL) FetchApplicationByStaffProccessStatus(status string, searchName 
 
 	query := sql.DB.Table("applications").
 		Select(`applications.id, applications.service_type, applications.application_code, applications.first_name, applications.middle_initial, applications.last_name, 
-		applications.barangay, applications.street, applications.municipality, applications.zip_code, applications.permit_type, 
-		applications.email, applications.applicant_form_documents, applications.completion_form_documents, applications.additional_documents, applications.is_finish_scanning, applications.admin_approved, applications.user_id`).
-
+		applications.barangay, applications.street, applications.municipality, applications.zip_code, applications.permit_type, applications.scope_type,
+		applications.email, applications.applicant_form_documents, applications.first_step_req_documents, applications.completion_form_documents, applications.additional_documents, applications.is_finish_scanning, applications.admin_approved, applications.user_id`).
 		Joins("INNER JOIN assessments ON applications.id = assessments.application_id").
 		Where("applications.status = ? AND applications.staff_proccess_status = ?", "Approved", status).
 		Order("applications.created_at DESC")
-
 
 	if searchName != "" {
 		searchName = "%" + searchName + "%"
@@ -1118,7 +1057,6 @@ func (sql *SQL) FetchApplicationByStaffProccessStatus(status string, searchName 
 	if selectedMonth != "" {
 		query = query.Where("TO_CHAR(applications.created_at, 'FMMonth') = ?", selectedMonth)
 	}
-
 
 	if err := query.Find(&results).Error; err != nil {
 		return nil, err
@@ -1127,7 +1065,7 @@ func (sql *SQL) FetchApplicationByStaffProccessStatus(status string, searchName 
 	for index, item := range results {
 		fmt.Printf("Index %d: %+v\n", index, item)
 	}
-	
+
 	return results, nil
 }
 
@@ -1139,11 +1077,9 @@ func (sql *SQL) FetchDisapprovedReleaser(staffProccessStatus string, searchName 
 		Select(`applications.id, applications.service_type, applications.application_code, applications.first_name, applications.middle_initial, applications.last_name, 
 		applications.barangay, applications.street, applications.municipality, applications.zip_code, applications.permit_type, 
 		applications.email, applications.admin_approved, applications.release_date, applications.user_id`).
-
 		Joins("INNER JOIN assessments ON applications.id = assessments.application_id").
 		Where("applications.status = ? AND applications.staff_proccess_status = ?", "Disapproved", staffProccessStatus).
 		Order("applications.created_at DESC")
-
 
 	if searchName != "" {
 		searchName = "%" + searchName + "%"
@@ -1154,16 +1090,12 @@ func (sql *SQL) FetchDisapprovedReleaser(staffProccessStatus string, searchName 
 		query = query.Where("TO_CHAR(applications.created_at, 'FMMonth') = ?", selectedMonth)
 	}
 
-
 	if err := query.Find(&results).Error; err != nil {
 		return nil, err
 	}
 
-
 	return results, nil
 }
-
-
 
 func (sql *SQL) FetchReportApplication(searchName string, selectedMonth string) ([]*types.ApplicationReport, error) {
 
@@ -1174,11 +1106,9 @@ func (sql *SQL) FetchReportApplication(searchName string, selectedMonth string) 
 		applications.barangay, applications.street, applications.municipality, applications.zip_code, 
 		applications.permit_type, 
 		applications.email, applications.admin_approved, applications.release_date, applications.user_id`).
-
 		Joins("INNER JOIN assessments ON applications.id = assessments.application_id").
 		Where("applications.staff_proccess_status = ? AND applications.release_date != ?", "reported_application", "").
 		Order("applications.created_at DESC")
-
 
 	if searchName != "" {
 		searchName = "%" + searchName + "%"
@@ -1189,46 +1119,39 @@ func (sql *SQL) FetchReportApplication(searchName string, selectedMonth string) 
 		query = query.Where("TO_CHAR(applications.created_at, 'FMMonth') = ?", selectedMonth)
 	}
 
-
 	if err := query.Find(&results).Error; err != nil {
 		return nil, err
 	}
 
-
 	return results, nil
 }
 
-
 func (sql *SQL) UpdateApplicationApproval(applicationID int64, adminApproved string) error {
 
+	var currentApplication types.UpdateApplicationApproval
+	err := sql.DB.Table("applications").Where("id = ?", applicationID).First(&currentApplication).Error
+	if err != nil {
+		return err
+	}
 
-    var currentApplication types.UpdateApplicationApproval
-    err := sql.DB.Table("applications").Where("id = ?", applicationID).First(&currentApplication).Error
-    if err != nil {
-        return err
-    }
-
-
-    if currentApplication.AdminApproved != "" {
-        currentApplication.AdminApproved += "," + adminApproved
-    } else {
-        currentApplication.AdminApproved = adminApproved
-    }
-
+	if currentApplication.AdminApproved != "" {
+		currentApplication.AdminApproved += "," + adminApproved
+	} else {
+		currentApplication.AdminApproved = adminApproved
+	}
 
 	adminsApproved := len(strings.Split(currentApplication.AdminApproved, ","))
 
-	if adminsApproved == 3 { 
+	if adminsApproved == 3 {
 
 		applicantName := fmt.Sprintf("%s %s %s", currentApplication.FirstName, currentApplication.MiddleInitial, currentApplication.LastName)
-		if err := helpers.SendApprovalEmail(currentApplication.Email, applicantName); err != nil{
+		if err := helpers.SendApprovalEmail(currentApplication.Email, applicantName); err != nil {
 			return err
 		}
 
-		if err := sql.ApplicationApprovalInbox(currentApplication.UserID, applicantName, "PTMS Permit Approval"); err != nil{
+		if err := sql.ApplicationApprovalInbox(currentApplication.UserID, applicantName, "PTMS Permit Approval"); err != nil {
 			return err
 		}
-		
 
 		approvalResult := sql.DB.Model(&Application{}).Where("id = ?", applicationID).Updates(&Application{
 			Status: "Approved",
@@ -1239,33 +1162,31 @@ func (sql *SQL) UpdateApplicationApproval(applicationID int64, adminApproved str
 		}
 	}
 
+	result := sql.DB.Model(&Application{}).Where("id = ?", applicationID).Updates(&Application{
+		AdminApproved: currentApplication.AdminApproved,
+	})
 
-    result := sql.DB.Model(&Application{}).Where("id = ?", applicationID).Updates(&Application{
-        AdminApproved: currentApplication.AdminApproved,
-    })
+	if result.Error != nil {
+		return result.Error
+	}
 
-    if result.Error != nil {
-        return result.Error
-    }
-
-    return nil
+	return nil
 }
-
 
 func (sql *SQL) UpdateApplicationDisApproval(applicationID int64, disapprovalMessage string) error {
 
 	fmt.Println("applicationID: ", applicationID)
 	fmt.Println("disapprovalMessage: ", disapprovalMessage)
 
-    result := sql.DB.Model(&Application{}).Where("id = ?", applicationID).Updates(&Application{
-        Status: "Disapproved",
-    })
+	result := sql.DB.Model(&Application{}).Where("id = ?", applicationID).Updates(&Application{
+		Status: "Disapproved",
+	})
 
-    if result.Error != nil {
-        return result.Error
-    }
+	if result.Error != nil {
+		return result.Error
+	}
 
-    return nil
+	return nil
 }
 
 // func contains(slice []string, item string) bool {
@@ -1277,15 +1198,11 @@ func (sql *SQL) UpdateApplicationDisApproval(applicationID int64, disapprovalMes
 //     return false
 // }
 
-
-
 // func parseWeeksAgo(selectedWeek string) (int, error) {
 // 	var weeksAgo int
 // 	_, err := fmt.Sscanf(selectedWeek, "%d week", &weeksAgo) // Extract the week number
 // 	return weeksAgo, err
 // }
-
-
 
 func (sql *SQL) FetchAppliedServices(user_id int64) ([]*types.AppliedServicesFetching, error) {
 
@@ -1300,26 +1217,21 @@ func (sql *SQL) FetchAppliedServices(user_id int64) ([]*types.AppliedServicesFet
 		return nil, err
 	}
 
-
 	return appliedServices, nil
 }
 
-
-
-
-
 func (sql *SQL) UpdateApplicationCode(applicationID int64, applicationCode string) error {
 
-	if err := sql.BuildAdminsRequirements(applicationID); err != nil{
+	if err := sql.BuildAdminsRequirements(applicationID); err != nil {
 		return err
 	}
 
 	result := sql.DB.Model(&Application{}).Where("id = ?", applicationID).Updates(&Application{
 		ApplicationCode: applicationCode,
-		Status: "Paid",
+		Status:          "Paid",
 	})
 
-	if result.Error != nil{
+	if result.Error != nil {
 		return result.Error
 	}
 
@@ -1340,24 +1252,19 @@ func (sql *SQL) IsApplicationCodeExists(applicationCode string) (bool, error) {
 	return count > 0, nil
 }
 
-
-
-
 func (sql *SQL) UpdateReleaseDateAndSubmitToReport(applicationID int64, dateFrom string, dateTo string) error {
 
 	result := sql.DB.Model(&Application{}).Where("id = ?", applicationID).Updates(&Application{
-		ReleaseDate: fmt.Sprintf("%s-%s", dateFrom, dateTo),
+		ReleaseDate:         fmt.Sprintf("%s-%s", dateFrom, dateTo),
 		StaffProccessStatus: "reported_application",
-
 	})
 
-	if result.Error != nil{
+	if result.Error != nil {
 		return result.Error
 	}
 
 	return nil
 }
-
 
 func (sql *SQL) SubmitToReleaserApplication(applicationID int64) error {
 
@@ -1365,35 +1272,31 @@ func (sql *SQL) SubmitToReleaserApplication(applicationID int64) error {
 		StaffProccessStatus: "submitted_application",
 	})
 
-	if result.Error != nil{
+	if result.Error != nil {
 		return result.Error
 	}
 
 	return nil
 }
 
-
-
-
-
 func (sql *SQL) UpdateApplicationStatus(applicationID int64, status string) error {
 
 	errorChan := make(chan error, 3)
 
 	go func() {
-		if err := sql.CreateArchitecturalRequirements(applicationID); err != nil{
+		if err := sql.CreateArchitecturalRequirements(applicationID); err != nil {
 			errorChan <- err
 		}
 	}()
-	
+
 	go func() {
-		if err := sql.CreateCivilRequirements(applicationID); err != nil{
+		if err := sql.CreateCivilRequirements(applicationID); err != nil {
 			errorChan <- err
 		}
 	}()
-	
+
 	go func() {
-		if err := sql.CreateElectricalRequirements(applicationID); err != nil{
+		if err := sql.CreateElectricalRequirements(applicationID); err != nil {
 			errorChan <- err
 		}
 	}()
@@ -1414,15 +1317,14 @@ func (sql *SQL) UpdateApplicationStatus(applicationID int64, status string) erro
 		Status: status,
 	})
 
-	if result.Error != nil{
+	if result.Error != nil {
 		return result.Error
 	}
 
 	return nil
 }
 
-
-func (sql *SQL) ApplicationByYear() (results []*types.ApplicationByYear, err error){
+func (sql *SQL) ApplicationByYear() (results []*types.ApplicationByYear, err error) {
 
 	err = sql.DB.Model(&Application{}).
 		Select("EXTRACT(YEAR FROM created_at) as year, COUNT(id) as count").
@@ -1438,13 +1340,12 @@ func (sql *SQL) ApplicationByYear() (results []*types.ApplicationByYear, err err
 	return results, nil
 }
 
-
-func (sql *SQL) ApplicationByBarangay() (results []*types.ApplicationByBarangay, err error){
+func (sql *SQL) ApplicationByBarangay() (results []*types.ApplicationByBarangay, err error) {
 
 	err = sql.DB.Model(&Application{}).
 		Select("barangay, COUNT(id) as count").
 		Group("barangay").
-		Order("count DESC"). 
+		Order("count DESC").
 		Find(&results).Error
 
 	if err != nil {
@@ -1454,14 +1355,12 @@ func (sql *SQL) ApplicationByBarangay() (results []*types.ApplicationByBarangay,
 	return results, nil
 }
 
-
-
-func (sql *SQL) ApplicationByPermitType() (results []*types.ApplicationByPermitType, err error){
+func (sql *SQL) ApplicationByPermitType() (results []*types.ApplicationByPermitType, err error) {
 
 	err = sql.DB.Model(&Application{}).
 		Select("permit_type, COUNT(id) as count").
 		Group("permit_type").
-		Order("count DESC"). 
+		Order("count DESC").
 		Find(&results).Error
 
 	if err != nil {
@@ -1470,9 +1369,6 @@ func (sql *SQL) ApplicationByPermitType() (results []*types.ApplicationByPermitT
 
 	return results, nil
 }
-
-
-
 
 func (sql *SQL) FetchOccupancyData(applicationID int64) ([]*types.OccupancyData, error) {
 
@@ -1487,18 +1383,14 @@ func (sql *SQL) FetchOccupancyData(applicationID int64) ([]*types.OccupancyData,
 		return nil, err
 	}
 
-
 	return occupancyData, nil
 }
 
-
-
-func (sql *SQL)	UpdateApplicantFormDocument(data *types.ApplicantFormDocument) error {
+func (sql *SQL) UpdateApplicantFormDocument(data *types.ApplicantFormDocument) error {
 
 	result := sql.DB.Model(&Application{}).
-	Where("id = ?", data.ID).
-	Update("applicant_form_documents", pq.Array(data.ApplicantFormDocuments))
-
+		Where("id = ?", data.ID).
+		Update("applicant_form_documents", pq.Array(data.ApplicantFormDocuments))
 
 	if result.Error != nil {
 		return result.Error
@@ -1506,14 +1398,23 @@ func (sql *SQL)	UpdateApplicantFormDocument(data *types.ApplicantFormDocument) e
 
 	return nil
 }
- 
 
+func (sql *SQL) UpdateFirstStepReqDocument(data *types.FirstStepReqDocuments) error {
+	result := sql.DB.Model(&Application{}).
+		Where("id = ?", data.ID).
+		Update("first_step_req_documents", pq.Array(data.FirstStepReqDocuments))
+
+	if result.Error != nil {
+		return result.Error
+	}
+
+	return nil
+}
 
 func (sql *SQL) UpdateCompletionFormDocument(data *types.CompletionFormDocument) error {
 	result := sql.DB.Model(&Application{}).
-	Where("id = ?", data.ID).
-	Update("completion_form_documents", pq.Array(data.CompletionFormDocuments))
-
+		Where("id = ?", data.ID).
+		Update("completion_form_documents", pq.Array(data.CompletionFormDocuments))
 
 	if result.Error != nil {
 		return result.Error
@@ -1521,13 +1422,11 @@ func (sql *SQL) UpdateCompletionFormDocument(data *types.CompletionFormDocument)
 
 	return nil
 }
-
 
 func (sql *SQL) UpdateAdditionalFormDocument(data *types.AdditionalFormDocument) error {
 	result := sql.DB.Model(&Application{}).
-	Where("id = ?", data.ID).
-	Update("additional_documents", pq.Array(data.AdditionalDocuments))
-
+		Where("id = ?", data.ID).
+		Update("additional_documents", pq.Array(data.AdditionalDocuments))
 
 	if result.Error != nil {
 		return result.Error
@@ -1535,13 +1434,11 @@ func (sql *SQL) UpdateAdditionalFormDocument(data *types.AdditionalFormDocument)
 
 	return nil
 }
-
 
 func (sql *SQL) UpdateFinishScanning(applicationID int64) error {
 	result := sql.DB.Model(&Application{}).
-	Where("id = ?", applicationID).
-	Update("is_finish_scanning", true)
-
+		Where("id = ?", applicationID).
+		Update("is_finish_scanning", true)
 
 	if result.Error != nil {
 		return result.Error
@@ -1550,25 +1447,24 @@ func (sql *SQL) UpdateFinishScanning(applicationID int64) error {
 	return nil
 }
 
-
 func (sql *SQL) FetchMonthlyAssessment(permitType string) ([]*types.MonthlyAssessment, error) {
-    monthlyData := make([]*types.MonthlyAssessment, 0)
+	monthlyData := make([]*types.MonthlyAssessment, 0)
 
-    query := sql.DB.Table("assessments").
-        Select("TO_CHAR(assessments.created_at, 'FMMonth') AS month_name, DATE_PART('month', assessments.created_at)::int AS month_number, SUM(assessments.total_assesment) AS total_assessment").
-        Joins("JOIN applications ON assessments.application_id = applications.id")
+	query := sql.DB.Table("assessments").
+		Select("TO_CHAR(assessments.created_at, 'FMMonth') AS month_name, DATE_PART('month', assessments.created_at)::int AS month_number, SUM(assessments.total_assesment) AS total_assessment").
+		Joins("JOIN applications ON assessments.application_id = applications.id")
 
-    if permitType != "All" {
-        query = query.Where("applications.permit_type = ?", permitType)
-    }
+	if permitType != "All" {
+		query = query.Where("applications.permit_type = ?", permitType)
+	}
 
-    err := query.Group("month_name, month_number").
-        Order("month_number").
-        Scan(&monthlyData).Error
+	err := query.Group("month_name, month_number").
+		Order("month_number").
+		Scan(&monthlyData).Error
 
-    if err != nil {
-        return nil, err
-    }
+	if err != nil {
+		return nil, err
+	}
 
-    return monthlyData, nil
+	return monthlyData, nil
 }

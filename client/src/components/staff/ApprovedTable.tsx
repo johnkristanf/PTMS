@@ -39,6 +39,8 @@ export function ApproveTable({ searchTerm, selectedMonth, staffRole, ReleaserRep
     const [openReleaseModal, setOpenReleaseModal] = useState<boolean>(false);
     const [openFile, setOpenFile] = useState<boolean>(false);
 
+    const [isOpenStepsDialog, setIsOpenStepsDialog] = useState<boolean>(false)
+
     const [selectedApplicationCode, setSelectedApplicationCode] = useState<string>(); 
     const [releaseDateData, setReleaseDateData] = useState<ReleaseDateData>(); 
 
@@ -185,7 +187,7 @@ export function ApproveTable({ searchTerm, selectedMonth, staffRole, ReleaserRep
 
                                                     {/* SCAN DOCUMENT BUTTON */}
 
-                                                        <Dialog>
+                                                        <Dialog open={isOpenStepsDialog} onOpenChange={setIsOpenStepsDialog}>
                                                             <DialogTrigger asChild>
                                                                 <button 
                                                                     onClick={(e) => {
@@ -201,11 +203,12 @@ export function ApproveTable({ searchTerm, selectedMonth, staffRole, ReleaserRep
 
                                                             <DialogContent className="mt-8 overflow-y-auto max-h-[80vh]">
                                                                 <DocumentStepsComponent 
-                                                                    applicationID={item.application_id}
-                                                                    applicantCode={selectedApplicationCode}
+                                                                    applicationData={item}
+                                                                    first_step_req_documents={item.first_step_req_documents || []}
                                                                     applicant_form_documents={item.applicant_form_documents || []}
                                                                     completion_form_documents={item.completion_form_documents || []}
                                                                     additional_form_documents={item.additional_form_documents || []}
+                                                                    setIsOpenStepsDialog={setIsOpenStepsDialog}
                                                                 />
                                                             </DialogContent>
                                                         </Dialog>
