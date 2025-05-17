@@ -11,7 +11,7 @@ export function DocumentStep1({
 }: {
     applicationData: Application
 }) {
-    console.log('applicationScopeType: ', applicationData.scope_type)
+    console.log('applicationCode: ', applicationData.applicationCode)
     console.log('applicant_form_documents: ', applicationData.applicant_form_documents)
 
     const [documents, setDocuments] = useState<string[]>(applicationData.applicant_form_documents || [])

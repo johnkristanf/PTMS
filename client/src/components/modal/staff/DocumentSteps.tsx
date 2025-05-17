@@ -15,14 +15,14 @@ export function DocumentStepsComponent({
     applicant_form_documents,
     completion_form_documents,
     additional_form_documents,
-    setIsOpenStepsDialog,
+    setOpenStepsDialogAppCode,
 }: {
     applicationData: Application
     first_step_req_documents: string[]
     applicant_form_documents: string[]
     completion_form_documents: string[]
     additional_form_documents: string[]
-    setIsOpenStepsDialog: React.Dispatch<React.SetStateAction<boolean>>
+    setOpenStepsDialogAppCode: React.Dispatch<React.SetStateAction<string | null>>
 }) {
     const stepsHeader = ['Step 1', 'Step 2', 'Step 3', 'Step 4']
     const [step, setStep] = useState<number>(0)
@@ -69,7 +69,7 @@ export function DocumentStepsComponent({
             })
 
             setTimeout(() => {
-                setIsOpenStepsDialog(false)
+                setOpenStepsDialogAppCode(null)
             }, 2500)
         },
 
