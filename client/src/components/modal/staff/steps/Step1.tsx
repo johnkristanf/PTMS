@@ -169,7 +169,7 @@ export function DocumentStep1({
                 {scopeMappings
                     .filter((scope) => scope.condition)
                     .map(({ key, label }) => {
-                        const isUploaded = documents.includes(key)
+                        // const isUploaded = documents.includes(key)
 
                         return (
                             <div
@@ -186,14 +186,14 @@ export function DocumentStep1({
 
                                 <span className="font-semibold">
                                     {label}
-                                    {isUploaded && (
+                                    {/* {isUploaded && (
                                         <span className="ml-2 text-green-600 text-sm">
                                             Scanned
                                         </span>
-                                    )}
+                                    )} */}
                                 </span>
 
-                                {!isUploaded && (
+                                {/* {!isUploaded && ( */}
                                     <button
                                         onClick={() =>
                                             document.getElementById(`file-${key}`)?.click()
@@ -202,7 +202,7 @@ export function DocumentStep1({
                                     >
                                         Scan
                                     </button>
-                                )}
+                                {/* )} */}
                             </div>
                         )
                     })}
