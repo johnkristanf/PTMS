@@ -6,15 +6,13 @@ import { UpdateApplicantFormDocuments } from '@/http/put/document'
 import { ApplicantFormDocument } from '@/types/document'
 import { Application } from '@/types/application'
 
-export function DocumentStep1({
-    applicationData
-}: {
-    applicationData: Application
-}) {
+export function DocumentStep1({ applicationData }: { applicationData: Application }) {
     console.log('applicationCode: ', applicationData.applicationCode)
     console.log('applicant_form_documents: ', applicationData.applicant_form_documents)
 
-    const [documents, setDocuments] = useState<string[]>(applicationData.applicant_form_documents || [])
+    const [documents, setDocuments] = useState<string[]>(
+        applicationData.applicant_form_documents || []
+    )
     const queryClient = useQueryClient()
 
     const updateApplicantFormDocumentsMutation = useMutation({
@@ -46,8 +44,6 @@ export function DocumentStep1({
         },
     })
 
-   
-
     useEffect(() => {
         setDocuments(applicationData.applicant_form_documents || [])
     }, [applicationData.applicant_form_documents])
@@ -71,6 +67,14 @@ export function DocumentStep1({
 
         onError: (error: unknown) => {
             console.error('Document Upload Error:', error)
+
+            Swal.fire({
+                icon: 'error',
+                title: 'Failed to Upload File',
+                text: 'Please try again uploading file with lower file size',
+                showConfirmButton: false,
+                timer: 1500,
+            })
         },
     })
 
@@ -159,7 +163,6 @@ export function DocumentStep1({
         },
     ]
 
-
     return (
         <div className="p-4">
             <h1 className="text-xl font-bold mb-4">Only Applicant Form for every Services</h1>
@@ -169,7 +172,7 @@ export function DocumentStep1({
                 {scopeMappings
                     .filter((scope) => scope.condition)
                     .map(({ key, label }) => {
-                        // const isUploaded = documents.includes(key)
+                        const isUploaded = documents.includes(key)
 
                         return (
                             <div
@@ -186,29 +189,25 @@ export function DocumentStep1({
 
                                 <span className="font-semibold">
                                     {label}
-                                    {/* {isUploaded && (
+                                    {isUploaded && (
                                         <span className="ml-2 text-green-600 text-sm">
                                             Scanned
                                         </span>
-                                    )} */}
+                                    )}
                                 </span>
 
-                                {/* {!isUploaded && ( */}
-                                    <button
-                                        onClick={() =>
-                                            document.getElementById(`file-${key}`)?.click()
-                                        }
-                                        className="bg-orange-700 text-white px-4 py-1 rounded hover:opacity-75"
-                                    >
-                                        Scan
-                                    </button>
-                                {/* )} */}
+                                {!isUploaded && (
+                                <button
+                                    onClick={() => document.getElementById(`file-${key}`)?.click()}
+                                    className="bg-orange-700 text-white px-4 py-1 rounded hover:opacity-75"
+                                >
+                                    Scan
+                                </button>
+                                )}
                             </div>
                         )
                     })}
             </div>
-
-          
         </div>
     )
 }

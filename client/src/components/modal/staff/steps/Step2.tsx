@@ -87,6 +87,14 @@ export function DocumentStep2({ applicationData }: { applicationData: Applicatio
 
         onError: (error: unknown) => {
             console.error('Document Upload Error:', error)
+
+            Swal.fire({
+                icon: 'error',
+                title: 'Failed to Upload File',
+                text: 'Please try again uploading file with lower file size',
+                showConfirmButton: false,
+                timer: 1500,
+            })
         },
     })
 

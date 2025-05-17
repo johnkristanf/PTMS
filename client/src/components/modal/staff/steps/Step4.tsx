@@ -1,31 +1,32 @@
-import { useEffect, useRef, useState } from "react";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { UploadDocument } from "@/http/post/document";
-import Swal from "sweetalert2";
-import { UpdateAdditionalFormDocuments } from "@/http/put/document";
-import { AdditionalFormDocument } from "@/types/document";
+import { useEffect, useRef, useState } from 'react'
+import { useMutation, useQueryClient } from '@tanstack/react-query'
+import { UploadDocument } from '@/http/post/document'
+import Swal from 'sweetalert2'
+import { UpdateAdditionalFormDocuments } from '@/http/put/document'
+import { AdditionalFormDocument } from '@/types/document'
 
-export function DocumentStep4({ applicationID, applicantCode, additional_form_documents }: {
+export function DocumentStep4({
+    applicationID,
+    applicantCode,
+    additional_form_documents,
+}: {
     applicationID: number
-    applicantCode: string | undefined,
+    applicantCode: string | undefined
     additional_form_documents: string[]
 }) {
+    console.log('applicant_form_documents (from DB): ', additional_form_documents)
 
-    console.log("applicant_form_documents (from DB): ", additional_form_documents);
-    
-
-    const [documents, setDocuments] = useState<string[]>(additional_form_documents || []);
-    const [newDocument, setNewDocument] = useState("");
-    const fileInputRef = useRef<HTMLInputElement | null>(null);
-    const queryClient = useQueryClient();
-
+    const [documents, setDocuments] = useState<string[]>(additional_form_documents || [])
+    const [newDocument, setNewDocument] = useState('')
+    const fileInputRef = useRef<HTMLInputElement | null>(null)
+    const queryClient = useQueryClient()
 
     const updateApplicantFormDocumentsMutation = useMutation({
         mutationFn: UpdateAdditionalFormDocuments,
         onSuccess: (response) => {
-            Swal.close();
-            queryClient.invalidateQueries({ queryKey: ["approved_applications"] });
-            console.log("Update Response: ", response);
+            Swal.close()
+            queryClient.invalidateQueries({ queryKey: ['approved_applications'] })
+            console.log('Update Response: ', response)
         },
 
         onMutate: () => {
@@ -35,56 +36,52 @@ export function DocumentStep4({ applicationID, applicantCode, additional_form_do
                 allowOutsideClick: false,
                 showConfirmButton: false,
                 willOpen: () => {
-                    Swal.showLoading();
+                    Swal.showLoading()
                 },
-            });
+            })
         },
 
         onError: (error: unknown) => {
-            Swal.close();
-            console.error("Document Upload Error:", error);
+            Swal.close()
+            console.error('Document Upload Error:', error)
         },
         onSettled: () => {
-            Swal.close();
+            Swal.close()
         },
-    });
-
+    })
 
     const addDocument = () => {
-        if (newDocument.trim() !== "") {
-            const updatedDocuments = [...documents, newDocument];
-            setDocuments(updatedDocuments);
+        if (newDocument.trim() !== '') {
+            const updatedDocuments = [...documents, newDocument]
+            setDocuments(updatedDocuments)
 
             const data: AdditionalFormDocument = {
                 application_id: applicationID,
-                additional_form_documents: updatedDocuments
+                additional_form_documents: updatedDocuments,
             }
-            
+
             updateApplicantFormDocumentsMutation.mutate(data)
-            setNewDocument("");
+            setNewDocument('')
         }
-
-    };
-
+    }
 
     useEffect(() => {
-        setDocuments(additional_form_documents || []);
-    }, [additional_form_documents]);
+        setDocuments(additional_form_documents || [])
+    }, [additional_form_documents])
 
-    console.log("document new: ", documents);
-
+    console.log('document new: ', documents)
 
     const uploadDocumentMutation = useMutation({
         mutationFn: UploadDocument,
         onSuccess: () => {
-            queryClient.invalidateQueries({ queryKey: ["approved_applications"] });
+            queryClient.invalidateQueries({ queryKey: ['approved_applications'] })
 
             Swal.fire({
-                icon: "success",
-                title: "File Uploaded Successfully",
+                icon: 'success',
+                title: 'File Uploaded Successfully',
                 showConfirmButton: false,
                 timer: 1500,
-            });
+            })
         },
 
         onMutate: () => {
@@ -94,98 +91,95 @@ export function DocumentStep4({ applicationID, applicantCode, additional_form_do
                 allowOutsideClick: false,
                 showConfirmButton: false,
                 willOpen: () => {
-                    Swal.showLoading();
+                    Swal.showLoading()
                 },
-            });
+            })
         },
 
         onError: (error: unknown) => {
-            console.error("Document Upload Error:", error);
+            console.error('Document Upload Error:', error)
+
+            Swal.fire({
+                icon: 'error',
+                title: 'Failed to Upload File',
+                text: 'Please try again uploading file with lower file size',
+                showConfirmButton: false,
+                timer: 1500,
+            })
         },
-    });
+    })
 
-
-    const handleDocumentUpload = async (file : File, applicationCode: string) => {
-    
+    const handleDocumentUpload = async (file: File, applicationCode: string) => {
         try {
-            const formData = new FormData();
-            formData.append("document", file);
-            formData.append("application_code", applicationCode);
-    
+            const formData = new FormData()
+            formData.append('document', file)
+            formData.append('application_code', applicationCode)
+
             uploadDocumentMutation.mutate(formData)
-                
         } catch (error) {
-            console.error("File upload failed", error);
-            alert("File upload failed");
+            console.error('File upload failed', error)
+            alert('File upload failed')
         }
     }
-    
-    
+
     const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const file = e.target.files?.[0];
-    
-        console.log("filename: ", file?.name);
-            
+        const file = e.target.files?.[0]
+
+        console.log('filename: ', file?.name)
+
         if (file && applicantCode) {
-            handleDocumentUpload(file, applicantCode); 
+            handleDocumentUpload(file, applicantCode)
         }
-    };
+    }
 
+    return (
+        <div className="p-4">
+            <h1 className="text-xl font-bold mb-4">Any Additional Files</h1>
 
+            {/* Display List */}
+            <div className="flex flex-col gap-2">
+                {additional_form_documents.map((doc, index) => (
+                    <div
+                        key={index}
+                        className="flex justify-between items-center border p-2 rounded"
+                    >
+                        <input
+                            type="file"
+                            ref={fileInputRef}
+                            style={{ display: 'none' }}
+                            onClick={(e) => e.stopPropagation()}
+                            onChange={handleFileChange}
+                        />
 
-  return (
-    <div className="p-4">
-        <h1 className="text-xl font-bold mb-4">Any Additional Files</h1>
+                        <span>{doc}</span>
 
-        {/* Display List */}
-        <div className="flex flex-col gap-2">
-            {additional_form_documents.map((doc, index) => (
+                        <button
+                            onClick={() => fileInputRef.current?.click()}
+                            className="bg-orange-700 text-white px-4 py-1 rounded hover:opacity-75"
+                        >
+                            Scan
+                        </button>
+                    </div>
+                ))}
+            </div>
 
-            <div key={index} className="flex justify-between items-center border p-2 rounded">
-
+            {/* Input and Add Button */}
+            <div className="flex gap-2 mb-4 mt-5">
                 <input
-                    type="file"
-                    ref={fileInputRef}
-                    style={{ display: "none" }}
-                    onClick={(e) => e.stopPropagation()}
-                    onChange={handleFileChange}
+                    type="text"
+                    value={newDocument}
+                    onChange={(e) => setNewDocument(e.target.value)}
+                    className="border p-2 rounded w-[85%] focus:outline-orange-700"
+                    placeholder="Enter document name"
                 />
 
-                <span>{doc}</span>
-
-                <button 
-                    onClick={() => fileInputRef.current?.click() }
-                    className="bg-orange-700 text-white px-4 py-1 rounded hover:opacity-75"
+                <button
+                    onClick={addDocument}
+                    className="bg-orange-700 text-white px-4 py-2 rounded hover:bg-orange-800"
                 >
-                    Scan
+                    +
                 </button>
-
             </div>
-            ))}
         </div>
-
-
-        {/* Input and Add Button */}
-        <div className="flex gap-2 mb-4 mt-5">
-            <input
-                type="text"
-                value={newDocument}
-                onChange={(e) => setNewDocument(e.target.value)}
-                className="border p-2 rounded w-[85%] focus:outline-orange-700"
-                placeholder="Enter document name"
-            />
-
-            <button
-                onClick={addDocument}
-                className="bg-orange-700 text-white px-4 py-2 rounded hover:bg-orange-800"
-            >
-            +
-            </button>
-
-        </div>
-
-        
-
-    </div>
-  );
+    )
 }

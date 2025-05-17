@@ -2,19 +2,17 @@ import { useEffect, useState } from 'react'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { UploadDocument } from '@/http/post/document'
 import Swal from 'sweetalert2'
-import {  UpdateCompletionFormDocuments } from '@/http/put/document'
-import {  CompletionFormDocument } from '@/types/document'
+import { UpdateCompletionFormDocuments } from '@/http/put/document'
+import { CompletionFormDocument } from '@/types/document'
 import { Application } from '@/types/application'
 
-export function DocumentStep3({
-    applicationData
-}: {
-    applicationData: Application
-}) {
+export function DocumentStep3({ applicationData }: { applicationData: Application }) {
     console.log('applicationScopeType: ', applicationData.scope_type)
     console.log('applicant_form_documents: ', applicationData.completion_form_documents)
 
-    const [documents, setDocuments] = useState<string[]>(applicationData.completion_form_documents || [])
+    const [documents, setDocuments] = useState<string[]>(
+        applicationData.completion_form_documents || []
+    )
     const queryClient = useQueryClient()
 
     const updateApplicantFormDocumentsMutation = useMutation({
@@ -46,8 +44,6 @@ export function DocumentStep3({
         },
     })
 
-   
-
     useEffect(() => {
         setDocuments(applicationData.completion_form_documents || [])
     }, [applicationData.completion_form_documents])
@@ -71,6 +67,14 @@ export function DocumentStep3({
 
         onError: (error: unknown) => {
             console.error('Document Upload Error:', error)
+
+            Swal.fire({
+                icon: 'error',
+                title: 'Failed to Upload File',
+                text: 'Please try again uploading file with lower file size',
+                showConfirmButton: false,
+                timer: 1500,
+            })
         },
     })
 
@@ -104,7 +108,6 @@ export function DocumentStep3({
             })
         } catch (error) {
             console.error('File upload failed', error)
-            alert('File upload failed')
         }
     }
 
@@ -159,7 +162,6 @@ export function DocumentStep3({
         },
     ]
 
-
     return (
         <div className="p-4">
             <h1 className="text-xl font-bold mb-4">Only Completion Form for every Services</h1>
@@ -187,9 +189,7 @@ export function DocumentStep3({
                                 <span className="font-semibold">
                                     {label}
                                     {isUploaded && (
-                                        <span className="ml-2 text-green-600 text-sm">
-                                            Scanned
-                                        </span>
+                                        <span className="ml-2 text-green-600 text-sm">Scanned</span>
                                     )}
                                 </span>
 
@@ -207,8 +207,6 @@ export function DocumentStep3({
                         )
                     })}
             </div>
-
-          
         </div>
     )
 }
