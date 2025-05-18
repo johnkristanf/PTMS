@@ -192,7 +192,7 @@ export function DocumentStep2({ applicationData }: { applicationData: Applicatio
                                 {requirementsTitle}
                             </span>
 
-                            {String(value) !== 'false' && !documents.includes(key) && (
+                            {!documents.includes(key) && (
                                 <button
                                     onClick={() => handleScanClick(key)}
                                     className="bg-orange-700 text-white px-4 py-1 rounded hover:opacity-75"
@@ -200,6 +200,7 @@ export function DocumentStep2({ applicationData }: { applicationData: Applicatio
                                     Scan
                                 </button>
                             )}
+
 
                             {documents.includes(key) && (
                                 <span className="text-green-600 text-sm font-medium">Scanned</span>
