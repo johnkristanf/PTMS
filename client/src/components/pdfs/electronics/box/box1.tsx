@@ -142,7 +142,9 @@ export function PermitBodyBox1({ permitInfo }: { permitInfo: AppliedServices }) 
                     <Text style={styles.labelData}>{data.formOwnership || ' '} </Text>
                     </View>
                     <View style={styles.subRow2}>
-                    <Text style={styles.labelData}>{data.characterOfOccupancy || ' '} </Text>
+
+                    {/* ONLY SHOW THE 1ST OCCUPANCY TO CONSERVE SPACE FOR THE OTHER BOXES */}
+                    <Text style={styles.labelData}>{data.characterOfOccupancy.split(',')[0] || ' '} </Text>
                     </View>
                 </View>
             </View>

@@ -13,7 +13,7 @@ export function PermitBodyBox6({ permitInfo }: { permitInfo: any }) {
     return (
         <View style={styles.formNo}>
             {/* Title Section */}
-            <Text style={styles.printText}>BOX 5</Text>
+            <Text style={styles.printText}>BOX 6</Text>
             
             {/* Row Box 1 */}
             <View style={styles.container}>
