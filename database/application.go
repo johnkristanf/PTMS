@@ -1126,6 +1126,16 @@ func (sql *SQL) FetchReportApplication(searchName string, selectedMonth string) 
 	return results, nil
 }
 
+
+func contains(slice []string, val string) bool {
+	for _, item := range slice {
+		if item == val {
+			return true
+		}
+	}
+	return false
+}
+
 func (sql *SQL) UpdateApplicationApproval(applicationID int64, adminApproved string) error {
 
 	var currentApplication types.UpdateApplicationApproval
@@ -1133,6 +1143,19 @@ func (sql *SQL) UpdateApplicationApproval(applicationID int64, adminApproved str
 	if err != nil {
 		return err
 	}
+
+
+	soloPermits := []string{
+		"Electrical",
+		"Electronics",
+		"Mechanical",
+		"Demolition",
+		"Fencing",
+		"Excavation",
+		"Plumbing",
+		"Signed",
+	}
+
 
 	if currentApplication.AdminApproved != "" {
 		currentApplication.AdminApproved += "," + adminApproved
@@ -1142,7 +1165,7 @@ func (sql *SQL) UpdateApplicationApproval(applicationID int64, adminApproved str
 
 	adminsApproved := len(strings.Split(currentApplication.AdminApproved, ","))
 
-	if adminsApproved == 3 {
+	if adminsApproved >= 3 || contains(soloPermits, currentApplication.PermitType) {
 
 		applicantName := fmt.Sprintf("%s %s %s", currentApplication.FirstName, currentApplication.MiddleInitial, currentApplication.LastName)
 		if err := helpers.SendApprovalEmail(currentApplication.Email, applicantName); err != nil {

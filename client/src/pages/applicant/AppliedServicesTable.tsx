@@ -11,16 +11,12 @@ import '../../assets/scrollStyle.css'
 import { ApplicationNoteSubHeader, PTMSHeader } from '../../components/PtmsHeader';
 import { classNames } from '../../helpers/classNames';
 
-import {
-    Popover,
-    PopoverContent,
-    PopoverTrigger,
-} from "@/components/ui/popover"
+
 
   
 import PlumbingPDF from '../../components/pdfs/Plumbing';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faAddressCard, faEllipsisVertical, faFileLines, faRectangleList } from '@fortawesome/free-solid-svg-icons';
+import { faAddressCard, faFileLines, faRectangleList } from '@fortawesome/free-solid-svg-icons';
 import ElectronicsPermit from '../../components/pdfs/Electronics';
 import ElectricalPermit from '../../components/pdfs/Electrical';
 import MechanicalPermit from '../../components/pdfs/Mechanical';
@@ -323,7 +319,7 @@ function ServicesPage(){
                                                                 </HoverCard>
 
 
-                                                                <Popover>
+                                                                {/* <Popover>
                                                                     <PopoverTrigger>
                                                                         <FontAwesomeIcon 
                                                                             icon={faEllipsisVertical} 
@@ -348,7 +344,7 @@ function ServicesPage(){
                                                                                     }}
                                                                                 >
                                                                                     Completion
-                                                                                </button>
+                                                                                </button> */}
                                                                                 
                                                                                 {/* CLOSE THE POPOVER WHEN CLICKED */}
                                                                                 {/* <PopoverClose asChild>
@@ -367,10 +363,10 @@ function ServicesPage(){
                                                                                     </button>
                                                                                 </PopoverClose> */}
 
-                                                                            </div>
-                                                                        )}
+                                                                            {/* </div> */}
+                                                                        {/* )}
                                                                     </PopoverContent>
-                                                                </Popover>
+                                                                </Popover> */}
 
                                                                 
 

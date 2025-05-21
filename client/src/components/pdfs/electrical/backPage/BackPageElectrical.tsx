@@ -21,6 +21,12 @@ const styles = StyleSheet.create({
   section: {
     marginBottom: 10,
   },
+
+  box3Container: {
+    marginBottom: 10,
+    marginTop: 23,
+    height: '60%',
+  },
   row: {
     flexDirection: "row",
     justifyContent: "space-between",
@@ -60,8 +66,15 @@ const styles = StyleSheet.create({
     minWidth: 100,
     marginBottom: 5,
   },
-  boxContainer: {
+  box1Container: {
     border: "1px solid black",
+    height: '13%',
+    marginBottom: 10,
+  },
+
+  box2Container: {
+    border: "1px solid black",
+    height: '18%',
     marginBottom: 10,
   },
   boxRow: {
@@ -114,7 +127,7 @@ const styles = StyleSheet.create({
 const BackPageElectricalPDF = ({ permitInfo }: {
   permitInfo: AppliedServices 
 }) => (
-    <Page size="LETTER" style={styles.page}>
+    <Page size={{ width: 595.28, height: 600 }} style={styles.page}>
       {/* Header */}
       <View style={styles.section}>
         <Text style={{ fontWeight: "bold" }}>DPWH FORM NO. 96-002-E</Text>
@@ -164,7 +177,7 @@ const BackPageElectricalPDF = ({ permitInfo }: {
 
       {/* Box 1 */}
       <Text style={{marginBottom: 3}}>BOX 1</Text>
-      <View style={styles.boxContainer}>
+      <View style={styles.box1Container}>
         <View style={styles.boxRow}>
           <View style={styles.noBoxRightCell}>
             <Text>NAME OF OWNER/APPLICANT:</Text>
@@ -244,7 +257,7 @@ const BackPageElectricalPDF = ({ permitInfo }: {
 
       {/* Box 2 - Assessed Fees */}
       <Text style={{marginVertical: 4}} >BOX 2</Text>
-      <View style={styles.boxContainer}>
+      <View style={styles.box2Container}>
         <Text style={[styles.label, { textAlign: "center", padding: 4, borderBottom: "1px solid black",  }]}>ASSESSED FEES</Text>
 
         <View style={styles.boxRow}>
@@ -275,9 +288,9 @@ const BackPageElectricalPDF = ({ permitInfo }: {
           <Text style={styles.boxCell}></Text>
           <Text style={styles.boxCell}></Text>
           <View style={[styles.boxCell, styles.lastCell, { justifyContent: 'flex-start' }]}>
-            <Text style={{ marginBottom: 20 }}>REVIEWED</Text>
+            <Text style={{ marginBottom: 10 }}>REVIEWED</Text>
             <View style={{ borderBottom: '1px solid black', width: '100%', marginBottom: 4 }} />
-            <Text style={{ fontSize: 6, textAlign: 'center' }}>CHIEF, PROCESSING DIV. / SEC</Text>
+            <Text style={{ fontSize: 5, textAlign: 'center' }}>CHIEF, PROCESSING DIV. / SEC</Text>
           </View>
         </View>
         
@@ -285,7 +298,7 @@ const BackPageElectricalPDF = ({ permitInfo }: {
       </View>
 
       {/* BOX 3 */}
-      <View style={[styles.section, {marginTop: 10}]}>
+      <View style={styles.box3Container}>
         <Text style={styles.label}>BOX 3</Text>
         <View style={{ border: '1px solid black', padding: 10, fontSize: 6 }}>
           <Text style={{ marginBottom: 6, textAlign: 'justify' }}>

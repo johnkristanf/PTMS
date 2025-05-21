@@ -20,7 +20,7 @@ function BuildingCompletionPDF({ permitInfo, setPermitsInfo }: {
 
     const downloadPDF = async () => {
         const blob = await pdf(doc).toBlob();
-        saveAs(blob, 'electrical_completion.pdf');
+        saveAs(blob, 'building_completion.pdf');
     };
 
     return (

@@ -5,6 +5,7 @@ import { PermitBodyBox1 } from "./box1";
 // import { PermitBodyBox2 } from "../plumbing/box2";
 // import PermitBodyBox3 from "./box3";
 import { PermitBodyBox4 } from "./box4";
+import { PermitBodyBox3 } from "./box3";
 import PermitBodyBox5 from "./box5";
 import { PermitBodyBox6 } from "./box6";
 import { PermitBodyBox7 } from "./box7";
@@ -46,7 +47,8 @@ export function PlumbingPermitComponent({ permitInfo }: {
             <PermitBodyBox1 permitInfo={permitInfo} />
           </View>
 
-    
+        
+            <PermitBodyBox3 />
             <PermitBodyBox4 />
     
             <PermitBodyBox5 />

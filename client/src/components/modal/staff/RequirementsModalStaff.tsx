@@ -244,7 +244,7 @@ function RequirementsModalStaff({ applicationID, setShowRequirements }: {
                             <button
                                 type="button"
                                 onClick={toggleSelectAll}
-                                className="bg-orange-400 text-white p-2 rounded-md"
+                                className="bg-orange-700 text-white p-2 rounded-md"
                             >
                                 {selectAll ? (
                                     <>
@@ -274,7 +274,7 @@ function RequirementsModalStaff({ applicationID, setShowRequirements }: {
                                 disabled={!allRequirementsChecked} // Excludes Not Registered Lot Owner & Duly Signed/Sealed
                                 className={classNames(
                                     "text-white font-bold rounded-md p-2 mt-4 w-full hover:opacity-75",
-                                    !allRequirementsChecked ? "bg-gray-600 cursor-not-allowed" : "bg-orange-500"
+                                    !allRequirementsChecked ? "bg-gray-600 cursor-not-allowed" : "bg-orange-700"
                                 )}
                             >
                                 Submit

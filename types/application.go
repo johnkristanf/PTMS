@@ -229,6 +229,7 @@ type UpdateApplicationCode struct {
 
 type UpdateApplicationApproval struct {
 	AdminApproved 		string  `json:"admin_approved"`
+	PermitType 			string 	`json:"permit_type"`
 
 	FirstName 			string  `json:"firstname"`
 	MiddleInitial 		string  `json:"middleInitial"`

@@ -190,7 +190,7 @@ function BuildingPermit({ permitInfo }: {
 
       </Page>
 
-      <Page size={{ width: 595.28, height: 1400 }} style={styles.page}>
+      <Page size={{ width: 595.28, height: 600 }} style={styles.page_box8}>
 
         <View style={styles.body6_7}>
           <PermitBodyBox6 />
@@ -217,40 +217,46 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     padding: 10,
   },
+
+  page_box8: {
+    flexDirection: 'column',
+    alignItems: 'center',
+    padding: 10,
+  },
   body1: {
     width: '100%',
-    height: '50%',
+    height: '30%',
     marginTop: 60,
     paddingHorizontal: 20,
   },
   body2: {
     width: '100%',
-    height: '20%',
+    height: '10%',
     marginTop: 20,
     paddingHorizontal: 20,
   },
   body3: {
     width: '100%',
-    height: '20%',
-    marginTop: 30,
+    height: '10%',
     paddingHorizontal: 20,
     flexDirection: 'row'
   },
   body5: {
     width: '100%',
-    height: '30%',
+    height: '25%',
     paddingHorizontal: 20,
   },
   body6_7: {
     width: '100%',
-    height: '30%',
+    height: '20%',
     paddingHorizontal: 20,
-    marginTop: 15
+    marginTop: 15,
   },
   body8: {
     width: '100%',
-    height: '100%',
+    height: '50%',
     paddingHorizontal: 20,
+
   },
   headerImage: {
     width: 70,
