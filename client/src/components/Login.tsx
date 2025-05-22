@@ -66,7 +66,7 @@ export function LoginForm({
         className="absolute top-3 left-3 text-3xl hover:opacity-75 hover:cursor-pointer"
       />
 
-      <h1 className="font-bold text-3xl">Login to PTMS</h1>
+      <h1 className="font-bold text-3xl">Log in to PTMS</h1>
 
       <form
         onSubmit={handleSubmit(onSubmit)}
@@ -208,7 +208,7 @@ function ApplicantLoginForm({
 
   return (
     <>
-      <h1 className="font-bold text-3xl">Login to PTMS</h1>
+      <h1 className="font-bold text-3xl">Log in to PTMS</h1>
 
       <form
         onSubmit={handleSubmit(onSubmit)}
@@ -265,7 +265,7 @@ function ApplicantLoginForm({
                 className="ml-1 text-orange-800 hover:opacity-75 hover:cursor-pointer"
                 onClick={() => setAuthType("signup")}
               >
-                Signup
+                Sign up
               </a>
             </h1>
 
@@ -342,7 +342,7 @@ function ApplicantSignupForm({
 
   return (
     <>
-      <h1 className="font-bold text-3xl">Signup to PTMS</h1>
+      <h1 className="font-bold text-3xl">Sign up to PTMS</h1>
 
       <form
         onSubmit={handleSubmit(onSubmit)}
@@ -418,7 +418,7 @@ function ApplicantSignupForm({
               className="ml-1 text-orange-800 hover:opacity-75 hover:cursor-pointer"
               onClick={() => setAuthType("login")}
             >
-              Login
+              Log in
             </a>
           </h1>
 
@@ -426,7 +426,7 @@ function ApplicantSignupForm({
             type="submit"
             className="bg-orange-700 rounded-md p-2 text-white w-[30%] font-semibold hover:opacity-75"
           >
-            SIGNUP
+            SIGN UP
           </button>
         </div>
       </form>
