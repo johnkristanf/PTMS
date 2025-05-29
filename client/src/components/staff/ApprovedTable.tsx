@@ -111,6 +111,8 @@ export function ApproveTable({
 
     const { approvedApplication } = useFetchApprovedByStatus(staffRole, searchTerm, selectedMonth)
 
+    console.log('approvedApplication: ', approvedApplication)
+
     return (
         <>
             {openReleaseModal && staffRole === 'releaser' && (
@@ -145,6 +147,10 @@ export function ApproveTable({
                                         </th>
                                         <th scope="col" className="px-6 py-4">
                                             Permit Type
+                                        </th>
+
+                                        <th scope="col" className="px-6 py-4">
+                                            Application Date
                                         </th>
 
                                         {staffRole === 'releaser' && (
@@ -183,6 +189,17 @@ export function ApproveTable({
                                                 </td>
                                                 <td className="whitespace-nowrap pl-6 py-4">
                                                     {item.permit_type}
+                                                </td>
+
+                                                <td className="whitespace-nowrap px-3 py-2">
+                                                    {new Date(item.created_at).toLocaleDateString(
+                                                        'en-US',
+                                                        {
+                                                            year: 'numeric',
+                                                            month: 'long',
+                                                            day: 'numeric',
+                                                        }
+                                                    )}
                                                 </td>
 
                                                 {/* SCANNER CAPABILITIES */}

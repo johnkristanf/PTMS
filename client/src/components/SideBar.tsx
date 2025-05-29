@@ -164,6 +164,11 @@ function UserInfo() {
     fileInputRef.current?.click();
   };
 
+  
+const hiddenRoles = ['receiver', 'releaser', 'scanner'];
+const isHiddenRole = loginAccount?.role && hiddenRoles.includes(loginAccount.role.toLowerCase());
+
+
 
   if (isLoading) return <div className="text-white font-bold text-xl">Fetching Login Account...</div>;
 
@@ -178,7 +183,7 @@ function UserInfo() {
 
         <div className="flex items-center gap-2 mb-1 relative">
 
-          {loginAccount.role !== "applicant" && (
+          {!isHiddenRole && loginAccount.role !== "applicant" && (
 
             <FontAwesomeIcon 
               icon={faEdit} 
@@ -187,34 +192,29 @@ function UserInfo() {
             />
           )}
 
-          <div className="relative">
+         {!isHiddenRole && (
+            <>
+              <div className="relative">
+                <img 
+                  src={
+                    loginAccount.role === "applicant"
+                      ? (loginAccount.picture === "" || loginAccount.picture === "No_Profile"
+                        ? "/img/icons/staff_picture.png"
+                        : loginAccount.picture)
+                      : (profilePictureResponse?.data !== "No_Profile"
+                        ? profilePictureResponse?.data.profile_src
+                        : "/img/icons/staff_picture.png")
+                  }
+                  className="rounded-full w-[60px] h-[60px] object-cover"
+                />
+              </div>
 
-            {loginAccount.role === "applicant" ? (
-              <img 
-                src={
-                  loginAccount.picture == "" || loginAccount.picture == "No_Profile"
-                  ? "/img/icons/staff_picture.png" 
-                  : loginAccount.picture
-                } 
-                className="rounded-full w-[60px] h-[60px] object-cover" 
-              />
-            ) : (
+              <div className="font-bold text-xl w-full text-center">
+                {loginAccount.name}
+              </div>
+            </>
+          )}
 
-              <img 
-                src={
-                  profilePictureResponse?.data != "No_Profile"
-                    ? profilePictureResponse?.data.profile_src 
-                    : "/img/icons/staff_picture.png" 
-                } 
-                className="rounded-full w-[60px] h-[60px] object-cover" 
-              />
-            )}
-
-          </div>
-
-          <div className="font-bold text-xl w-full text-center">
-            {loginAccount.name}
-          </div>
 
         </div>
 

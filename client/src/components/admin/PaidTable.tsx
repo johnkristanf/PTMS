@@ -105,7 +105,10 @@ export function PaidTable({ searchTerm, selectedMonth, adminType }: PaidTablePro
 
         Swal.fire({
             title: 'Approve this Application?',
-            text: admins == 2 || soloPermits.includes(permit_type) ? lastAdminToApproveMessage : adminToApproveMessage,
+            text:
+                admins == 2 || soloPermits.includes(permit_type)
+                    ? lastAdminToApproveMessage
+                    : adminToApproveMessage,
             icon: 'question',
             showCancelButton: true,
             confirmButtonColor: '#c2410c',
@@ -162,6 +165,8 @@ export function PaidTable({ searchTerm, selectedMonth, adminType }: PaidTablePro
     const filteredApplications = paidApplication.filter((app) =>
         coveredPermits.includes(app.permit_type)
     )
+
+    console.log('filteredApplications: ', filteredApplications)
 
     return (
         <>
@@ -230,6 +235,10 @@ export function PaidTable({ searchTerm, selectedMonth, adminType }: PaidTablePro
                                         <th scope="col" className="px-3 py-2">
                                             Permit Type
                                         </th>
+
+                                        <th scope="col" className="px-3 py-2">
+                                            Application Date
+                                        </th>
                                         <th scope="col" className="px-3 py-2">
                                             Evaluate
                                         </th>
@@ -276,6 +285,18 @@ export function PaidTable({ searchTerm, selectedMonth, adminType }: PaidTablePro
                                                 <td className="whitespace-nowrap px-3 py-2">
                                                     {item.permit_type}
                                                 </td>
+
+                                                <td className="whitespace-nowrap px-3 py-2">
+                                                    {new Date(item.created_at).toLocaleDateString(
+                                                        'en-US',
+                                                        {
+                                                            year: 'numeric',
+                                                            month: 'long',
+                                                            day: 'numeric',
+                                                        }
+                                                    )}
+                                                </td>
+
                                                 <td className="whitespace-nowrap py-4">
                                                     <div className="flex gap-2">
                                                         {adminType &&
